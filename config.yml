@@ -1,0 +1,11 @@
+---
+# file encoding for rAthena DB files
+# Default: utf-8
+# Japanese : cp932
+Encoding: utf-8
+
+#Script Search Option
+SearchOption:
+  MatchCase: false
+  SearchDescription: false
+...

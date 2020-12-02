@@ -1,0 +1,2783 @@
+---
+# 1. Basic Bonuses
+# Base stats
+- Category: Basic Status Bonus
+  Desc: Basic Status Bonus
+  Script:
+  - Name: Str
+    Desc:
+      - bonus bStr,n;
+      - --------------------
+      - Str + n
+    Script: bonus bStr,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Agi
+    Desc:
+      - bonus bAgi,n;
+      - --------------------
+      - Agi + n
+    Script: bonus bAgi,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Vit
+    Desc:
+      - bonus bVit,n;
+      - --------------------
+      - Vit + n
+    Script: bonus bVit,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Int
+    Desc:
+      - bonus bInt,n;
+      - --------------------
+      - Int + n
+    Script: bonus bInt,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Dex
+    Desc:
+      - bonus bDex,n;
+      - --------------------
+      - Dex + n
+    Script: bonus bDex,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Luk
+    Desc:
+      - bonus bLuk,n;
+      - --------------------
+      - Luk + n
+    Script: bonus bLuk,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: All
+    Desc:
+      - bonus bAllStats,n;
+      - --------------------
+      - All Stats + n
+    Script: bonus bAllStats,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Agi&Vit
+    Desc:
+      - bonus bAgiVit,n;
+      - --------------------
+      - Agi + n
+      - Vit + n
+    Script: bonus bAgiVit,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Agi&Dex&Str
+    Desc:
+      - bonus bAgiDexStr,n;
+      - --------------------
+      - Agi + n
+      - Dex + n
+      - Str + n
+    Script: bonus bAgiDexStr,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# HP/SP
+- Category: Basic HP/SP Bonus
+  Desc: Basic Max HP/SP Bonus
+  Script:
+  - Name: MaxHP
+    Desc:
+      - bonus bMaxHP,n;
+      - --------------------
+      - MaxHP + n
+    Script: bonus bMaxHP,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MaxHP[%]
+    Desc:
+      - bonus bMaxHPrate,n;
+      - --------------------
+      - MaxHP + n%
+    Script: bonus bMaxHPrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MaxSP
+    Desc:
+      - bonus bMaxSP,n;
+      - --------------------
+      - MaxSP + n
+    Script: bonus bMaxSP,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MaxSP[%]
+    Desc:
+      - bonus bMaxSPrate,n;
+      - --------------------
+      - MaxSP + n%
+    Script: bonus bMaxSPrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# Atk/Def
+- Category: Basic Atk/Def Bonus
+  Desc: Basic Atk/Def Bonus
+  Script:
+  - Name: BaseAtk
+    Desc:
+      - bonus bBaseAtk,n;
+      - --------------------
+      - Basic attack power + n
+    Script: bonus bBaseAtk,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: ATK
+    Desc:
+      - bonus bAtk,n;
+      - --------------------
+      - ATK + n (unofficial)
+    Script: bonus bAtk,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: ATK2
+    Desc:
+      - bonus bAtk2,n;
+      - --------------------
+      - ATK2 + n
+    Script: bonus bAtk2,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Attack power[%]
+    Desc:
+      - bonus bAtkRate,n;
+      - --------------------
+      - Attack power + n% (unofficial)
+    Script: bonus bAtkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Weapon ATK[%]
+    Desc:
+      - bonus bWeaponAtkRate,n;
+      - --------------------
+      - Weapon ATK + n%
+    Script: bonus bWeaponAtkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Magical attack power
+    Desc:
+      - bonus bMatk,n;
+      - --------------------
+      - Magical attack power + n
+    Script: bonus bMatk,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Magical attack power[%]
+    Desc:
+      - bonus bMatkRate,n;
+      - --------------------
+      - Magical attack power + n%
+    Script: bonus bMatkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Weapon Magical ATK[%]
+    Desc:
+      - bonus bWeaponMatkRate,n;
+      - --------------------
+      - Weapon Magical ATK + n% (renewal mode only)
+    Script: bonus bWeaponMatkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Equipment DEF
+    Desc:
+      - bonus bDef,n;
+      - --------------------
+      - Equipment DEF + n
+    Script: bonus bDef,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Equipment DEF[%]
+    Desc:
+      - bonus bDefRate,n;
+      - --------------------
+      - Equipment DEF + n%
+    Script: bonus bDefRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: VIT based DEF
+    Desc:
+      - bonus bDef2,n;
+      - --------------------
+      - VIT based DEF + n
+    Script: bonus bDef2,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: VIT based DEF[%]
+    Desc:
+      - bonus bDef2Rate,n;
+      - --------------------
+      - VIT based DEF + n%
+    Script: bonus bDef2Rate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Equipment MDEF
+    Desc:
+      - bonus bMdef,n;
+      - --------------------
+      - Equipment MDEF + n
+    Script: bonus bMdef,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Equipment MDEF[%]
+    Desc:
+      - bonus bMdefRate,n;
+      - --------------------
+      - Equipment MDEF + n%
+    Script: bonus bMdefRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: INT based MDEF
+    Desc:
+      - bonus bMdef2,n;
+      - --------------------
+      - INT based MDEF + n
+    Script: bonus bMdef2,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: INT based MDEF[%]
+    Desc:
+      - bonus bMdef2Rate,n;
+      - --------------------
+      - INT based MDEF + n%
+    Script: bonus bMdef2Rate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# Additional stats
+- Category: Additional Status Bonus
+  Desc: Additional Status Bonus
+  Script:
+  - Name: Hit
+    Desc:
+      - bonus bHit,n;
+      - --------------------
+      - Hit + n
+    Script: bonus bHit,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Hit[%]
+    Desc:
+      - bonus bHitRate,n;
+      - --------------------
+      - Hit + n%
+    Script: bonus bHitRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Critical
+    Desc:
+      - bonus bCritical,n;
+      - --------------------
+      - Critical + n
+    Script: bonus bCritical,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Critical for Long Range 
+    Desc:
+      - bonus bCriticalLong,n;
+      - --------------------
+      - Critical + n for normal long ranged attack
+      - (won't be shown in status window)
+    Script: bonus bCriticalLong,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Critical for Race
+    Desc:
+      - bonus2 bCriticalAddRace,r,n;
+      - --------------------
+      - Critical + n against enemies of race r
+    Script: bonus2 bCriticalAddRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: Critical[%]
+    Desc:
+      - bonus bCriticalRate,n;
+      - --------------------
+      - Critical + n%
+    Script: bonus bCriticalRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Flee
+    Desc:
+      - bonus bFlee,n;
+      - --------------------
+      - Flee + n
+    Script: bonus bFlee,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Flee[%]
+    Desc:
+      - bonus bFleeRate,n;
+      - --------------------
+      - Flee + n%
+    Script: bonus bFleeRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Perfect Dodge
+    Desc:
+      - bonus bFlee2,n;
+      - --------------------
+      - Perfect Dodge + n
+    Script: bonus bFlee2,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Perfect Dodge[%]
+    Desc:
+      - bonus bFlee2Rate,n;
+      - --------------------
+      - Perfect Dodge + n%
+    Script: bonus bFlee2Rate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Perfect Hit (only highest)
+    Desc:
+      - bonus bPerfectHitRate,n;
+      - --------------------
+      - On-target impact attack probability n%
+      - only the highest among all is applied
+    Script: bonus bPerfectHitRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Perfect Hit
+    Desc:
+      - bonus bPerfectHitAddRate,n;
+      - --------------------
+      - On-target impact attack probability + n%
+    Script: bonus bPerfectHitAddRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Movement speed (only highest)
+    Desc:
+      - bonus bSpeedRate,n;
+      - --------------------
+      - Movement speed + n%
+      - only the highest among all is applied,
+      - won't be stacked with SC_SPEEDUP0, SC_SPEEDUP1
+    Script: bonus bSpeedRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Movement speed
+    Desc:
+      - bonus bSpeedAddRate,n;
+      - --------------------
+      - Movement speed + n%
+    Script: bonus bSpeedAddRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Attack speed
+    Desc:
+      - bonus bAspd,n;
+      - --------------------
+      - Attack speed + n
+    Script: bonus bAspd,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Attack speed[%]
+    Desc:
+      - bonus bAspdRate,n;
+      - --------------------
+      - Attack speed + n%
+    Script: bonus bAspdRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Attack range
+    Desc:
+      - bonus bAtkRange,n;
+      - --------------------
+      - Attack range + n
+    Script: bonus bAtkRange,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MaxWeight
+    Desc:
+      - bonus bAddMaxWeight,n;
+      - --------------------
+      - MaxWeight + n (in units of 0.1)
+    Script: bonus bAddMaxWeight,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# Extended HP/SP Bonus
+- Category: Extended HP/SP Bonus
+  Desc: Extended HP/SP Bonus
+  Script:
+  - Name: Increse Natural HP Recovery
+    Desc:
+      - bonus bHPrecovRate,n;
+      - --------------------
+      - Natural HP recovery ratio + n%
+    Script: bonus bHPrecovRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increse Natural SP Recovery
+    Desc:
+      - bonus bSPrecovRate,n;
+      - --------------------
+      - Natural SP recovery ratio + n%
+    Script: bonus bSPrecovRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: HP Regeneration
+    Desc:
+      - bonus2 bHPRegenRate,n,t;
+      - --------------------
+      - Gain n HP every t milliseconds
+    Script: bonus2 bHPRegenRate,ARG1,ARG2;
+    Args:
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+  - Name: HP Loss
+    Desc:
+      - bonus2 bHPLossRate,n,t;
+      - --------------------
+      - Lose n HP every t milliseconds
+    Script: bonus2 bHPLossRate,ARG1,ARG2;
+    Args:
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+  - Name: SP Regeneration
+    Desc:
+      - bonus2 bSPRegenRate,n,t;
+      - --------------------
+      - Gain n SP every t milliseconds
+    Script: bonus2 bSPRegenRate,ARG1,ARG2;
+    Args:
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+  - Name: SP Loss
+    Desc:
+      - bonus2 bSPLossRate,n,t;
+      - --------------------
+      - Lose n SP every t milliseconds
+    Script: bonus2 bSPLossRate,ARG1,ARG2;
+    Args:
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+  - Name: HP Regeneration[%]
+    Desc:
+      - bonus2 bRegenPercentHP,n,t;
+      - --------------------
+      - Gain n% of max HP every t milliseconds
+    Script: bonus2 bRegenPercentHP,ARG1,ARG2;
+    Args:
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+  - Name: SP Regeneration[%]
+    Desc:
+      - bonus2 bRegenPercentSP,ARG1,ARG2;
+      - --------------------
+      - Gain n% of max SP every t milliseconds
+    Script: bonus2 bRegenPercentSP,ARG1,ARG2;
+    Args:
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+  - Name: Stops HP/SP Regeneration
+    Desc:
+      - bonus bNoRegen,x;
+      - --------------------
+      - Stops HP or SP regeneration (x 1=HP, 2=SP)
+    Script: bonus bNoRegen,ARG1;
+    Args:
+      - Desc: x
+        Type: Value
+  - Name: Increse SP Cconsumption
+    Desc:
+      - bonus bUseSPrate,n;
+      - --------------------
+      - SP consumption + n%
+    Script: bonus bUseSPrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Decreases Skill SP Consumption
+    Desc:
+      - bonus2 bSkillUseSP,sk,n;
+      - --------------------
+      - Decreases SP consumption of skill sk by n
+    Script: bonus2 bSkillUseSP,ARG1,ARG2;
+    Args:
+      - Desc: skill id
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: Decreases Skill SP Consumption[%]
+    Desc:
+      - bonus2 bSkillUseSPrate,sk,n;
+      - --------------------
+      - Decreases SP consumption of skill sk by n%
+    Script: bonus2 bSkillUseSPrate,ARG1,ARG2;
+    Args:
+      - Desc: skill id
+        Type: Skill
+      - Desc: n
+        Type: Value
+#Extended Atk/def Bonus
+- Category: Extended Atk/def Bonus
+  Desc: Extended Atk/def Bonus
+  Script:
+  - Name: Increases Damage (Skill)
+    Desc:
+      - bonus2 bSkillAtk,ARG1,ARG2;
+      - --------------------
+      - Increases damage of skill sk by n%
+    Script: bonus2 bSkillAtk,ARG1,ARG2;
+    Args:
+      - Desc: skill id
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: Increases Damage (short ranged attacks)
+    Desc:
+      - bonus bShortAtkRate,n;
+      - --------------------
+      - Increases damage of short ranged attacks by n%
+    Script: bonus bShortAtkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increases Damage (long ranged attacks)
+    Desc:
+      - bonus bLongAtkRate,n;
+      - --------------------
+      - Increases damage of long ranged attacks by n%
+    Script: bonus bLongAtkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increases Damage (critical)
+    Desc:
+      - bonus bCritAtkRate,ARG1;
+      - --------------------
+      - Increases critical damage by +n%
+    Script: bonus bCritAtkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Decreases Received Damage (critical)
+    Desc:
+      - bonus bCritDefRate,ARG1;
+      - --------------------
+      - Decreases critical damage received by n%
+    Script: bonus bCritDefRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Decreases Received Damage Chance (critical)
+    Desc:
+      - bonus bCriticalDef,ARG1;
+      - --------------------
+      - Decreases the chance of being hit by critical hits by n%
+    Script: bonus bCriticalDef,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: ATK (specific weapon type)
+    Desc:
+      - bonus2 bWeaponAtk,w,n;
+      - --------------------
+      - Adds n ATK when weapon of type w is equipped
+    Script: bonus2 bWeaponAtk,ARG1,ARG2;
+    Args:
+      - Desc: w
+        Type: List
+        ListName: WeaponSubType
+      - Desc: n
+        Type: Value
+  - Name: Increse Damage (normal attack)(specific weapon type)
+    Desc:
+      - bonus2 bWeaponDamageRate,w,n;
+      - --------------------
+      - Adds n% damage to normal attacks when weapon of type w is equipped
+    Script: bonus2 bWeaponDamageRate,ARG1,ARG2;
+    Args:
+      - Desc: w
+        Type: List
+        ListName: WeaponSubType
+      - Desc: n
+        Type: Value
+  - Name: Reduce Damage (melee physical attacks)
+    Desc:
+      - bonus bNearAtkDef,n;
+      - --------------------
+      - Adds n% damage reduction against melee physical attacks
+    Script: bonus bNearAtkDef,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reduce Damage (ranged physical attacks)
+    Desc:
+      - bonus bLongAtkDef,n;
+      - --------------------
+      - Adds n% damage reduction against ranged physical attacks
+    Script: bonus bLongAtkDef,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reduce Damage (magical attacks)
+    Desc:
+      - bonus bMagicAtkDef,n;
+      - --------------------
+      - Adds n% damage reduction against magical attacks
+    Script: bonus bMagicAtkDef,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reduce Damage (MISC attacks)
+    Desc:
+      - bonus bMiscAtkDef,n;
+      - --------------------
+      - Adds n% damage reduction against MISC attacks (traps, falcon, ...)
+    Script: bonus bMiscAtkDef,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reduce Damage (physical damage)
+    Desc:
+      - bonus bNoWeaponDamage,n;
+      - --------------------
+      - Adds n% reduction to received physical damage
+    Script: bonus bNoWeaponDamage,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reduce Magical Effect
+    Desc:
+      - bonus bNoMagicDamage,n;
+      - --------------------
+      - Adds n% reduction to received magical effect (attack, healing, support spells are all blocked)
+    Script: bonus bNoMagicDamage,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reduce Damage (misc damage)
+    Desc:
+      - bonus bNoMiscDamage,n;
+      - --------------------
+      - Adds n% reduction to received misc damage
+    Script: bonus bNoMiscDamage,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+#Extended Healing Bonus
+- Category: Extended Healing Bonus
+  Desc: Extended Healing Bonus
+  Script:
+  - Name: Heal Power
+    Desc:
+      - bonus bHealPower,n;
+      - --------------------
+      - Increases heal amount of all heal skills by n%
+    Script: bonus bHealPower,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Healed Bonus
+    Desc:
+      - bonus bHealPower2,n;
+      - --------------------
+      - Increases heal amount if you are healed by any skills by n%
+    Script: bonus bHealPower2,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Heal Power (specific skill)
+    Desc:
+      - bonus2 bSkillHeal,sk,n;
+      - --------------------
+      - Increases heal amount of skill sk by n%
+    Script: bonus2 bSkillHeal,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: Healed Bonus (specific skill)
+    Desc:
+      - bonus2 bSkillHeal2,sk,n;
+      - --------------------
+      - Increases heal amount if you are healed by skill sk by n%
+    Script: bonus2 bSkillHeal2,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: Healed Bonus (all items)
+    Desc:
+      - bonus bAddItemHealRate,n;
+      - --------------------
+      - Increases HP recovered by n% for healing items
+    Script: bonus bAddItemHealRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Healed Bonus (specific items)
+    Desc:
+      - bonus2 bAddItemHealRate,iid,n;
+      - --------------------
+      - Increases HP recovered by n% for item iid
+    Script: bonus2 bAddItemHealRate,ARG1,ARG2;
+    Args:
+      - Desc: iid
+        Type: Item
+      - Desc: n
+        Type: Value
+  - Name: Healed Bonus (specific item group)
+    Desc:
+      - bonus2 bAddItemGroupHealRate,ig,n;
+      - --------------------
+      - Increases HP recovered by n% for items of item group ig
+    Script: bonus2 bAddItemGroupHealRate,ARG1,ARG2;
+    Args:
+      - Desc: ig
+        Type: Value
+      - Desc: n
+        Type: Value
+#Extended Cast Bonus
+- Category: Extended Cast Bonus
+  Desc: Extended Cast Bonus
+  Script:
+  - Name: Increase Cast Time Rate
+    Desc:
+      - bonus bCastrate,n;
+      - --------------------
+      - Skill cast time rate + n%.
+      - (If RENEWAL_CAST is defined, this bonus is equal to bVariableCastrate)
+    Script: bonus bCastrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increase Cast Time Rate (spesific skill)
+    Desc:
+      - bonus2 bCastrate,sk,n;
+      - --------------------
+      - Adjust casting time of skill sk by n%.(If RENEWAL_CAST is defined, this bonus is equal to bVariableCastrate)
+    Script: bonus2 bCastrate,ARG1,ARG2;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increase Fixed Cast Time Rate
+    Desc:
+      - bonus bFixedCastrate,n;
+      - --------------------
+      - Increases fixed cast time of all skills by n% (has effect in RENEWAL_CAST only)
+    Script: bonus bFixedCastrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increase Fixed Cast Time Rate (spesific skill)
+    Desc:
+      - bonus2 bFixedCastrate,sk,n;
+      - --------------------
+      - Increases fixed cast time of skill sk by n% (has effect in RENEWAL_CAST only)
+    Script: bonus2 bFixedCastrate,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: Increase Variable Cast Time Rate
+    Desc:
+      - bonus bVariableCastrate,n;
+      - --------------------
+      - Increases variable cast time of all skills by n%. (If RENEWAL_CAST is NOT defined, this bonus is equal to bCastrate)
+    Script: bonus bVariableCastrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increase Variable Cast Time Rate (spesific skill)
+    Desc:
+      - bonus2 bVariableCastrate,sk,n;
+      - --------------------
+      - Increases variable cast time of skill sk by n% (If RENEWAL_CAST is NOT defined, this bonus is equal to bCastrate)
+    Script: bonus2 bVariableCastrate,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: Increase Fixed Cast Time Const
+    Desc:
+      - bonus bFixedCast,t;
+      - --------------------
+      - Increases fixed cast time of all skills by t milliseconds (has effect in RENEWAL_CAST only)
+    Script: bonus bFixedCast,ARG1;
+    Args:
+      - Desc: t
+        Type: Value
+  - Name: Increase Fixed Cast Time Const (spesific skill)
+    Desc:
+      - bonus2 bSkillFixedCast,sk,t;
+      - --------------------
+      - Increases fixed cast time of skill sk by t milliseconds (has effect in RENEWAL_CAST only)
+    Script: bonus2 bSkillFixedCast,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: t
+        Type: Value
+  - Name: Increase Variable Cast Time Const
+    Desc:
+      - bonus bVariableCast,t;
+      - --------------------
+      - Increases variable cast time of all skills by t milliseconds
+    Script: bonus bVariableCast,ARG1;
+    Args:
+      - Desc: t
+        Type: Value
+  - Name: Increase Variable Cast Time Const (spesific skill)
+    Desc:
+      - bonus2 bSkillVariableCast,sk,t;
+      - --------------------
+      - Increases variable cast time of skill sk by t milliseconds
+    Script: bonus2 bSkillVariableCast,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: t
+        Type: Value
+  - Name: No Cast Cancel (without Gvg)
+    Desc:
+      - bonus bNoCastCancel;
+      - --------------------
+      - Prevents casting from being interrupted when hit (does not work in GvG)
+    Script: bonus bNoCastCancel;
+  - Name: No Cast Cancel
+    Desc:
+      - bonus bNoCastCancel2;
+      - --------------------
+      - Prevents casting from being interrupted when hit (works even in GvG)
+    Script: bonus bNoCastCancel2;
+  - Name: Increases Skill Delay Rate
+    Desc:
+      - bonus bDelayrate,n;
+      - --------------------
+      - Increases skill delay by n%
+    Script: bonus bDelayrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increases Skill Delay Const
+    Desc:
+      - bonus2 bSkillDelay,sk,t;
+      - --------------------
+      - Increases delay of skill sk by t milliseconds
+    Script: bonus2 bSkillDelay,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: t
+        Type: Value
+  - Name: Increases Cooldown Time
+    Desc:
+      - bonus2 bSkillCooldown,sk,t;
+      - --------------------
+      - Increases cooldown of skill sk by t milliseconds
+    Script: bonus2 bSkillCooldown,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: t
+        Type: Value
+#3. Group-specific Bonuses
+#Damage modifiers
+- Category: Damage Modifier
+  Desc: Damage Modifier
+  Script:
+  - Name: Increase Physical Damage (Element)
+    Desc:
+      - bonus2 bAddEle,e,x;
+      - --------------------
+      - +x% physical damage against element e
+    Script: bonus2 bAddEle,ARG1,ARG2;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+  - Name: Increase Physical Damage (Element)(trigger)
+    Desc:
+      - bonus3 bAddEle,e,x,bf;
+      - --------------------
+      - +x% physical damage against element e with trigger criteria bf
+    Script: bonus3 bAddEle,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+      - Desc: bf
+        Type: List
+        ListName: Trigger criteria(bf)
+  - Name: Increase Magical Damage (Element)
+    Desc:
+      - bonus2 bMagicAddEle,e,x;
+      - --------------------
+      - +x% magical damage against element e
+    Script: bonus2 bMagicAddEle,ARG1,ARG2;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Damage (Element)
+    Desc:
+      - bonus2 bSubEle,e,x;
+      - --------------------
+      - +x% damage reduction against attack element e
+    Script: bonus2 bSubEle,ARG1,ARG2;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Damage (Element)(trigger)
+    Desc:
+      - bonus3 bSubEle,e,x,bf;
+      - --------------------
+      - +x% damage reduction against attack element e with trigger criteria bf
+    Script: bonus3 bSubEle,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+      - Desc: bf
+        Type: List
+        ListName: Trigger criteria(bf)
+  - Name: Reduce Received Physical Damage (Element)
+    Desc:
+      - bonus2 bSubDefEle,e,x;
+      - --------------------
+      - +x% physical damage reduction from enemy with defense element e
+    Script: bonus2 bSubDefEle,ARG1,ARG2;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Magical Damage (Element)
+    Desc:
+      - bonus2 bMagicSubDefEle,e,x;
+      - --------------------
+      - +x% magic damage reduction from enemy with defense element e
+    Script: bonus2 bMagicSubDefEle,ARG1,ARG2;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+  - Name: Increase Physical Damage (Race)
+    Desc:
+      - bonus2 bAddRace,r,x;
+      - --------------------
+      - +x% physical damage against race r
+    Script: bonus2 bAddRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+  - Name: Increase Magical Damage (Race)
+    Desc:
+      - bonus2 bMagicAddRace,r,x;
+      - --------------------
+      - +x% magical damage against race r
+    Script: bonus2 bMagicAddRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Damage (Race)
+    Desc:
+      - bonus2 bSubRace,r,x;
+      - --------------------
+      - +x% damage reduction against race r
+    Script: bonus2 bSubRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Damage (Race)(trigger)
+    Desc:
+      - bonus3 bSubRace,r,x,bf;
+      - --------------------
+      - +x% damage reduction against race r with trigger criteria bf 
+    Script: bonus3 bSubRace,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+      - Desc: bf
+        Type: List
+        ListName: Trigger criteria(bf)
+  - Name: Increase Physical Damage (Class)
+    Desc:
+      - bonus2 bAddClass,c,x;
+      - --------------------
+      - +x% physical damage against class c
+    Script: bonus2 bAddClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: x
+        Type: Value
+  - Name: Increase Magical Damage (Class)
+    Desc:
+      - bonus2 bMagicAddClass,c,x;
+      - --------------------
+      - +x% magical damage against class c
+    Script: bonus2 bMagicAddClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Damage (Class)
+    Desc:
+      - bonus2 bSubClass,c,x;
+      - --------------------
+      - +x% damage reduction against class c
+    Script: bonus2 bSubClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: x
+        Type: Value
+  - Name: Increase Physical Damage (Size)
+    Desc:
+      - bonus2 bAddSize,s,x;
+      - --------------------
+      - +x% physical damage against size s
+    Script: bonus2 bAddSize,ARG1,ARG2;
+    Args:
+      - Desc: s
+        Type: List
+        ListName: Size
+      - Desc: x
+        Type: Value
+  - Name: Increase Magical Damage (Size)
+    Desc:
+      - bonus2 bMagicAddSize,s,x;
+      - --------------------
+      - +x% magical damage against size s
+    Script: bonus2 bMagicAddSize,ARG1,ARG2;
+    Args:
+      - Desc: s
+        Type: List
+        ListName: Size
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Damage (Size)
+    Desc:
+      - bonus2 bSubSize,s,x;
+      - --------------------
+      - +x% damage reduction against size s
+    Script: bonus2 bSubSize,ARG1,ARG2;
+    Args:
+      - Desc: s
+        Type: List
+        ListName: Size
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Magical Damage (Size)
+    Desc:
+      - bonus2 bMagicSubSize,s,x;
+      - --------------------
+      - +x% magic damage reduction against size s
+    Script: bonus2 bMagicSubSize,ARG1,ARG2;
+    Args:
+      - Desc: s
+        Type: List
+        ListName: Size
+      - Desc: x
+        Type: Value
+  - Name: Ignore Size
+    Desc:
+      - bonus bNoSizeFix;
+      - --------------------
+      - Ignores the size modifier when calculating damage
+    Script: bonus bNoSizeFix;
+  - Name: Increase Physical Damage (spesific Mob)
+    Desc:
+      - bonus2 bAddDamageClass,mid,x;
+      - --------------------
+      - +x% physical damage against monster mid
+    Script: bonus2 bAddDamageClass,ARG1,ARG2;
+    Args:
+      - Desc: mid
+        Type: Mob
+      - Desc: x
+        Type: Value
+  - Name: Increase Magical Damage (spesific Mob)
+    Desc:
+      - bonus2 bAddMagicDamageClass,mid,x;
+      - --------------------
+      - +x% magical damage against monster mid
+      - NOTE Against players, mid is the player's job id.
+      - LIMIT Only 10 of these bonuses can be set. Those which exceed 10 are ignored.
+    Script: bonus2 bAddMagicDamageClass,ARG1,ARG2;
+    Args:
+      - Desc: mid
+        Type: Mob
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Physical Damage (spesific Mob)
+    Desc:
+      - bonus2 bAddDefMonster,mid,x;
+      - --------------------
+      - +x% physical damage reduction against monster mid
+    Script: bonus2 bAddDefMonster,ARG1,ARG2;
+    Args:
+      - Desc: mid
+        Type: Mob
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Magical Damage (spesific Mob)
+    Desc:
+      - bonus2 bAddMDefMonster,mid,x;
+      - --------------------
+      - +x% magical damage reduction against monster mid
+      - NOTE Against players, mid is the player's job id.
+    Script: bonus2 bAddMDefMonster,ARG1,ARG2;
+    Args:
+      - Desc: mid
+        Type: Mob
+      - Desc: x
+        Type: Value
+  - Name: Increase Damage (Monster Race)
+    Desc:
+      - bonus2 bAddRace2,mr,x;
+      - --------------------
+      - +x% damage against monster race mr
+    Script: bonus2 bAddRace2,ARG1,ARG2;
+    Args:
+      - Desc: mr
+        Type: List
+        ListName: Monster Race
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Damage (Monster Race)
+    Desc:
+      - bonus2 bSubRace2,mr,x;
+      - --------------------
+      - +x% damage reduction against monster race mr
+    Script: bonus2 bSubRace2,ARG1,ARG2;
+    Args:
+      - Desc: mr
+        Type: List
+        ListName: Monster Race
+      - Desc: x
+        Type: Value
+  - Name: Reduce Received Magical Damage (Monster Race)
+    Desc:
+      - bonus2 bMagicAddRace2,mr,x;
+      - --------------------
+      - +x% magic damage against monster race mr
+    Script: bonus2 bMagicAddRace2,ARG1,ARG2;
+    Args:
+      - Desc: mr
+        Type: List
+        ListName: Monster Race
+      - Desc: x
+        Type: Value
+  - Name: Reduces Received Damage (skill)
+    Desc:
+      - bonus2 bSubSkill,sk,n;
+      - --------------------
+      - Reduces n% damage received from skill sk
+    Script: bonus2 bSubSkill,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: Absorb Damage
+    Desc:
+      - bonus bAbsorbDmgMaxHP,n;
+      - --------------------
+      - If the damage received is more than n% of Max HP, the damage received is [TotalDamage] - [n% of MaxHP] (Doesn't stack, will use the highest value)
+    Script: bonus bAbsorbDmgMaxHP,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+#Atk/Def modifiers
+- Category: DAtk/Def modifiers
+  Desc: Atk/Def modifiers
+  Script:
+  - Name: Attack Element
+    Desc:
+      - bonus bAtkEle,e;
+      - --------------------
+      - Gives the player's attacks element e
+    Script: bonus bAtkEle,ARG1;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+  - Name: Defense Element
+    Desc:
+      - bonus bDefEle,e;
+      - --------------------
+      - Gives the player's defense element e
+    Script: bonus bDefEle,ARG1;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+  - Name: Increases damage of element magic
+    Desc:
+      - bonus2 bMagicAtkEle,e,x;
+      - --------------------
+      - Increases damage of e element magic by x%
+    Script: bonus2 bMagicAtkEle,ARG1,ARG2;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: x
+        Type: Value
+  - Name: DEF Ratio Damage (Race)
+    Desc:
+      - bonus bDefRatioAtkRace,r;
+      - --------------------
+      - Deals more damage to enemies of race r with higher defense
+    Script: bonus bDefRatioAtkRace,ARG1;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+  - Name: DEF Ratio Damage (Element)
+    Desc:
+      - bonus bDefRatioAtkEle,e;
+      - --------------------
+      - Deals more damage to enemies of element e with higher defense
+    Script: bonus bDefRatioAtkEle,ARG1;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+  - Name: DEF Ratio Damage (Class)
+    Desc:
+      - bonus bDefRatioAtkClass,c;
+      - --------------------
+      - Deals more damage to enemies of class c with higher defense
+    Script: bonus bDefRatioAtkClass,ARG1;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+  - Name: Set DEF (Race)
+    Desc:
+      - bonus4 bSetDefRace,r,n,t,y;
+      - --------------------
+      - Set DEF to y of an enemy of race r at n% for t milliseconds with normal attack
+    Script: bonus4 bSetDefRace,ARG1,ARG2,ARG3,ARG4;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+      - Desc: y
+        Type: Value
+  - Name: Set MDEF (Race)
+    Desc:
+      - bonus4 bSetMDefRace,r,n,t,y;
+      - --------------------
+      - Set MDEF to y of an enemy of race r at n% for t milliseconds with normal attack
+    Script: bonus4 bSetMDefRace,ARG1,ARG2,ARG3,ARG4;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+      - Desc: t
+        Type: Value
+      - Desc: y
+        Type: Value
+#Ignore Def
+- Category: Ignore Def Bonus
+  Desc: Ignore Def Bonus
+  Script:
+  - Name: Disregard DEF (Element)
+    Desc:
+      - bonus bIgnoreDefEle,e;
+      - --------------------
+      - Disregard DEF against enemies of element e
+    Script: bonus bIgnoreDefEle,ARG1;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+  - Name: Disregard DEF (Race)
+    Desc:
+      - bonus bIgnoreDefRace,r;
+      - --------------------
+      - Disregard DEF against enemies of race r
+    Script: bonus bIgnoreDefRace,ARG1;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+  - Name: Disregard DEF (Class)
+    Desc:
+      - bonus bIgnoreDefClass,c;
+      - --------------------
+      - Disregard DEF against enemies of class c
+    Script: bonus bIgnoreDefClass,ARG1;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+  - Name: Disregard MDEF (Race)
+    Desc:
+      - bonus bIgnoreMDefRace,r;
+      - --------------------
+      - Disregard MDEF against enemies of race r
+    Script: bonus bIgnoreMDefRace,ARG1;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+  - Name: Disregard DEF[%] (Race)
+    Desc:
+      - bonus2 bIgnoreDefRaceRate,r,n;
+      - --------------------
+      - Disregard n% of the target's DEF if the target belongs to race r
+    Script: bonus2 bIgnoreDefRaceRate,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: Disregard MDEF[%] (Race)
+    Desc:
+      - bonus2 bIgnoreMdefRaceRate,r,n;
+      - --------------------
+      - Disregard n% of the target's MDEF if the target belongs to race r
+    Script: bonus2 bIgnoreMdefRaceRate,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: Disregard MDEF (Monster Race)
+    Desc:
+      - bonus2 bIgnoreMdefRace2Rate,mr,n;
+      - --------------------
+      - Disregard n% of the target's MDEF if the target belongs to monster race mr
+    Script: bonus2 bIgnoreMdefRace2Rate,ARG1,ARG2;
+    Args:
+      - Desc: mr
+        Type: List
+        ListName: Monster Race
+      - Desc: n
+        Type: Value
+  - Name: Disregard MDEF (Element)
+    Desc:
+      - bonus bIgnoreMDefEle,e;
+      - --------------------
+      - Disregard MDEF against enemies of element e
+    Script: bonus bIgnoreMDefEle,ARG1;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+  - Name: Disregard DEF[%] (Class)
+    Desc:
+      - bonus2 bIgnoreDefClassRate,c,n;
+      - --------------------
+      - Disregard n% of the target's DEF if the target belongs to class c
+    Script: bonus2 bIgnoreDefClassRate,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+  - Name: Disregard MDEF[%] (Class)
+    Desc:
+      - bonus2 bIgnoreMdefClassRate,c,n;
+      - --------------------
+      - Disregard n% of the target's MDEF if the target belongs to class c
+    Script: bonus2 bIgnoreMdefClassRate,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+
+#Exp Bonus
+- Category: Exp Bonus
+  Desc: Exp Bonus
+  Script:
+  - Name: Increase Exp (Race)
+    Desc:
+      - bonus2 bExpAddRace,r,x;
+      - --------------------
+      - Increase exp gained by x% against enemies of race r
+    Script: bonus2 bExpAddRace,r,x;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+  - Name: Increase Exp (Class)
+    Desc:
+      - bonus2 bExpAddClass,c,x;
+      - --------------------
+      - Increase exp gained by x% against enemies of class c
+    Script: bonus2 bExpAddClass,c,x;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: x
+        Type: Value
+#4.Status-related Bonuses
+- Category: Status-relatedBonus
+  Desc: Status-related Bonus
+  Script:
+  - Name: Status Effect when Attack
+    Desc:
+      - bonus2 bAddEff,eff,n;
+      - --------------------
+      - Adds a n/100% chance to cause status eff on the target when attacking
+    Script: bonus2 bAddEff,ARG1,ARG2;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+  - Name: Status Effect when Attack (self)
+    Desc:
+      - bonus2 bAddEff2,eff,n;
+      - --------------------
+      - Adds a n/100% chance to cause status eff on self when attacking
+    Script: bonus2 bAddEff2,ARG1,ARG2;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+  - Name: Status Effect when Hit
+    Desc:
+      - bonus2 bAddEffWhenHit,eff,n;
+      - --------------------
+      - Adds a n/100% chance to cause status eff on the enemy when being hit by physical damage
+    Script: bonus2 bAddEffWhenHit,ARG1,ARG2;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+  - Name: Status Effect when Attack (with trigger)
+    Desc:
+      - bonus3 bAddEff,eff,n,atf;
+      - --------------------
+      - Adds a n/100% chance to cause status eff on the target when attacking
+    Script: bonus3 bAddEff,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+      - Desc: atf
+        Type: List
+        ListName: Trigger criteria(atf)
+  - Name: Status Effect when Attack (with trigger,time designated)
+    Desc:
+      - bonus4 bAddEff,eff,n,atf,t;
+      - --------------------
+      - Adds a n/100% chance to cause status eff for t milliseconds on the target when attacking
+    Script: bonus4 bAddEff,ARG1,ARG2,ARG3,ARG4;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+      - Desc: atf
+        Type: List
+        ListName: Trigger criteria(atf)
+      - Desc: t
+        Type: Value
+  - Name: Status Effect when Hit (with trigger)
+    Desc:
+      - bonus3 bAddEffWhenHit,eff,n,atf;
+      - --------------------
+      - Adds a n/100% chance to cause status eff on the target when being hit by physical damage
+    Script: bonus3 bAddEffWhenHit,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+      - Desc: atf
+        Type: List
+        ListName: Trigger criteria(atf)
+  - Name: Status Effect when Hit (with trigger,time designated)
+    Desc:
+      - bonus4 bAddEffWhenHit,eff,n,atf,t;
+      - --------------------
+      - Adds a n/100% chance to cause status eff for t milliseconds on the target when being hit by physical damage
+      - atf is the trigger criteria
+      -  Effect target (Default= Attacked target)
+      -   ATF_SELF   = trigger effect on self
+      -   ATF_TARGET = trigger effect on target
+      -  Attack range criteria (Default= All attacks)
+      -   ATF_SHORT  = trigger on melee attacks
+      -   ATF_LONG   = trigger on ranged attacks
+      -  Skill/attack type criteria (Default= Physical/weapon)
+      -   ATF_SKILL  = trigger on magic/misc skills
+      -   ATF_WEAPON = trigger on weapon skill / physical attacks
+      -   ATF_MAGIC  = trigger on magic skills
+      -   ATF_MISC   = trigger on misc skills
+    Script: bonus4 bAddEffWhenHit,ARG1,ARG2,ARG3,ARG4;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+      - Desc: atf
+        Type: List
+        ListName: Trigger criteria(atf)
+      - Desc: t
+        Type: Value
+  - Name: Status Effect on Skill
+    Desc:
+      - bonus3 bAddEffOnSkill,sk,eff,n;
+      - --------------------
+      - Adds a n/100% chance to cause status eff on enemy when using skill sk
+    Script: bonus3 bAddEffOnSkill,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+  - Name: Status Effect on Skill (with trigger)
+    Desc:
+      - bonus4 bAddEffOnSkill,sk,eff,n,atf;
+      - --------------------
+      - Adds a n/100% chance to cause status eff on the target when using skill sk
+    Script: bonus4 bAddEffOnSkill,ARG1,ARG2,ARG3,ARG4;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+      - Desc: atf
+        Type: List
+        ListName: Trigger criteria(atf)
+  - Name: Status Effect on Skill (time designated)
+    Desc:
+      - bonus5 bAddEffOnSkill,sk,eff,n,atf,t;
+      - --------------------
+      - Adds a n/100% chance to cause status eff for t milliseconds on the target when using skill sk
+      - atf is the trigger criteria
+      -   ATF_SELF   = trigger effect on self
+      -   ATF_TARGET = trigger effect on target
+    Script: bonus5 bAddEffOnSkill,ARG1,ARG2,ARG3,ARG4,ARG5;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
+      - Desc: atf
+        Type: List
+        ListName: Trigger criteria(atf)
+      - Desc: t
+        Type: Value
+  - Name: Coma (Class)
+    Desc:
+      - bonus2 bComaClass,c,n;
+      - --------------------
+      - Adds a n/100% chance to cause Coma when attacking a target of class c (regardless the type of attack)
+    Script: bonus2 bComaClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+  - Name: Coma (Race)
+    Desc:
+      - bonus2 bComaRace,r,n;
+      - --------------------
+      - Adds a n/100% chance to cause Coma when attacking a target of race r (regardless the type of attack)
+    Script: bonus2 bComaRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: Coma (Element,Normal Attack)
+    Desc:
+      - bonus2 bWeaponComaEle,e,n;
+      - --------------------
+      - Adds a n/100% chance to cause Coma when attacking a target of element e with a normal attack
+    Script: bonus2 bWeaponComaEle,ARG1,ARG2;
+    Args:
+      - Desc: e
+        Type: List
+        ListName: Element
+      - Desc: n
+        Type: Value
+  - Name: Coma (Class,Normal Attack)
+    Desc:
+      - bonus2 bWeaponComaClass,c,n;
+      - --------------------
+      - Adds a n/100% chance to cause Coma when attacking a target of class c with a normal attack
+    Script: bonus2 bWeaponComaClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+  - Name: Coma (Race,Normal Attack)
+    Desc:
+      - bonus2 bWeaponComaRace,r,n;
+      - --------------------
+      - Adds a n/100% chance to cause Coma when attacking a target of race r with a normal attack
+    Script: bonus2 bWeaponComaRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+#5. AutoSpell Bonuses
+- Category: AutoSpell Bonus
+  Desc: |
+    AutoSpell Bonus
+    NOTES:
+      - For all AutoSpell bonuses, target does not have be within the spell's range to go off.
+      -- Enable conf/battle/battle.conf::autospell_check_range to force a range check.
+      - By default, AutoSpell skills are casted on target unless it is a self or support skill (inf = 4/16).
+  Script:
+  - Name: Autospell
+    Desc:
+      - bonus3 bAutoSpell,sk,y,n;
+      - --------------------
+      - Adds a n/10% chance to cast skill sk of level y when attacking
+    Script: bonus3 bAutoSpell,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Autospell when Hit
+    Desc:
+      - bonus3 bAutoSpellWhenHit,sk,y,n;
+      - --------------------
+      - Adds a n/10% chance to cast skill sk of level y when being hit by a direct attack
+    Script: bonus3 bAutoSpellWhenHit,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Autospell (with option)
+    Desc:
+      - bonus4 bAutoSpell,sk,y,n,i;
+      - --------------------
+      - Adds a n/10% chance to cast skill sk of level y when attacking
+    Script: bonus4 bAutoSpell,ARG1,ARG2,ARG3,ARG4;
+      - ' &0 = cast on self'
+      - ' &1 = cast on enemy'
+      - ' &2 = use random skill level in [1..y]'
+      - ' &3 = 1+2 (random level on enemy)'
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+      - Desc: i
+        Type: Value
+        Default: 1
+  - Name: Autospell (with trigger and option)
+    Desc:
+      - bonus5 bAutoSpell,sk,y,n,bf,i;
+      - --------------------
+      - Adds a n/10% chance to cast skill sk of level y when attacking with trigger criteria bf
+    Script: bonus5 bAutoSpell,ARG1,ARG2,ARG3,ARG4,ARG5;
+      - ' &0 = cast on self'
+      - ' &1 = cast on enemy'
+      - ' &2 = use random skill level in [1..y]'
+      - ' &3 = 1+2 (random level on enemy)'
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+      - Desc: bf
+        Type: List
+        ListName: Trigger criteria(bf)
+      - Desc: i
+        Type: Value
+        Default: 1
+  - Name: Autospell when Hit (with option)
+    Desc:
+      - bonus4 bAutoSpellWhenHit,sk,y,n,i;
+      - --------------------
+      - Adds a n/10% chance to cast skill sk of level y when being hit by a direct attack
+      - i provides additional options (bitfield)
+      - ' &0 = cast on self'
+      - ' &1 = cast on enemy'
+      - ' &2 = use random skill level in [1..y]'
+      - ' &3 = 1+2 (random level on enemy)'
+    Script: bonus4 bAutoSpellWhenHit,ARG1,ARG2,ARG3,ARG4;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+      - Desc: i
+        Type: Value
+        Default: 1
+  - Name: Autospell when Hit (with trigger and option)
+    Desc:
+      - bonus5 bAutoSpellWhenHit,sk,y,n,bf,i;
+      - --------------------
+      - Adds a n/10% chance to cast skill sk of level y when being hit by a direct attack with trigger criteria bf
+      - i provides additional options (bitfield)
+      - ' &0 = cast on self'
+      - ' &1 = cast on enemy'
+      - ' &2 = use random skill level in [1..y]'
+      - ' &3 = 1+2 (random level on enemy)'
+    Script: bonus5 bAutoSpellWhenHit,ARG1,ARG2,ARG3,ARG4,ARG5;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+      - Desc: bf
+        Type: List
+        ListName: Trigger criteria(bf)
+      - Desc: i
+        Type: Value
+        Default: 1
+  - Name: Autospell on Skill
+    Desc:
+      - bonus4 bAutoSpellOnSkill,sk,x,y,n;
+      - --------------------
+      - Adds a n/10% chance to autospell skill x at level y when using skill sk
+    Script: bonus4 bAutoSpellOnSkill,ARG1,ARG2,ARG3,ARG4;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: x
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Autospell on Skill (with option)
+    Desc:
+      - bonus5 bAutoSpellOnSkill,sk,x,y,n,i;
+      - --------------------
+      - Adds a n/10% chance to autospell skill x at level y when using skill sk
+      - i provides additional options (bitfield)
+      - ' &0 = cast on self'
+      - ' &1 = cast on enemy'
+      - ' &2 = use random skill level in [1..y]'
+      - ' &3 = 1+2 (random level on enemy)'
+    Script: bonus5 bAutoSpellOnSkill,ARG1,ARG2,ARG3,ARG4,ARG5;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: x
+        Type: Skill
+      - Desc: y
+        Type: Value
+      - Desc: n
+        Type: Value
+      - Desc: i
+        Type: Value
+        Default: 1
+#6. Misc Bonuses
+# HP/SP drain Bonuses
+- Category: HP/SP drain Bonus
+  Desc: HP/SP drain Bonus
+  Script:
+  - Name: HP Heal on attack
+    Desc:
+      - bonus bHPDrainValue,n;
+      - --------------------
+      - Heals +n HP with a normal attack
+    Script: bonus bHPDrainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: HP Heal on attack (spesific race mob)
+    Desc:
+      - bonus2 bHPDrainValueRace,r,n;
+      - --------------------
+      - Heals +n HP when attacking a monster of race r with normal attack
+    Script: bonus2 bHPDrainValueRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: HP Heal on attack (spesific class mob)
+    Desc:
+      - bonus2 bHpDrainValueClass,c,n;
+      - --------------------
+      - Heals +n HP when attacking a monster of class c with normal attack
+    Script: bonus2 bHpDrainValueClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+  - Name: SP Heal on attack
+    Desc:
+      - bonus bSPDrainValue,n;
+      - --------------------
+      - Heals +n SP with a normal attack
+    Script: bonus bSPDrainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: SP Heal on attack (spesific race mob)
+    Desc:
+      - bonus2 bSPDrainValueRace,r,n;
+      - --------------------
+      - Heals +n SP when attacking a monster of race r with normal attack
+    Script: bonus2 bSPDrainValueRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: SP Heal on attack (spesific class mob)
+    Desc:
+      - bonus2 bSpDrainValueClass,c,n;
+      - --------------------
+      - Heals +n SP when attacking a monster of class c with normal attack
+    Script: bonus2 bSpDrainValueClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+  - Name: HP Drain
+    Desc:
+      - bonus2 bHPDrainRate,x,n;
+      - --------------------
+      - Adds a x/10% chance to drain n% HP from inflicted damage when attacking
+    Script: bonus2 bHPDrainRate,ARG1,ARG2;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: SP Drain
+    Desc:
+      - bonus2 bSPDrainRate,x,n;
+      - --------------------
+      - Adds a x/10% chance to drain n% SP from inflicted damage when attacking
+    Script: bonus2 bSPDrainRate,ARG1,ARG2;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+# HP/SP vanish Bonuses
+- Category: HP/SP vanish Bonus
+  Desc: HP/SP vanish Bonus
+  Script:
+  - Name: Vanish HP
+    Desc:
+      - bonus2 bHPVanishRate,x,n;
+      - --------------------
+      - Add a x/10% chance of decreasing enemy's HP amount by n% with a normal attack
+    Script: bonus2 bHPVanishRate,ARG1,ARG2;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Vanish HP (Race)
+    Desc:
+      - bonus3 bHPVanishRaceRate,r,x,n;
+      - --------------------
+      - Add a x/10% chance of decreasing enemy's HP amount by n% when attacking, depends on enemy race r
+    Script: bonus3 bHPVanishRaceRate,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Vanish HP (trigger criteria)
+    Desc:
+      - bonus3 bHPVanishRate,x,n,bf;
+      - --------------------
+      - Add a x/10% chance of decreasing enemy's HP amount by n% when attacking with trigger criteria bf
+    Script: bonus3 bHPVanishRate,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+      - Desc: bf
+        Type: List
+        ListName: Trigger criteria(bf)
+  - Name: Vanish SP
+    Desc:
+      - bonus2 bSPVanishRate,x,n;
+      - --------------------
+      - Add a x/10% chance of decreasing enemy's SP amount by n% with a normal attack
+    Script: bonus2 bSPVanishRate,ARG1,ARG2;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Vanish SP (Race)
+    Desc:
+      - bonus3 bSPVanishRaceRate,r,x,n;
+      - --------------------
+      - Add a x/10% chance of decreasing enemy's SP amount by n% when attacking, depends on enemy race r
+    Script: bonus3 bSPVanishRaceRate,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Vanish SP (trigger criteria)
+    Desc:
+      - bonus3 bSPVanishRate,x,n,bf;
+      - --------------------
+      - Add a x/10% chance of decreasing enemy's SP amount by n% when attacking with trigger criteria bf
+    Script: bonus3 bSPVanishRate,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+      - Desc: bf
+        Type: List
+        ListName: Trigger criteria(bf)
+  - Name: No Recovery State of race
+    Desc:
+      - bonus3 bStateNoRecoverRace,r,x,t;
+      - --------------------
+      - Set a no recovery state of an enemy of race r at x/100% for t milliseconds with normal attack.
+    Script: bonus3 bStateNoRecoverRace,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+      - Desc: t
+        Type: Value
+# HP/SP gain Bonuses
+- Category: HP/SP gain Bonus
+  Desc: HP/SP gain Bonus
+  Script:
+  - Name: HP Heal on kill(all mob)(melee-physical)
+    Desc:
+      - bonus bHPGainValue,n;
+      - --------------------
+      - Heals +n HP when killing an enemy with a melee-physical attack
+    Script: bonus bHPGainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: SP Heal on kill(all mob)(melee-physical)
+    Desc:
+      - bonus bSPGainValue,n;
+      - --------------------
+      - Heals +n SP when killing an enemy with a melee-physical attack
+    Script: bonus bSPGainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: SP Heal on kill(spesific race)(melee-physical)
+    Desc:
+      - bonus2 bSPGainRace,r,n;
+      - --------------------
+      - Heals +n SP when killing an enemy of race r with a melee-physical attack
+    Script: bonus2 bSPGainRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: HP Heal on kill(all mob)(range-physical)
+    Desc:
+      - bonus bLongHPGainValue,n;
+      - --------------------
+      - Heals +n HP when killing an enemy with a range-physical attack
+    Script: bonus bLongHPGainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: SP Heal on kill(all mob)(range-physical)
+    Desc:
+      - bonus bLongSPGainValue,n;
+      - --------------------
+      - Heals +n SP when killing an enemy with a range-physical attack
+    Script: bonus bLongSPGainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: HP Heal on kill(all mob)(magic)
+    Desc:
+      - bonus bMagicHPGainValue,n;
+      - --------------------
+      - Heals +n HP when killing an enemy with a magical attack
+    Script: bonus bMagicHPGainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: SP Heal on kill(all mob)(magic)
+    Desc:
+      - bonus bMagicSPGainValue,n;
+      - --------------------
+      - Heals +n SP when killing an enemy with a magical attack
+    Script: bonus bMagicSPGainValue,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# Damage return
+- Category: Damage Reflect Bonus
+  Desc: Damage Reflect Bonus
+  Script:
+  - Name: Reflects melee damage
+    Desc:
+      - bonus bShortWeaponDamageReturn,n;
+      - --------------------
+      - Reflects n% of received melee damage back to the enemy that caused it
+    Script: bonus bShortWeaponDamageReturn,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reflects ranged damage
+    Desc:
+      - bonus bLongWeaponDamageReturn,n;
+      - --------------------
+      - Reflects n% of received ranged damage back to the enemy that caused it
+    Script: bonus bLongWeaponDamageReturn,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Reflects targetted magic spells
+    Desc:
+      - bonus bMagicDamageReturn,n;
+      - --------------------
+      - Adds a n% chance to reflect targetted magic spells back to the enemy that caused it
+    Script: bonus bMagicDamageReturn,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# Strip/Break equipment Bonuses
+- Category: Strip/Break equipment Bonus
+  Desc: Strip/Break equipment Bonus
+  Script:
+  - Name: Unstripable Weapon
+    Desc:
+      - bonus bUnstripableWeapon;
+      - --------------------
+      - Weapon cannot be taken off via Strip skills
+    Script: bonus bUnstripableWeapon;
+  - Name: Unstripable Armor
+    Desc:
+      - bonus bUnstripableArmor;
+      - --------------------
+      - Armor cannot be taken off via Strip skills
+    Script: bonus bUnstripableArmor;
+  - Name: Unstripable Helm
+    Desc:
+      - bonus bUnstripableHelm;
+      - --------------------
+      - Helm cannot be taken off via Strip skills
+    Script: bonus bUnstripableHelm;
+  - Name: Unstripable Shield
+    Desc:
+      - bonus bUnstripableShield;
+      - --------------------
+      - Shield cannot be taken off via Strip skills
+    Script: bonus bUnstripableShield;
+  - Name: Unstripable All
+    Desc:
+      - bonus bUnstripable;
+      - --------------------
+      - All equipment cannot be taken off via strip skills
+    Script: bonus bUnstripable;
+  - Name: Unbreakable Garment
+    Desc:
+      - bonus bUnbreakableGarment;
+      - --------------------
+      - Garment cannot be damaged/broken by any means
+    Script: bonus bUnbreakableGarment;
+  - Name: Unbreakable Weapon
+    Desc:
+      - bonus bUnbreakableWeapon;
+      - --------------------
+      - Weapon cannot be damaged/broken by any means
+    Script: bonus bUnbreakableWeapon;
+  - Name: Unbreakable Armor
+    Desc:
+      - bonus bUnbreakableArmor;
+      - --------------------
+      - Armor cannot be damaged/broken by any means
+    Script: bonus bUnbreakableArmor;
+  - Name: Unbreakable Helm
+    Desc:
+      - bonus bUnbreakableHelm;
+      - --------------------
+      - Helm cannot be damaged/broken by any means
+    Script: bonus bUnbreakableHelm;
+  - Name: Unbreakable Shield
+    Desc:
+      - bonus bUnbreakableShield;
+      - --------------------
+      - Shield cannot be damaged/broken by any means
+    Script: bonus bUnbreakableShield;
+  - Name: Unbreakable Shoes
+    Desc:
+      - bonus bUnbreakableShoes;
+      - --------------------
+      - Shoes cannot be damaged/broken by any means
+    Script: bonus bUnbreakableShoes;
+  - Name: Reduces the break chance of all equipment
+    Desc:
+      - bonus bUnbreakable,n;
+      - --------------------
+      - Reduces the break chance of all equipped equipment by n%
+    Script: bonus bUnbreakable,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Break enemy's weapon
+    Desc:
+      - bonus bBreakWeaponRate,n;
+      - --------------------
+      - Adds a n/100% chance to break enemy's weapon while attacking (stacks with other break chances)
+    Script: bonus bBreakWeaponRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Break enemy's armor
+    Desc:
+      - bonus bBreakArmorRate,n;
+      - --------------------
+      - Adds a n/100% chance to break enemy's armor while attacking (stacks with other break chances)
+    Script: bonus bBreakArmorRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# Monster drops
+- Category: Monster drops Bonus
+  Desc: Monster drops Bonus
+  Script:
+  - Name: Adds Drop Rate(race)
+    Desc:
+      - bonus2 bDropAddRace,r,x;
+      - --------------------
+      - Adds x% to player's drop rate when killing a monster with race r.
+    Script: bonus2 bDropAddRace,ARG1,ARG2;
+    Args:
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: x
+        Type: Value
+  - Name: Adds Drop Rate(class)
+    Desc:
+      - bonus2 bDropAddClass,c,x;
+      - --------------------
+      - Adds x% to player's drop rate when killing a monster with class c.
+    Script: bonus2 bDropAddClass,ARG1,ARG2;
+    Args:
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: x
+        Type: Value
+  - Name: Adds Drop Item to spesific Mob
+    Desc:
+      - bonus3 bAddMonsterIdDropItem,iid,mid,n;
+      - --------------------
+      - Adds a n/100% chance of dropping item iid when killing monster mid
+    Script: bonus3 bAddMonsterIdDropItem,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: iid
+        Type: Item
+      - Desc: mid
+        Type: Mob
+      - Desc: n
+        Type: Value
+  - Name: Adds Drop Item to all Mob
+    Desc:
+      - bonus2 bAddMonsterDropItem,iid,n;
+      - --------------------
+      - Adds a n/100% chance for item iid to be dropped when killing a monster
+    Script: bonus2 bAddMonsterDropItem,ARG1,ARG2;
+    Args:
+      - Desc: iid
+        Type: Item
+      - Desc: n
+        Type: Value
+  - Name: Adds Drop Item to spesific race Mob
+    Desc:
+      - bonus3 bAddMonsterDropItem,iid,r,n;
+      - --------------------
+      - Adds a n/100% chance for item iid to be dropped when killing a monster of race r
+    Script: bonus3 bAddMonsterDropItem,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: iid
+        Type: Item
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: Adds Drop Item to spesific class Mob
+    Desc:
+      - bonus3 bAddClassDropItem,iid,c,n;
+      - --------------------
+      - Adds a n/100% chance for item iid to be dropped when killing a monster of class c
+    Script: bonus3 bAddClassDropItem,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: iid
+        Type: Item
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+  - Name: Adds Drop Item of spesific item group to all Mob
+    Desc:
+      - bonus2 bAddMonsterDropItemGroup,ig,n;
+      - --------------------
+      - Adds a n/100% chance to get an item of group type ig when killing a monster
+    Script: bonus2 bAddMonsterDropItemGroup,ARG1,ARG2;
+    Args:
+      - Desc: ig
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Adds Drop Item of spesific item group to spesific race Mob
+    Desc:
+      - bonus3 bAddMonsterDropItemGroup,ig,r,n;
+      - --------------------
+      - Adds a n/100% chance to get an item of group type ig when killing a monster of race r
+    Script: bonus3 bAddMonsterDropItemGroup,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: ig
+        Type: Value
+      - Desc: r
+        Type: List
+        ListName: Race
+      - Desc: n
+        Type: Value
+  - Name: Adds Drop Item of spesific item group to spesific class Mob
+    Desc:
+      - bonus3 bAddClassDropItemGroup,ig,c,n;
+      - --------------------
+      - Adds a n/100% chance to get an item of group type ig when killing a monster of class c
+      - NOTE If 'x' is negative value, then it's a part of formula:
+      -       chance = -n*(killed_mob_level/10)+1
+      - LIMIT Only 10 of these bonuses can be set. Those which exceed 10 are ignored.
+    Script: bonus3 bAddClassDropItemGroup,ARG1,ARG2,ARG3;
+    Args:
+      - Desc: ig
+        Type: Value
+      - Desc: c
+        Type: List
+        ListName: Class
+      - Desc: n
+        Type: Value
+  - Name: Gain Zeny (only the highest)
+    Desc:
+      - bonus2 bGetZenyNum,x,n;
+      - --------------------
+      - Adds a n% chance of gaining 1~x zeny when killing a monster (only the highest among all is applied)
+    Script: bonus2 bGetZenyNum,ARG1,ARG2;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Gain Zeny
+    Desc:
+      - bonus2 bAddGetZenyNum,x,n;
+      - --------------------
+      - Adds a n% chance of gaining 1~x zeny when killing a monster
+      - NOTE If n < 0, the max zeny to gain is -x*monster level.
+    Script: bonus2 bAddGetZenyNum,ARG1,ARG2;
+    Args:
+      - Desc: x
+        Type: Value
+      - Desc: n
+        Type: Value
+# Misc effects Bonuses
+- Category: Misc effect Bonus
+  Desc: Misc effect Bonus
+  Script:
+  - Name: Double Attack (only the highest)
+    Desc:
+      - bonus bDoubleRate,n;
+      - --------------------
+      - Double Attack probability n% (works with all weapons | only the highest among all is applied)
+    Script: bonus bDoubleRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Double Attack
+    Desc:
+      - bonus bDoubleAddRate,n;
+      - --------------------
+      - Double Attack probability + n% (works with all weapons)
+    Script: bonus bDoubleAddRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Splash attack (only the highest)
+    Desc:
+      - bonus bSplashRange,n;
+      - --------------------
+      - Splash attack radius + n (only the highest among all is applied)
+    Script: bonus bSplashRange,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Splash attack
+    Desc:
+      - bonus bSplashAddRange,n;
+      - --------------------
+      - Splash attack radius + n
+      - NOTE n=1 makes a 3*3 cells area, n=2 a 5*5 area, etc.
+    Script: bonus bSplashAddRange,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Knock back when using skill
+    Desc:
+      - bonus2 bAddSkillBlow,sk,n;
+      - --------------------
+      - Knock back the target by n cells when using skill sk
+    Script: bonus2 bAddSkillBlow,ARG1,ARG2;
+    Args:
+      - Desc: sk
+        Type: Skill
+      - Desc: n
+        Type: Value
+  - Name: No Knockback
+    Desc:
+      - bonus bNoKnockback;
+      - --------------------
+      - Character is no longer knocked back by enemy skills with such effect
+    Script: bonus bNoKnockback;
+  - Name: Nullify Gemstones requirement
+    Desc:
+      - bonus bNoGemStone;
+      - --------------------
+      - Skills requiring Gemstones do not require them
+      - NOTE Hocus Pocus still requires 1 Yellow Gemstone, Ganbantein requirements not reduced
+    Script: bonus bNoGemStone;
+  - Name: Detect Hide
+    Desc:
+      - bonus bIntravision;
+      - --------------------
+      - Always see Hiding and Cloaking players/mobs
+    Script: bonus bIntravision;
+  - Name: Perfect Hide
+    Desc:
+      - bonus bPerfectHide;
+      - --------------------
+      - Hidden/cloaked character is no longer detected by monsters with 'detector' mode
+    Script: bonus bPerfectHide;
+  - Name: fully healed reviving
+    Desc:
+      - bonus bRestartFullRecover;
+      - --------------------
+      - When reviving, HP and SP are fully healed
+    Script: bonus bRestartFullRecover;
+  - Name: change mob class
+    Desc:
+      - bonus bClassChange,n;
+      - --------------------
+      - Gives a n/100% chance to change the attacked monster's class with normal attack
+    Script: bonus bClassChange,n;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Increases success rate of Steal
+    Desc:
+      - bonus bAddStealRate,n;
+      - --------------------
+      - Increases success rate of Steal skill by n/100%
+    Script: bonus bAddStealRate,n;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Nullify Magic Gear Fuel requirement
+    Desc:
+      - bonus bNoMadoFuel;
+      - --------------------
+      - Nullify Magic Gear Fuel requirement for skills.
+    Script: bonus bNoMadoFuel;
+  - Name: infinite Endure
+    Desc:
+      - bonus bNoWalkDelay;
+      - --------------------
+      - Give infinite Endure.
+    Script: bonus bNoWalkDelay;
+# Equip Script
+- Category: Equip Script
+  Desc: Equip Script
+  Script:
+  - Name: Check Equip Item ID
+    Desc:
+      - if( getequipid(<equipment slot>) == itemid )
+      - --------------------
+      - This function will return the number of cards inserted into the equipment from which the function is called.
+    Script: if( getequipid(ARG1) == ARG2 )
+    Args:
+      - Desc: equipment slot
+        Type: List
+        ListName: Equipment Slot
+      - Desc: itemid
+        Type: Item
+  - Name: Check Equipped
+    Desc:
+      - if( getequipisequiped(<equipment slot>) )
+      - --------------------
+      - This functions will return 1 if there is an equipment placed on the specified equipment slot and 0 otherwise.
+      - For a list of equipment slots see 'getequipid'.
+      - Function originally used by the refining NPCs
+    Script: if( getequipisequiped(ARG1) )
+    Args:
+      - Desc: equipment slot
+        Type: List
+        ListName: Equipment Slot
+  - Name: Get Refine Count
+    Desc:
+      - .@r = getequiprefinerycnt(<equipment slot>);
+      - --------------------
+      - Returns the current number of pluses for the item in the specified equipment slot.
+    Script: .@r = getequiprefinerycnt(ARG1);
+    Args:
+      - Desc: equipment slot
+        Type: List
+        ListName: Equipment Slot
+  - Name: Get Equip Card Count
+    Desc:
+      - .@cnt = getequipcardcnt(<equipment slot>);
+      - --------------------
+      - This function will return the number of cards that have been compounded onto a specific equipped item for the invoking character.
+    Script: .@cnt = getequipcardcnt(ARG1);
+    Args:
+      - Desc: equipment slot
+        Type: List
+        ListName: Equipment Slot
+  - Name: Get Cards Count
+    Desc:
+      - .@cnt = cardscnt();
+      - --------------------
+      - This function will return the number of cards inserted into the equipment from which the function is called.
+    Script: .@cnt = getrefine();
+  - Name: Get Refine Count
+    Desc:
+      - .@r = getrefine();
+      - --------------------
+      - This function will return the refine count of the equipment from which the function is called.
+    Script: .@r = getrefine();
+# Skill Script
+- Category: Skill Script
+  Desc: Skill Script
+  Script:
+  - Name: Get Skill Level
+    Desc:
+      - .@sklv = getskilllv(<skill id>)
+      - --------------------
+      - This function returns the level of the specified skill that the invoking character has.
+      - If they don't have the skill, 0 will be returned.
+    Script: .@sklv = getskilllv(ARG1);
+    Args:
+      - Desc: skill id
+        Type: Skill
+  - Name: Learn Skill
+    Desc:
+      - skill <skill id>,<level>{,<flag>};
+      - --------------------
+      - These commands will give the invoking character a specified skill.
+      - 
+      - The flag parameter is optional, and defaults to 1.
+      - <Flag constants>
+      - 0 - SKILL_PERM
+      - 1 - SKILL_TEMP
+      - 2 - SKILL_TEMPLEVEL
+      - 3 - SKILL_PERM_GRANT
+      -
+      - Flag is 0 if the skill is given permanently
+      - (will get written with the character data) or 1 if it is temporary (will be lost eventually, this is meant for card item scripts usage.).
+      - 
+      - Flag 2 means that the level parameter is to be interpreted as a stackable additional bonus to the skill level.
+      - If the character did not have that skill previously, they will now at 0+the level given.
+      - 
+      - Flag 3 is the same as flag 1 in that it saves to the database.
+      - However, these skills are ignored when any action is taken that adjusts the skill tree (reset/job change).
+    Script: skill ARG1,ARG2,ARG3;
+    Args:
+      - Desc: skill id
+        Type: Skill
+      - Desc: skill level
+        Type: Value
+      - Desc: flag
+        Type: Value
+        Default: 1
+  - Name: Use Skill
+    Desc:
+      - itemskill <skill id>,<skill level>{,<keep requirement>};
+      - --------------------
+      - This command is meant for item scripts to replicate single-use skills in usable items.
+      - It will not work properly if there is a visible dialog window or menu.
+      - If the skill is self or auto-targeting, it will be used immediately; otherwise a target cursor is shown.
+      -
+      - If <keep requirement> parameter is set to true, the skill's requirements will be checked.
+      - By default, the requirements for item skills are not checked, and therefore the default value is false.
+
+    Script: itemskill ARG1,ARG2;
+    Args:
+      - Desc: skill id
+        Type: Skill
+      - Desc: skill level
+        Type: Value
+
+# Item Script
+- Category: Item Script
+  Desc: Item Script
+  Script:
+  - Name: Get Item
+    Desc:
+      - getitem <item id>,<amount>{,<account ID>};
+      - --------------------
+      - This command will give an amount of specified items to the invoking character.
+      - If an optional account ID is specified, and the target character is currently online, items will be created in their inventory instead.
+      - If they are not online, nothing will happen.
+    Script: getitem ARG1,ARG2;
+    Args:
+      - Desc: ItemID
+        Type: Item
+      - Desc: amount
+        Type: Value
+  - Name: Delete Item
+    Desc:
+      - delitem <item id>,<amount>{,<account ID>};
+      - --------------------
+      - This command will remove a specified amount of items from the invoking/target character.
+    Script: delitem ARG1,ARG2;
+    Args:
+      - Desc: ItemID
+        Type: Item
+      - Desc: amount
+        Type: Value
+  - Name: Count Item
+    Desc:
+      - countitem(<item id>);
+      - --------------------
+      - This function will return the number of items for the specified item ID that the invoking character has in the inventory.
+    Script: .@n = countitem(ARG1);
+    Args:
+      - Desc: ItemID
+        Type: Item
+
+# Heal Script
+- Category: Heal Script
+  Desc: Heal Script
+  Script:
+  - Name: Heal
+    Desc:
+      - heal <hp>,<sp>{,<char_id>};
+      - --------------------
+      - This command will heal a set amount of HP and/or SP on the invoking character.
+      - This command just alters the hit points and spell points of the invoking character and produces no other output whatsoever.
+    Script: heal ARG1,ARG2;
+    Args:
+      - Desc: hp
+        Type: Value
+      - Desc: sp
+        Type: Value
+  - Name: Item Heal
+    Desc:
+      - itemheal <hp>,<sp>{,<char_id>};
+      - --------------------
+      - This command heals relative amounts of HP and/or SP on the invoking character.
+      - Unlike heal, this command is intended for use in item scripts.
+      - It applies potion-related bonuses, such as alchemist ranking, cards, and status changes.
+      - When used inside an NPC script, certain bonuses are omitted.
+    Script: itemheal ARG1,ARG2;
+    Args:
+      - Desc: hp
+        Type: Value
+      - Desc: sp
+        Type: Value
+  - Name: Percent Heal
+    Desc:
+      - percentheal <hp>,<sp>{,<char_id>};
+      - --------------------
+      - This command will heal the invoking character.
+      - It heals the character, but not by a set value - it adds percent of their maximum HP/SP.
+    Script: percentheal ARG1,ARG2;
+    Args:
+      - Desc: hp
+        Type: Value
+      - Desc: sp
+        Type: Value
+
+# Misc Script
+- Category: Misc Script
+  Desc: Misc Script
+  Script:
+  - Name: Random
+    Desc:
+      - rand(<number>{,<number>});
+      - --------------------
+      - This function returns a number ...
+      - (if you specify one) ... randomly positioned between 0 and the number you specify -1.
+      - (if you specify two) ... randomly positioned between the two numbers you specify.
+    Script: rand(ARG1,ARG2);
+    Args:
+      - Desc: number
+        Type: Value
+      - Desc: number
+        Type: Value
+...

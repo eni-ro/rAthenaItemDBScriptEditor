@@ -1,0 +1,330 @@
+---
+- Name: Status Effect
+  List:
+    -
+      - Bleeding
+      - Eff_Bleeding
+    -
+      - Blind
+      - Eff_Blind
+    -
+      - Burning
+      - Eff_Burning
+    -
+      - Confusion
+      - Eff_Confusion
+    -
+      - Crystalize
+      - Eff_Crystalize
+    -
+      - Curse
+      - Eff_Curse
+    -
+      - DPoison
+      - Eff_DPoison
+    -
+      - Fear
+      - Eff_Fear
+    -
+      - Freeze
+      - Eff_Freeze
+    -
+      - Poison
+      - Eff_Poison
+    -
+      - Silence
+      - Eff_Silence
+    -
+      - Sleep
+      - Eff_Sleep
+    -
+      - Stone
+      - Eff_Stone
+    -
+      - Stun
+      - Eff_Stun
+- Name: Element
+  List:
+    - 
+      - Dark
+      - Ele_Dark
+    - 
+      - Earth
+      - Ele_Earth
+    - 
+      - Fire
+      - Ele_Fire
+    - 
+      - Ghost
+      - Ele_Ghost
+    - 
+      - Holy
+      - Ele_Holy
+    - 
+      - Neutral
+      - Ele_Neutral
+    - 
+      - Poison
+      - Ele_Poison
+    - 
+      - Undead
+      - Ele_Undead
+    - 
+      - Water
+      - Ele_Water
+    - 
+      - Wind
+      - Ele_Wind
+    - 
+      - All
+      - Ele_All
+- Name: Race
+  List:
+    -
+      - Angel
+      - RC_Angel
+    -
+      - Brute
+      - RC_Brute
+    -
+      - DemiHuman
+      - RC_DemiHuman
+    -
+      - Demon
+      - RC_Demon
+    -
+      - Dragon
+      - RC_Dragon
+    -
+      - Fish
+      - RC_Fish
+    -
+      - Formless
+      - RC_Formless
+    -
+      - Insect
+      - RC_Insect
+    -
+      - Plant
+      - RC_Plant
+    -
+      - Player_Human
+      - RC_Player_Human
+    -
+      - Player_Doram
+      - RC_Player_Doram
+    -
+      - Undead
+      - RC_Undead
+    -
+      - All
+      - RC_All
+- Name: Monster Race
+  List:
+    -
+      - Goblin
+      - RC2_Goblin
+    -
+      - Kobold
+      - RC2_Kobold
+    -
+      - Orc
+      - RC2_Orc
+    -
+      - Golem
+      - RC2_Golem
+    -
+      - Guardian
+      - RC2_Guardian
+    -
+      - Ninja
+      - RC2_Ninja
+    -
+      - BioLab
+      - RC2_BioLab
+    -
+      - SCARABA
+      - RC2_SCARABA
+    -
+      - FACEWORM
+      - RC2_FACEWORM
+    -
+      - THANATOS
+      - RC2_THANATOS
+    -
+      - CLOCKTOWER
+      - RC2_CLOCKTOWER
+    -
+      - ROCKRIDGE
+      - RC2_ROCKRIDGE
+- Name: Class
+  List:
+    -
+      - Normal
+      - Class_Normal
+    -
+      - Boss
+      - Class_Boss
+    -
+      - Guardian
+      - Class_Guardian
+    -
+      - All
+      - Class_All
+- Name: Size
+  List:
+    -
+      - Small
+      - Size_Small
+    -
+      - Medium
+      - Size_Medium
+    -
+      - Large
+      - Size_Large
+    -
+      - All
+      - Size_All
+- Name: Trigger criteria(bf)
+  List:
+    -
+      - melee attacks
+      - BF_SHORT
+    -
+      - ranged attacks
+      - BF_LONG
+    -
+      - weapon attacks
+      - BF_WEAPON
+    -
+      - magic attacks
+      - BF_MAGIC
+    -
+      - misc attacks
+      - BF_MISC
+    -
+      - normal attacks
+      - BF_NORMAL
+    -
+      - skills
+      - BF_SKILL
+- Name: Trigger criteria(atf)
+  List:
+    -
+      - effect on self
+      - ATF_SELF
+    -
+      - effect on target
+      - ATF_TARGET
+    -
+      - melee attacks
+      - ATF_SHORT
+    -
+      - ranged attacks
+      - ATF_LONG
+    -
+      - magic/misc skills
+      - ATF_SKILL
+    -
+      - weapon skill / physical attacks
+      - ATF_WEAPON
+    -
+      - magic skills
+      - ATF_MAGIC
+    -
+      - misc skills
+      - ATF_MISC
+- Name: Equipment Slot
+  List:
+    -
+      - Item slot that calls this script
+      - EQI_COMPOUND_ON
+    -
+      - Accessory 1
+      - EQI_ACC_L
+    -
+      - Accessory 2
+      - EQI_ACC_R
+    -
+      - Footgear
+      - EQI_SHOES
+    -
+      - Garment
+      - EQI_GARMENT
+    -
+      - Lower Headgear
+      - EQI_HEAD_LOW
+    -
+      - Middle Headgear
+      - EQI_HEAD_MID
+    -
+      - Upper Headgear
+      - EQI_HEAD_TOP
+    -
+      - Armor
+      - EQI_ARMOR
+    -
+      - Left hand (weapons, shields)
+      - EQI_HAND_L
+    -
+      - Right hand (weapons)
+      - EQI_HAND_R
+    -
+      - Upper Costume Headgear
+      - EQI_COSTUME_HEAD_TOP
+    -
+      - Middle Costume Headgear
+      - EQI_COSTUME_HEAD_MID
+    -
+      - Lower Costume Headgear
+      - EQI_COSTUME_HEAD_LOW
+    -
+      - Costume Garment
+      - EQI_COSTUME_GARMENT
+    -
+      - Arrow/Ammunition
+      - EQI_AMMO
+    -
+      - Shadow Armor
+      - EQI_SHADOW_ARMOR
+    -
+      - Shadow Weapon
+      - EQI_SHADOW_WEAPON
+    -
+      - Shadow Shield
+      - EQI_SHADOW_SHIELD
+    -
+      - Shadow Shoes
+      - EQI_SHADOW_SHOES
+    -
+      - Shadow Accessory 2
+      - EQI_SHADOW_ACC_R
+    -
+      - Shadow Accessory 1
+      - EQI_SHADOW_ACC_L
+- Name: WeaponSubType
+  List:
+    - Fist
+    - Dagger
+    - 1hSword
+    - 2hSword
+    - 1hSpear
+    - 2hSpear
+    - 1hAxe
+    - 2hAxe
+    - Mace
+    - Staff
+    - Bow
+    - Knuckle
+    - Musical
+    - Whip
+    - Book
+    - Katar
+    - Revolver
+    - Rifle
+    - Gatling
+    - Shotgun
+    - Grenade
+    - Huuma
+    - 2hStaff
+...
