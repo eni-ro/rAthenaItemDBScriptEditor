@@ -29,5 +29,13 @@ After Ruby installation finished,open command prompt and type commands below
 I release this editor as it is,because I couldn't resolve this error and it works.
 `Gdk-CRITICAL **: gdk_device_get_source: assertion 'GDK_IS_DEVICE (device)' failed`
 
+## History
+### v0.2
+* Improve UI to scale when window resizing
+* Fix some categories and scripts name
+
+### v0.1
+* first release
+
 ## Credits
 [rAthena](https://rathena.org/) : this editor uses docs/db files
