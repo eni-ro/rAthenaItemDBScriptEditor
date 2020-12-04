@@ -128,9 +128,9 @@
     Args:
       - Desc: n
         Type: Value
-# Atk/Def
-- Category: Basic Atk/Def Bonus
-  Desc: Basic Atk/Def Bonus
+# ATK/DEF
+- Category: Basic ATK/DEF Bonus
+  Desc: Basic ATK/DEF Bonus
   Script:
   - Name: BaseAtk
     Desc:
@@ -159,7 +159,7 @@
     Args:
       - Desc: n
         Type: Value
-  - Name: Attack power[%]
+  - Name: ATK[%]
     Desc:
       - bonus bAtkRate,n;
       - --------------------
@@ -177,7 +177,7 @@
     Args:
       - Desc: n
         Type: Value
-  - Name: Magical attack power
+  - Name: MATK
     Desc:
       - bonus bMatk,n;
       - --------------------
@@ -186,7 +186,7 @@
     Args:
       - Desc: n
         Type: Value
-  - Name: Magical attack power[%]
+  - Name: MATK[%]
     Desc:
       - bonus bMatkRate,n;
       - --------------------
@@ -195,7 +195,7 @@
     Args:
       - Desc: n
         Type: Value
-  - Name: Weapon Magical ATK[%]
+  - Name: Weapon MATK[%]
     Desc:
       - bonus bWeaponMatkRate,n;
       - --------------------
@@ -307,7 +307,7 @@
     Args:
       - Desc: n
         Type: Value
-  - Name: Critical for Long Range 
+  - Name: Critical (Long Range)
     Desc:
       - bonus bCriticalLong,n;
       - --------------------
@@ -317,7 +317,7 @@
     Args:
       - Desc: n
         Type: Value
-  - Name: Critical for Race
+  - Name: Critical (Race)
     Desc:
       - bonus2 bCriticalAddRace,r,n;
       - --------------------
@@ -577,9 +577,9 @@
         Type: Skill
       - Desc: n
         Type: Value
-#Extended Atk/def Bonus
-- Category: Extended Atk/def Bonus
-  Desc: Extended Atk/def Bonus
+#Extended ATK/DEF Bonus
+- Category: Extended ATK/DEF Bonus
+  Desc: Extended ATK/DEF Bonus
   Script:
   - Name: Increases Damage (Skill)
     Desc:
@@ -1284,9 +1284,9 @@
     Args:
       - Desc: n
         Type: Value
-#Atk/Def modifiers
-- Category: DAtk/Def modifiers
-  Desc: Atk/Def modifiers
+#ATK/DEF modifiers
+- Category: ATK/DEF modifiers
+  Desc: ATK/DEF modifiers
   Script:
   - Name: Attack Element
     Desc:
@@ -1382,9 +1382,9 @@
         Type: Value
       - Desc: y
         Type: Value
-#Ignore Def
-- Category: Ignore Def Bonus
-  Desc: Ignore Def Bonus
+#Ignore DEF
+- Category: Ignore DEF Bonus
+  Desc: Ignore DEF Bonus
   Script:
   - Name: Disregard DEF (Element)
     Desc:
@@ -1526,7 +1526,7 @@
       - Desc: x
         Type: Value
 #4.Status-related Bonuses
-- Category: Status-relatedBonus
+- Category: Status-related Bonus
   Desc: Status-related Bonus
   Script:
   - Name: Status Effect when Attack
@@ -1917,8 +1917,8 @@
         Default: 1
 #6. Misc Bonuses
 # HP/SP drain Bonuses
-- Category: HP/SP drain Bonus
-  Desc: HP/SP drain Bonus
+- Category: HP/SP Drain Bonus
+  Desc: HP/SP Drain Bonus
   Script:
   - Name: HP Heal on attack
     Desc:
@@ -2008,9 +2008,9 @@
         Type: Value
       - Desc: n
         Type: Value
-# HP/SP vanish Bonuses
-- Category: HP/SP vanish Bonus
-  Desc: HP/SP vanish Bonus
+# HP/SP Vanish Bonuses
+- Category: HP/SP Vanish Bonus
+  Desc: HP/SP Vanish Bonus
   Script:
   - Name: Vanish HP
     Desc:
@@ -2104,9 +2104,9 @@
         Type: Value
       - Desc: t
         Type: Value
-# HP/SP gain Bonuses
-- Category: HP/SP gain Bonus
-  Desc: HP/SP gain Bonus
+# HP/SP Gain Bonuses
+- Category: HP/SP Gain Bonus
+  Desc: HP/SP Gain Bonus
   Script:
   - Name: HP Heal on kill(all mob)(melee-physical)
     Desc:
@@ -2303,8 +2303,8 @@
       - Desc: n
         Type: Value
 # Monster drops
-- Category: Monster drops Bonus
-  Desc: Monster drops Bonus
+- Category: Monster Drops Bonus
+  Desc: Monster Drops Bonus
   Script:
   - Name: Adds Drop Rate(race)
     Desc:
@@ -2448,8 +2448,8 @@
       - Desc: n
         Type: Value
 # Misc effects Bonuses
-- Category: Misc effect Bonus
-  Desc: Misc effect Bonus
+- Category: Misc Effect Bonus
+  Desc: Misc Effect Bonus
   Script:
   - Name: Double Attack (only the highest)
     Desc:

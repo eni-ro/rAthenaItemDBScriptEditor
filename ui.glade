@@ -129,10 +129,11 @@
                             <child>
                               <object class="GtkLabel" id="label_param1_desc">
                                 <property name="name">label_param1_desc</property>
-                                <property name="width-request">180</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin-left">10</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
@@ -157,10 +158,11 @@
                             <child>
                               <object class="GtkLabel" id="label_param2_desc">
                                 <property name="name">label_param2_desc</property>
-                                <property name="width-request">180</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin-left">10</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
@@ -185,10 +187,11 @@
                             <child>
                               <object class="GtkLabel" id="label_param3_desc">
                                 <property name="name">label_param3_desc</property>
-                                <property name="width-request">180</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin-left">10</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
@@ -213,10 +216,11 @@
                             <child>
                               <object class="GtkLabel" id="label_param4_desc">
                                 <property name="name">label_param4_desc</property>
-                                <property name="width-request">180</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin-left">10</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
@@ -241,10 +245,11 @@
                             <child>
                               <object class="GtkLabel" id="label_param5_desc">
                                 <property name="name">label_param5_desc</property>
-                                <property name="width-request">180</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin-left">10</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
@@ -269,10 +274,11 @@
                             <child>
                               <object class="GtkLabel" id="label_param6_desc">
                                 <property name="name">label_param6_desc</property>
-                                <property name="width-request">180</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin-left">10</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
