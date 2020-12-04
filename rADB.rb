@@ -27,6 +27,7 @@ class RADB
     def load_item_db(files,enc)
         db = {}
         files.each do |f|
+            puts "    loading #{f}..."
             File.open(f, mode = "r", encoding: enc+':utf-8') do |fr|
                 str = fr.read
                 x = YAML.load(str)
@@ -48,6 +49,7 @@ class RADB
     def load_skill_db(files,enc)
         db = {}
         files.each do |f|
+            puts "    loading #{f}..."
             File.open(f, mode = "r", encoding: enc+':utf-8') do |fr|
                 str = fr.read
                 x = YAML.load(str)
@@ -69,6 +71,7 @@ class RADB
     def load_mob_db(files,enc)
         db = {}
         files.each do |f|
+            puts "    loading #{f}..."
             File.open(f, mode = "r", encoding: enc+':utf-8'){|fr|
                 fr.each_line{|line|
                     if line =~ /^(\d+),[^,]+,([^,]+)/

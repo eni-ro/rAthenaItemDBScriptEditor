@@ -141,6 +141,9 @@ end
 def on_entry_arg5_focus_in_event
   arg_input_dialog(4)
 end
+def on_entry_arg6_focus_in_event
+  arg_input_dialog(5)
+end
 def arg_input_dialog(n)
   if $ignore_next_event == false
     table = $db.script_arg_input($category_str,$script_str,n)
@@ -182,9 +185,9 @@ builder = Gtk::Builder.new(file: 'ui.glade')
 
 $win = builder.get_object('win')
 $tee_view_script = builder.get_object('tee_view_script')
-$entry_arg = [ builder.get_object('entry_arg1'), builder.get_object('entry_arg2'), builder.get_object('entry_arg3'), builder.get_object('entry_arg4'), builder.get_object('entry_arg5')]
+$entry_arg = [ builder.get_object('entry_arg1'), builder.get_object('entry_arg2'), builder.get_object('entry_arg3'), builder.get_object('entry_arg4'), builder.get_object('entry_arg5'), builder.get_object('entry_arg6')]
 $label_script_desc = builder.get_object('label_script_desc')
-$label_param_desc = [builder.get_object('label_param1_desc'), builder.get_object('label_param2_desc'), builder.get_object('label_param3_desc'), builder.get_object('label_param4_desc'), builder.get_object('label_param5_desc')]
+$label_param_desc = [builder.get_object('label_param1_desc'), builder.get_object('label_param2_desc'), builder.get_object('label_param3_desc'), builder.get_object('label_param4_desc'), builder.get_object('label_param5_desc'), builder.get_object('label_param6_desc')]
 $entry_script_search = builder.get_object('entry_script_search')
 window_text = builder.get_object('window_text')
 $text_view_edit = GtkSource::View.new()#builder.get_object('text_view_edit')

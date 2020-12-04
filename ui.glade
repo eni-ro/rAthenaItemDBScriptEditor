@@ -1,307 +1,424 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.24"/>
   <object class="GtkWindow" id="win">
+    <property name="name">win</property>
     <property name="width-request">900</property>
-    <property name="height-request">720</property>
+    <property name="height-request">700</property>
     <property name="can-focus">False</property>
-    <property name="title" translatable="yes">rAthenaItemDBScriptEditor</property>
+    <property name="title" translatable="yes">rAthena ItemDB Script Editor</property>
     <signal name="destroy" handler="on_win_destroy" swapped="no"/>
     <child>
-      <object class="GtkLayout">
+      <object class="GtkScrolledWindow">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="can-focus">True</property>
+        <property name="shadow-type">in</property>
         <child>
-          <object class="GtkEntry" id="entry_arg1">
-            <property name="width-request">100</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <signal name="focus-in-event" handler="on_entry_arg1_focus_in_event" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">340</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="entry_arg2">
-            <property name="width-request">100</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <signal name="focus-in-event" handler="on_entry_arg2_focus_in_event" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">220</property>
-            <property name="y">340</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="entry_arg3">
-            <property name="width-request">100</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <signal name="focus-in-event" handler="on_entry_arg3_focus_in_event" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">400</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="entry_arg4">
-            <property name="width-request">100</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <signal name="focus-in-event" handler="on_entry_arg4_focus_in_event" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">220</property>
-            <property name="y">400</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="entry_arg5">
-            <property name="width-request">100</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <signal name="focus-in-event" handler="on_entry_arg5_focus_in_event" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">460</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow">
-            <property name="width-request">440</property>
-            <property name="height-request">250</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="shadow-type">in</property>
-            <child>
-              <object class="GtkTreeView" id="tee_view_script">
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <signal name="cursor-changed" handler="on_tee_view_script_cursor_changed" swapped="no"/>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection"/>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">55</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow" id="window_text">
-            <property name="width-request">400</property>
-            <property name="height-request">640</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="shadow-type">in</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="x">480</property>
-            <property name="y">20</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow">
-            <property name="width-request">440</property>
-            <property name="height-request">200</property>
+          <object class="GtkViewport">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="overlay-scrolling">False</property>
+            <property name="margin-left">5</property>
+            <property name="margin-right">5</property>
+            <property name="margin-top">5</property>
+            <property name="margin-bottom">5</property>
             <child>
-              <object class="GtkViewport">
+              <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="shadow-type">none</property>
+                <property name="spacing">10</property>
                 <child>
-                  <object class="GtkLabel" id="label_script_desc">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="wrap">True</property>
-                    <property name="selectable">True</property>
-                    <property name="track-visited-links">False</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkSearchEntry" id="entry_script_search">
+                            <property name="name">entry_script_search</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="primary-icon-name">edit-find-symbolic</property>
+                            <property name="primary-icon-activatable">False</property>
+                            <property name="primary-icon-sensitive">False</property>
+                            <signal name="changed" handler="on_entry_script_search_changed" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_expand">
+                            <property name="label" translatable="yes">+</property>
+                            <property name="name">btn_expand</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="tooltip-text" translatable="yes">expand all</property>
+                            <signal name="clicked" handler="on_btn_expand_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_collapse">
+                            <property name="label" translatable="yes">-</property>
+                            <property name="name">btn_collapse</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="tooltip-text" translatable="yes">collapse all</property>
+                            <signal name="clicked" handler="on_btn_collapse_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="shadow-type">in</property>
+                        <child>
+                          <object class="GtkTreeView" id="tee_view_script">
+                            <property name="name">tee_view_script</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <signal name="cursor-changed" handler="on_tee_view_script_cursor_changed" swapped="no"/>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection"/>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkFixed">
+                            <property name="width-request">390</property>
+                            <property name="height-request">200</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="hexpand">True</property>
+                            <child>
+                              <object class="GtkLabel" id="label_param1_desc">
+                                <property name="name">label_param1_desc</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="x">10</property>
+                                <property name="y">10</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg1">
+                                <property name="name">entry_arg1</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <signal name="focus-in-event" handler="on_entry_arg1_focus_in_event" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="x">10</property>
+                                <property name="y">30</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label_param2_desc">
+                                <property name="name">label_param2_desc</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="x">200</property>
+                                <property name="y">10</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg2">
+                                <property name="name">entry_arg2</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <signal name="focus-in-event" handler="on_entry_arg2_focus_in_event" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="x">200</property>
+                                <property name="y">30</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label_param3_desc">
+                                <property name="name">label_param3_desc</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="x">10</property>
+                                <property name="y">70</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg3">
+                                <property name="name">entry_arg3</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <signal name="focus-in-event" handler="on_entry_arg3_focus_in_event" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="x">10</property>
+                                <property name="y">90</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label_param4_desc">
+                                <property name="name">label_param4_desc</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="x">200</property>
+                                <property name="y">70</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg4">
+                                <property name="name">entry_arg4</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <signal name="focus-in-event" handler="on_entry_arg4_focus_in_event" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="x">200</property>
+                                <property name="y">90</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label_param5_desc">
+                                <property name="name">label_param5_desc</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="x">10</property>
+                                <property name="y">130</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg5">
+                                <property name="name">entry_arg5</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <signal name="focus-in-event" handler="on_entry_arg5_focus_in_event" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="x">10</property>
+                                <property name="y">150</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label_param6_desc">
+                                <property name="name">label_param6_desc</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">label</property>
+                              </object>
+                              <packing>
+                                <property name="x">200</property>
+                                <property name="y">130</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg6">
+                                <property name="name">entry_arg6</property>
+                                <property name="width-request">180</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <signal name="focus-in-event" handler="on_entry_arg6_focus_in_event" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="x">200</property>
+                                <property name="y">150</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_ins">
+                            <property name="label" translatable="yes">-&gt;</property>
+                            <property name="name">btn_ins</property>
+                            <property name="width-request">50</property>
+                            <property name="height-request">80</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="tooltip-text" translatable="yes">insert selected script to text box</property>
+                            <property name="halign">end</property>
+                            <property name="valign">center</property>
+                            <property name="hexpand">True</property>
+                            <signal name="clicked" handler="on_btn_ins_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="shadow-type">in</property>
+                        <child>
+                          <object class="GtkViewport">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="label_script_desc">
+                                <property name="name">label_script_desc</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-left">5</property>
+                                <property name="margin-right">5</property>
+                                <property name="margin-top">5</property>
+                                <property name="margin-bottom">5</property>
+                                <property name="wrap">True</property>
+                                <property name="selectable">True</property>
+                                <property name="track-visited-links">False</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
                   </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="width-request">400</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkScrolledWindow" id="window_text">
+                        <property name="name">window_text</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="shadow-type">in</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="btn_copy_script">
+                        <property name="label" translatable="yes">Copy Script</property>
+                        <property name="name">btn_copy_script</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="tooltip-text" translatable="yes">convert text to itemdb format
+and copy to your clip board</property>
+                        <signal name="clicked" handler="on_btn_copy_script_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
             </child>
           </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">500</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label_param1_desc">
-            <property name="width-request">150</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">param description</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0.5</property>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">320</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label_param2_desc">
-            <property name="width-request">150</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">param description</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0.5</property>
-          </object>
-          <packing>
-            <property name="x">220</property>
-            <property name="y">320</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label_param3_desc">
-            <property name="width-request">150</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">param description</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0.5</property>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">380</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label_param4_desc">
-            <property name="width-request">150</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">param description</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0.5</property>
-          </object>
-          <packing>
-            <property name="x">220</property>
-            <property name="y">380</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label_param5_desc">
-            <property name="width-request">150</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">param description</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0.5</property>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">440</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="btn_ins">
-            <property name="label" translatable="yes">-&gt;</property>
-            <property name="width-request">50</property>
-            <property name="height-request">80</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="tooltip-text" translatable="yes">append selected script to text box</property>
-            <signal name="clicked" handler="on_btn_ins_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">400</property>
-            <property name="y">340</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="btn_copy_script">
-            <property name="label" translatable="yes">Copy Script</property>
-            <property name="width-request">400</property>
-            <property name="height-request">30</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="tooltip-text" translatable="yes">convert text to itemdb format
-and copy to your clip board</property>
-            <signal name="clicked" handler="on_btn_copy_script_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">480</property>
-            <property name="y">660</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSearchEntry" id="entry_script_search">
-            <property name="width-request">340</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="primary-icon-name">edit-find-symbolic</property>
-            <property name="primary-icon-activatable">False</property>
-            <property name="primary-icon-sensitive">False</property>
-            <signal name="changed" handler="on_entry_script_search_changed" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">20</property>
-            <property name="y">20</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="btn_expand">
-            <property name="label" translatable="yes">+</property>
-            <property name="width-request">30</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="tooltip-text" translatable="yes">expand all</property>
-            <signal name="clicked" handler="on_btn_expand_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">360</property>
-            <property name="y">20</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="btn_collapse">
-            <property name="label" translatable="yes">-</property>
-            <property name="width-request">30</property>
-            <property name="height-request">20</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="tooltip-text" translatable="yes">collapse all</property>
-            <signal name="clicked" handler="on_btn_collapse_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="x">410</property>
-            <property name="y">20</property>
-          </packing>
         </child>
       </object>
     </child>
