@@ -2763,6 +2763,213 @@
       - Desc: sp
         Type: Value
 
+# Charactor Data
+- Category: Charactor Data
+  Desc: Charactor Data
+  Script:
+  - Name: Zeny
+    Desc:
+      - Zeny
+      - --------------------
+      - Amount of Zeny.
+    Script: Zeny
+  - Name: Current HP
+    Desc:
+      - Hp
+      - --------------------
+      - Current amount of hit points.
+    Script: Hp
+  - Name: Max HP
+    Desc:
+      - MaxHp
+      - --------------------
+      - Maximum amount of hit points.
+    Script: MaxHp
+  - Name: Current SP
+    Desc:
+      - Sp
+      - --------------------
+      - Current spell points.
+    Script: Sp
+  - Name: Max SP
+    Desc:
+      - MaxSp
+      - --------------------
+      - Maximum amount of spell points.
+    Script: MaxSp
+  - Name: Status Point
+    Desc:
+      - StatusPoint
+      - --------------------
+      - Amount of status points remaining.
+    Script: StatusPoint
+  - Name: Skill Point
+    Desc:
+      - SkillPoint
+      - --------------------
+      - Amount of skill points remaining.
+    Script: SkillPoint
+  - Name: Base LV
+    Desc:
+      - BaseLevel
+      - --------------------
+      - Character's base level.
+    Script: BaseLevel
+  - Name: Job LV
+    Desc:
+      - JobLevel
+      - --------------------
+      - Character's job level.
+    Script: JobLevel
+  - Name: Current Base Exp
+    Desc:
+      - BaseExp
+      - --------------------
+      - Amount of base experience points.
+    Script: BaseExp
+  - Name: Current Job Exp
+    Desc:
+      - JobExp
+      - --------------------
+      - Amount of job experience points.
+    Script: JobExp
+  - Name: Next Base Exp
+    Desc:
+      - NextBaseExp
+      - --------------------
+      - Amount of base experience points needed to reach the next level.
+    Script: NextBaseExp
+  - Name: Next Job Exp
+    Desc:
+      - NextJobExp
+      - --------------------
+      - Amount of job experience points needed to reach the next level.
+    Script: NextJobExp
+  - Name: Current Weight
+    Desc:
+      - Weight
+      - --------------------
+      - Amount of weight the character currently carries.
+    Script: Weight
+  - Name: Max Weight
+    Desc:
+      - MaxWeight
+      - --------------------
+      - Maximum weight the character can carry.
+    Script: MaxWeight
+  - Name: Sex
+    Desc:
+      - Sex
+      - --------------------
+      - 0 if female, 1 if male.
+    Script: Sex
+  - Name: Job
+    Desc:
+      - Class
+      - --------------------
+      - Character's job.
+    Script: Class
+  - Name: Upper Job Check
+    Desc:
+      - Upper
+      - --------------------
+      - 0 if the character is a normal class, 1 if advanced, 2 if baby.
+    Script: Upper
+  - Name: Base Clss (1-1 Job) Check
+    Desc:
+      - |
+        if( BaseClass == CheckedBaseClass )
+        --------------------
+        The character's 1-1 'normal' job, regardless of Upper value.
+        For example, this will return Job_Acolyte for Acolyte, Priest/Monk,High Priest/Champion, and Arch Bishop/Sura.
+        If the character has not reached a 1-1 class, it will return Job_Novice.
+    Script: if( BaseClass == ARG1 )
+    Args:
+      - Desc: CheckedBaseClass
+        Type: List
+        ListName: Job_BaseClass
+  - Name: Base Job (ignore baby,high)
+    Desc:
+      - |
+        if( BaseJob == CheckedBaseJob )
+        --------------------
+        The character's 'normal' job, regardless of Upper value.
+        For example, this will return Job_Acolyte for Acolyte,Baby Acolyte, and High Acolyte.
+    Script: if( BaseJob == ARG1 )
+    Args:
+      - Desc: CheckedBaseJob
+        Type: List
+        ListName: Job_Base
+  - Name: eAJ Base Job Check
+    Desc:
+      - |
+        set @eac, eaclass();
+        if(( @eac & EAJ_BASEMASK ) == CheckedJob )
+        --------------------
+        Just like Base Class Check
+    Script: |
+        set @eac, eaclass();
+        if(( @eac & EAJ_BASEMASK ) == ARG1 )
+    Args:
+      - Desc: CheckedJob
+        Type: List
+        ListName: EAJ_Base
+  - Name: eAJ Upper Job Check
+    Desc:
+      - |
+        set @eac, eaclass();
+        if(( @eac & EAJ_UPPERMASK4 ) == CheckedJob )
+        --------------------
+        Just like Base Job Check
+    Script: |
+        set @eac, eaclass();
+        if(( @eac & EAJ_UPPERMASK ) == ARG1 )
+    Args:
+      - Desc: CheckedJob
+        Type: List
+        ListName: EAJL2
+  - Name: eAJ 3rd Job Check
+    Desc:
+      - |
+        set @eac, eaclass();
+        if(( @eac & EAJ_THIRDMASK ) == CheckedJob )
+        --------------------
+        Just like Base Job Check
+    Script: |
+        set @eac, eaclass();
+        if(( @eac & EAJ_THIRDMASK ) == ARG1 )
+    Args:
+      - Desc: CheckedJob
+        Type: List
+        ListName: EAJL3
+  - Name: eAJ Is 3rd
+    Desc:
+      - |
+        set @eac, eaclass();
+        if( @eac & EAJL_THIRD )
+        --------------------
+        Only Check if Current Job is 3rd Job or not
+        Be careful Star Emperor and Soul Reaper fall true.
+    Script: |
+        set @eac, eaclass();
+        if( @eac & EAJL_THIRD )
+  - Name: Karma
+    Desc:
+      - |
+        Karma
+        --------------------
+        The character's karma.
+        Karma system is not fully functional, but this doesn't mean this doesn't work at all. Not tested.
+    Script: Karma
+  - Name: Manner
+    Desc:
+      - |
+        Manner
+        --------------------
+        The character's manner rating.
+        Becomes negative if the player utters words forbidden through the use of 'manner.txt' client-side file.
+    Script: Manner
+
 # Misc Script
 - Category: Misc Script
   Desc: Misc Script

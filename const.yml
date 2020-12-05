@@ -327,4 +327,389 @@
     - Grenade
     - Huuma
     - 2hStaff
+- Name: Job_BaseClass
+  List:
+  -
+    - Novice
+    - Job_Novice
+  -
+    - Swordman
+    - Job_Swordman
+  -
+    - Mage
+    - Job_Mage
+  -
+    - Archer
+    - Job_Archer
+  -
+    - Acolyte
+    - Job_Acolyte
+  -
+    - Merchant
+    - Job_Merchant
+  -
+    - Thief
+    - Job_Thief
+  -
+    - Super Novice
+    - Job_Super_Novice
+  -
+    - Taekwon
+    - Job_Taekwon
+  -
+    - Gunslinger
+    - Job_Gunslinger
+  -
+    - Ninja
+    - Job_Ninja
+  -
+    - Summoner
+    - Job_Summoner
+- Name: Job_Base
+  List:
+  -
+    - Novice
+    - Job_Novice
+  -
+    - Swordman
+    - Job_Swordman
+  -
+    - Mage
+    - Job_Mage
+  -
+    - Archer
+    - Job_Archer
+  -
+    - Acolyte
+    - Job_Acolyte
+  -
+    - Merchant
+    - Job_Merchant
+  -
+    - Thief
+    - Job_Thief
+  -
+    - Knight
+    - Job_Knight
+  -
+    - Wizard
+    - Job_Wizard
+  -
+    - Hunter
+    - Job_Hunter
+  -
+    - Priest
+    - Job_Priest
+  -
+    - Blacksmith
+    - Job_Blacksmith
+  -
+    - Assassin
+    - Job_Assassin
+  -
+    - Crusader
+    - Job_Crusader
+  -
+    - Sage
+    - Job_Sage
+  -
+    - Bard
+    - Job_Bard
+  -
+    - Dancer
+    - Job_Dancer
+  -
+    - Monk
+    - Job_Monk
+  -
+    - Alchemist
+    - Job_Alchemist
+  -
+    - Rogue
+    - Job_Rogue
+  -
+    - Super Novice
+    - Job_Super_Novice
+  -
+    - Taekwon
+    - Job_Taekwon
+  -
+    - Star Gladiator
+    - Job_Star_Gladiator
+  -
+    - Soul Linker
+    - Job_Soul_Linker
+  -
+    - Gunslinger
+    - Job_Gunslinger
+  -
+    - Rebellion
+    - Job_Rebellion
+  -
+    - Ninja
+    - Job_Ninja
+  -
+    - Kagerou
+    - Job_Kagerou
+  -
+    - Oboro
+    - Job_Oboro
+  -
+    - Summoner
+    - Job_Summoner
+
+- Name: EAJ_Base
+  List:
+  -
+    - Novice
+    - EAJ_NOVICE
+  -
+    - Swordman
+    - EAJ_SWORDMAN
+  -
+    - Mage
+    - EAJ_MAGE
+  -
+    - Archer
+    - EAJ_ARCHER
+  -
+    - Acolyte
+    - EAJ_ACOLYTE
+  -
+    - Merchant
+    - EAJ_MERCHANT
+  -
+    - Thief
+    - EAJ_THIEF
+  -
+    - Super Novice
+    - EAJ_SUPER_NOVICE
+  -
+    - Taekwon
+    - EAJ_TAEKWON
+  -
+    - Gunslinger
+    - EAJ_GUNSLINGER
+  -
+    - Ninja
+    - EAJ_NINJA
+  -
+    - Summoner
+    - EAJ_SUMMONER
+
+- Name: EAJL2
+  List:
+  -
+    - Novice
+    - EAJ_NOVICE
+  -
+    - Swordman
+    - EAJ_SWORDMAN
+  -
+    - Mage
+    - EAJ_MAGE
+  -
+    - Archer
+    - EAJ_ARCHER
+  -
+    - Acolyte
+    - EAJ_ACOLYTE
+  -
+    - Merchant
+    - EAJ_MERCHANT
+  -
+    - Thief
+    - EAJ_THIEF
+  -
+    - Knight
+    - EAJ_KNIGHT
+  -
+    - Wizard
+    - EAJ_WIZARD
+  -
+    - Hunter
+    - EAJ_HUNTER
+  -
+    - Priest
+    - EAJ_PRIEST
+  -
+    - Blacksmith
+    - EAJ_BLACKSMITH
+  -
+    - Assassin
+    - EAJ_ASSASSIN
+  -
+    - Crusader
+    - EAJ_CRUSADER
+  -
+    - Sage
+    - EAJ_SAGE
+  -
+    - Bard/Dancer
+    - EAJ_BARDDANCER
+  -
+    - Monk
+    - EAJ_MONK
+  -
+    - Alchemist
+    - EAJ_ALCHEMIST
+  -
+    - Rogue
+    - EAJ_ROGUE
+  -
+    - Super Novice
+    - EAJ_SUPER_NOVICE
+  -
+    - Taekwon
+    - EAJ_TAEKWON
+  -
+    - Star Gladiator
+    - EAJ_STAR_GLADIATOR
+  -
+    - Soul Linker
+    - EAJ_SOUL_LINKER
+  -
+    - Gunslinger
+    - EAJ_GUNSLINGER
+  -
+    - Rebellion
+    - EAJ_REBELLION
+  -
+    - Ninja
+    - EAJ_NINJA
+  -
+    - Kagerou/Oboro
+    - EAJ_KAGEROUOBORO
+  -
+    - Summoner
+    - EAJ_SUMMONER
+
+- Name: EAJL3
+  List:
+  -
+    - Novice
+    - EAJ_NOVICE
+  -
+    - Swordman
+    - EAJ_SWORDMAN
+  -
+    - Mage
+    - EAJ_MAGE
+  -
+    - Archer
+    - EAJ_ARCHER
+  -
+    - Acolyte
+    - EAJ_ACOLYTE
+  -
+    - Merchant
+    - EAJ_MERCHANT
+  -
+    - Thief
+    - EAJ_THIEF
+  -
+    - Knight
+    - EAJ_KNIGHT
+  -
+    - Wizard
+    - EAJ_WIZARD
+  -
+    - Hunter
+    - EAJ_HUNTER
+  -
+    - Priest
+    - EAJ_PRIEST
+  -
+    - Blacksmith
+    - EAJ_BLACKSMITH
+  -
+    - Assassin
+    - EAJ_ASSASSIN
+  -
+    - Crusader
+    - EAJ_CRUSADER
+  -
+    - Sage
+    - EAJ_SAGE
+  -
+    - Bard/Dancer
+    - EAJ_BARDDANCER
+  -
+    - Monk
+    - EAJ_MONK
+  -
+    - Alchemist
+    - EAJ_ALCHEMIST
+  -
+    - Rogue
+    - EAJ_ROGUE
+  -
+    - Rune Knight
+    - EAJ_RUNE_KNIGHT
+  -
+    - Warlock
+    - EAJ_WARLOCK
+  -
+    - Ranger
+    - EAJ_RANGER
+  -
+    - Arch Bishop
+    - EAJ_ARCH_BISHOP
+  -
+    - Mechanic
+    - EAJ_MECHANIC
+  -
+    - Guillotine Cross
+    - EAJ_GUILLOTINE_CROSS
+  -
+    - Royal Guard
+    - EAJ_ROYAL_GUARD
+  -
+    - Sorcerer
+    - EAJ_SORCERER
+  -
+    - Minstrel/Wanderer
+    - EAJ_MINSTRELWANDERER
+  -
+    - Sura
+    - EAJ_SURA
+  -
+    - Genetic
+    - EAJ_GENETIC
+  -
+    - Shadow Chaser
+    - EAJ_SHADOW_CHASER
+  -
+    - Super Novice
+    - EAJ_SUPER_NOVICE
+  -
+    - Taekwon
+    - EAJ_TAEKWON
+  -
+    - Star Gladiator
+    - EAJ_STAR_GLADIATOR
+  -
+    - Soul Linker
+    - EAJ_SOUL_LINKER
+  -
+    - Star Emperor
+    - EAJ_STAR_EMPEROR
+  -
+    - Soul Reaper
+    - EAJ_SOUL_REAPER
+  -
+    - Gunslinger
+    - EAJ_GUNSLINGER
+  -
+    - Rebellion
+    - EAJ_REBELLION
+  -
+    - Ninja
+    - EAJ_NINJA
+  -
+    - Kagerou/Oboro
+    - EAJ_KAGEROUOBORO
+  -
+    - Summoner
+    - EAJ_SUMMONER
 ...
