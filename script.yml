@@ -2719,6 +2719,45 @@
     Args:
       - Desc: ItemID
         Type: Item
+  - Name: Cart Count Item
+    Desc:
+      - cartcountitem(<item id>);
+      - --------------------
+      - This function will return the number of items for the specified item ID that the invoking character has in the cart.
+      - If no cart is mounted, this function will return -1.
+    Script: .@n = cartcountitem(ARG1);
+    Args:
+      - Desc: ItemID
+        Type: Item
+  - Name: Storage Count Item
+    Desc:
+      - storagecountitem(<item id>);
+      - --------------------
+      - This function will return the number of items for the specified item ID that the invoking character has in the storage.
+    Script: .@n = storagecountitem(ARG1);
+    Args:
+      - Desc: ItemID
+        Type: Item
+  - Name: Guild Storage Count Item
+    Desc:
+      - guildstoragecountitem(<item id>);
+      - --------------------
+      - This function will return the number of items for the specified item ID that the invoking character has in the guild storage.
+    Script: .@n = guildstoragecountitem(ARG1);
+    Args:
+      - Desc: ItemID
+        Type: Item
+  - Name: Consume Item
+    Desc:
+      - consumeitem(<item id>);
+      - --------------------
+      - This command will run the item script of the specified item on the invoking character.
+      - The character does not need to possess the item, and the item will not be deleted.
+      - While this command is intended for usable items, it will run for any item type.
+    Script: consumeitem(ARG1);
+    Args:
+      - Desc: ItemID
+        Type: Item
 
 # Heal Script
 - Category: Heal Script
@@ -2903,13 +2942,13 @@
   - Name: eAJ Base Job Check
     Desc:
       - |
-        set @eac, eaclass();
-        if(( @eac & EAJ_BASEMASK ) == CheckedJob )
+        set .@eac, eaclass();
+        if(( .@eac & EAJ_BASEMASK ) == CheckedJob )
         --------------------
         Just like Base Class Check
     Script: |
-        set @eac, eaclass();
-        if(( @eac & EAJ_BASEMASK ) == ARG1 )
+        set .@eac, eaclass();
+        if(( .@eac & EAJ_BASEMASK ) == ARG1 )
     Args:
       - Desc: CheckedJob
         Type: List
@@ -2917,13 +2956,13 @@
   - Name: eAJ Upper Job Check
     Desc:
       - |
-        set @eac, eaclass();
-        if(( @eac & EAJ_UPPERMASK4 ) == CheckedJob )
+        set .@eac, eaclass();
+        if(( .@eac & EAJ_UPPERMASK4 ) == CheckedJob )
         --------------------
         Just like Base Job Check
     Script: |
-        set @eac, eaclass();
-        if(( @eac & EAJ_UPPERMASK ) == ARG1 )
+        set .@eac, eaclass();
+        if(( .@eac & EAJ_UPPERMASK ) == ARG1 )
     Args:
       - Desc: CheckedJob
         Type: List
@@ -2931,13 +2970,13 @@
   - Name: eAJ 3rd Job Check
     Desc:
       - |
-        set @eac, eaclass();
-        if(( @eac & EAJ_THIRDMASK ) == CheckedJob )
+        set .@eac, eaclass();
+        if(( .@eac & EAJ_THIRDMASK ) == CheckedJob )
         --------------------
         Just like Base Job Check
     Script: |
-        set @eac, eaclass();
-        if(( @eac & EAJ_THIRDMASK ) == ARG1 )
+        set .@eac, eaclass();
+        if(( .@eac & EAJ_THIRDMASK ) == ARG1 )
     Args:
       - Desc: CheckedJob
         Type: List
@@ -2945,14 +2984,14 @@
   - Name: eAJ Is 3rd
     Desc:
       - |
-        set @eac, eaclass();
-        if( @eac & EAJL_THIRD )
+        set .@eac, eaclass();
+        if( .@eac & EAJL_THIRD )
         --------------------
         Only Check if Current Job is 3rd Job or not
         Be careful Star Emperor and Soul Reaper fall true.
     Script: |
-        set @eac, eaclass();
-        if( @eac & EAJL_THIRD )
+        set .@eac, eaclass();
+        if( .@eac & EAJL_THIRD )
   - Name: Karma
     Desc:
       - |
