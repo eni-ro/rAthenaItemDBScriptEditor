@@ -170,7 +170,7 @@ end
 
 def on_btn_copy_script_clicked
   str = get_text_view_str($text_view_edit).dup
-  str = "    Script: |\n      " + str.gsub(/\n/,"\n\t\t\t").gsub(/\t/,"  ")
+  str = "    Script: |\n      " + str.gsub(/\n/,"\n      ").gsub(/\t/,"  ")
   Win32::Clipboard.set_data(str)
 end
 
@@ -190,13 +190,27 @@ $label_script_desc = builder.get_object('label_script_desc')
 $label_param_desc = [builder.get_object('label_param1_desc'), builder.get_object('label_param2_desc'), builder.get_object('label_param3_desc'), builder.get_object('label_param4_desc'), builder.get_object('label_param5_desc'), builder.get_object('label_param6_desc')]
 $entry_script_search = builder.get_object('entry_script_search')
 window_text = builder.get_object('window_text')
-$text_view_edit = GtkSource::View.new()#builder.get_object('text_view_edit')
+$text_view_edit = GtkSource::View.new()
 $text_view_edit.set_insert_spaces_instead_of_tabs(true)
 $text_view_edit.set_indent_width(2)
 $text_view_edit.set_auto_indent(true)
 $text_view_edit.set_highlight_current_line(true)
 $text_view_edit.buffer.set_language(GtkSource::LanguageManager.new().get_language("c"))
 window_text.add( $text_view_edit )
+
+text_completion = $text_view_edit.completion
+text_completion.auto_complete_delay=10
+view_provider = GtkSource::CompletionWords.new('this script')
+view_provider.register($text_view_edit.buffer)
+text_completion.add_provider(view_provider) 
+
+keyword_provider = GtkSource::CompletionWords.new('keyword')
+keyword_buffer = GtkSource::Buffer.new
+File.open( 'auto_complete.txt', mode = "r") do |f|
+  keyword_buffer.set_text(f.read)
+end
+keyword_provider.register(keyword_buffer)
+text_completion.add_provider(keyword_provider) 
 
 # Setup TreeView Column
 renderer = Gtk::CellRendererText.new
@@ -213,7 +227,7 @@ $tee_view_script.model=$script_model
 
 builder.connect_signals { |handler| method(handler) }
 
-$win.title = $win.title + ' v0.2'
+$win.title = $win.title + ' v0.3'
 $win.show_all
 
 # hide param input entries

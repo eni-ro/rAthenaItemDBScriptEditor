@@ -30,12 +30,17 @@ I release this editor as it is,because I couldn't resolve this error and it work
 `Gdk-CRITICAL **: gdk_device_get_source: assertion 'GDK_IS_DEVICE (device)' failed`
 
 ## History
-### v0.2
-* Improve UI to scale when window resizing
-* Fix some categories and scripts name
+* v0.3
+  * Add auto complete function
+  * Add scripts to access char info and count item  
+  **I'm not sure if eAJ script is correct,because I don't fully understand it.**
+  
+* v0.2
+  * Improve UI to scale when window resizing
+  * Fix some categories and scripts name
 
-### v0.1
-* first release
+* v0.1
+  * first release
 
 ## Credits
 [rAthena](https://rathena.org/) : this editor uses docs/db files
