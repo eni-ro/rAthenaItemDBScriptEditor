@@ -2812,108 +2812,126 @@
       - --------------------
       - Amount of Zeny.
     Script: Zeny
+    ScriptNoReturn: true
   - Name: Current HP
     Desc:
       - Hp
       - --------------------
       - Current amount of hit points.
     Script: Hp
+    ScriptNoReturn: true
   - Name: Max HP
     Desc:
       - MaxHp
       - --------------------
       - Maximum amount of hit points.
     Script: MaxHp
+    ScriptNoReturn: true
   - Name: Current SP
     Desc:
       - Sp
       - --------------------
       - Current spell points.
     Script: Sp
+    ScriptNoReturn: true
   - Name: Max SP
     Desc:
       - MaxSp
       - --------------------
       - Maximum amount of spell points.
     Script: MaxSp
+    ScriptNoReturn: true
   - Name: Status Point
     Desc:
       - StatusPoint
       - --------------------
       - Amount of status points remaining.
     Script: StatusPoint
+    ScriptNoReturn: true
   - Name: Skill Point
     Desc:
       - SkillPoint
       - --------------------
       - Amount of skill points remaining.
     Script: SkillPoint
+    ScriptNoReturn: true
   - Name: Base LV
     Desc:
       - BaseLevel
       - --------------------
       - Character's base level.
     Script: BaseLevel
+    ScriptNoReturn: true
   - Name: Job LV
     Desc:
       - JobLevel
       - --------------------
       - Character's job level.
     Script: JobLevel
+    ScriptNoReturn: true
   - Name: Current Base Exp
     Desc:
       - BaseExp
       - --------------------
       - Amount of base experience points.
     Script: BaseExp
+    ScriptNoReturn: true
   - Name: Current Job Exp
     Desc:
       - JobExp
       - --------------------
       - Amount of job experience points.
     Script: JobExp
+    ScriptNoReturn: true
   - Name: Next Base Exp
     Desc:
       - NextBaseExp
       - --------------------
       - Amount of base experience points needed to reach the next level.
     Script: NextBaseExp
+    ScriptNoReturn: true
   - Name: Next Job Exp
     Desc:
       - NextJobExp
       - --------------------
       - Amount of job experience points needed to reach the next level.
     Script: NextJobExp
+    ScriptNoReturn: true
   - Name: Current Weight
     Desc:
       - Weight
       - --------------------
       - Amount of weight the character currently carries.
     Script: Weight
+    ScriptNoReturn: true
   - Name: Max Weight
     Desc:
       - MaxWeight
       - --------------------
       - Maximum weight the character can carry.
     Script: MaxWeight
+    ScriptNoReturn: true
   - Name: Sex
     Desc:
       - Sex
       - --------------------
       - 0 if female, 1 if male.
     Script: Sex
+    ScriptNoReturn: true
   - Name: Job
     Desc:
       - Class
       - --------------------
       - Character's job.
     Script: Class
+    ScriptNoReturn: true
   - Name: Upper Job Check
     Desc:
       - Upper
       - --------------------
       - 0 if the character is a normal class, 1 if advanced, 2 if baby.
     Script: Upper
+    ScriptNoReturn: true
   - Name: Base Clss (1-1 Job) Check
     Desc:
       - |
@@ -3000,6 +3018,7 @@
         The character's karma.
         Karma system is not fully functional, but this doesn't mean this doesn't work at all. Not tested.
     Script: Karma
+    ScriptNoReturn: true
   - Name: Manner
     Desc:
       - |
@@ -3008,6 +3027,7 @@
         The character's manner rating.
         Becomes negative if the player utters words forbidden through the use of 'manner.txt' client-side file.
     Script: Manner
+    ScriptNoReturn: true
 
 # Misc Script
 - Category: Misc Script
@@ -3020,7 +3040,8 @@
       - This function returns a number ...
       - (if you specify one) ... randomly positioned between 0 and the number you specify -1.
       - (if you specify two) ... randomly positioned between the two numbers you specify.
-    Script: rand(ARG1,ARG2);
+    Script: rand(ARG1,ARG2)
+    ScriptNoReturn: true
     Args:
       - Desc: number
         Type: Value

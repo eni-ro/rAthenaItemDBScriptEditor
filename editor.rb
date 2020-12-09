@@ -162,10 +162,25 @@ def arg_input_dialog(n)
   end
 end
 
+def get_indent_space(textstr,fpos)
+  lhome = textstr.rindex("\n",fpos)
+  if lhome == nil
+      lhome = 0
+  else
+      lhome = lhome + 1
+  end
+  thome = lhome
+  while textstr[thome] == " "
+      thome=thome+1
+  end
+  return textstr.slice(lhome,thome - lhome)
+end
+
 def on_btn_ins_clicked
-  code = $db.make_code($category_str,$script_str,$entry_arg.map{|w|w.text})
-  $text_view_edit.buffer.insert_at_cursor(code)
   $text_view_edit.grab_focus()
+  code = $db.make_code($category_str,$script_str,$entry_arg.map{|w|w.text})
+  code.gsub!("\n","\n"+get_indent_space($text_view_edit.buffer.text,$text_view_edit.buffer.cursor_position))
+  $text_view_edit.buffer.insert_at_cursor(code)
 end
 
 def on_btn_copy_script_clicked

@@ -248,6 +248,9 @@ class RADB
         arg.length.times do |i|
             code.gsub!("ARG#{i+1}",arg[i])
         end 
+        if code[-1]!="\n" && ( v['ScriptNoReturn'] == nil || v['ScriptNoReturn'] == false )
+            code = code + "\n"
+        end
         return code
     end
 
