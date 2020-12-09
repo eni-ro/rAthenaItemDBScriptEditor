@@ -101,6 +101,7 @@
                             <property name="name">tee_view_script</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="enable-search">False</property>
                             <signal name="cursor-changed" handler="on_tee_view_script_cursor_changed" swapped="no"/>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection"/>
