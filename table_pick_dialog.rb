@@ -41,7 +41,7 @@ class TablePickDialog
         @builder.connect_signals { |handler| method(handler) }
         result = @dlg.run
         if result = Gtk::ResponseType::OK
-            store_selected_value()
+            store_selected_keyvalue()
         end
         @dlg.close
         return result
@@ -79,15 +79,21 @@ class TablePickDialog
             @dlg.response( Gtk::ResponseType::OK )
         end
     end
-    def store_selected_value
-        str = ''
+    def store_selected_keyvalue
+        key = ''
+        val = ''
         sel = @tree_view_dlg_table.selection
         if sel.selected
-            str = @model.get_value(sel.selected,1)
+            key = @model.get_value(sel.selected,0)
+            val = @model.get_value(sel.selected,1)
         end
-        @selectvalued = str
+        @selectedkey = key
+        @selectedvalue = val
+    end
+    def selected_key
+        return @selectedkey
     end
     def selected_value
-        return @selectvalued
+        return @selectedvalue
     end
 end

@@ -26,25 +26,31 @@ class RADB
     end
     def load_item_db(files,enc)
         db = {}
-        files.each do |f|
-            puts "    loading #{f}..."
-            File.open(f, mode = "r", encoding: enc+':utf-8') do |fr|
+        @@item_raw = []
+        fdb = {}
+        files.size.times do |i|
+            puts "    loading #{files[i]}..."
+            File.open(files[i], mode = "r", encoding: enc+':utf-8') do |fr|
                 str = fr.read
                 x = YAML.load(str)
                 if x['Body'] != nil
-                    x['Body'].each do |item|
+                    x['Body'].size.times do |j|
+                        item = x['Body'][j]
                         id = item['Id']
                         name = item['Name']
                         if id != nil && name != nil
                             db[id] = name
+                            fdb[id] = [i,j]
                         end
                     end
                 end
+                @@item_raw.push(x)
             end
         end
         id_ary = db.keys.map{|x|x.to_s}
         name_ary = db.values
-        return [name_ary,id_ary].transpose
+        findex = fdb.values
+        return [name_ary,id_ary,findex].transpose
     end
     def load_skill_db(files,enc)
         db = {}
@@ -238,6 +244,21 @@ class RADB
                 end
         end
         return input
+    end
+    def get_item_list
+        return @@item_db
+    end
+    def get_item_script(id)
+        @@item_db.each do |x|
+            if x[1] == id
+                script = @@item_raw[x[2][0]]['Body'][x[2][1]]['Script']
+                if script == nil
+                    return ""
+                end
+                return script
+            end
+        end
+        return ""
     end
     def make_code(category,script,arg)
         v = pickup_script(category,script)

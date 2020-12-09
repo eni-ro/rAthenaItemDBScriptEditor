@@ -183,6 +183,20 @@ def on_btn_ins_clicked
   $text_view_edit.buffer.insert_at_cursor(code)
 end
 
+def on_btn_load_script_clicked
+  table = $db.get_item_list
+  if table != nil
+    dlg = TablePickDialog.new(table)
+    $ignore_next_event = true
+    if dlg.run == Gtk::ResponseType::OK
+      str = dlg.selected_value
+      $text_view_edit.buffer.text = $db.get_item_script(str)
+      set_entry_str($entry_loaded_item_id,str)
+      set_entry_str($entry_loaded_item_name,dlg.selected_key)
+    end
+  end
+end
+
 def on_btn_copy_script_clicked
   str = get_text_view_str($text_view_edit).dup
   str = "    Script: |\n      " + str.gsub(/\n/,"\n      ").gsub(/\t/,"  ")
@@ -204,7 +218,10 @@ $entry_arg = [ builder.get_object('entry_arg1'), builder.get_object('entry_arg2'
 $label_script_desc = builder.get_object('label_script_desc')
 $label_param_desc = [builder.get_object('label_param1_desc'), builder.get_object('label_param2_desc'), builder.get_object('label_param3_desc'), builder.get_object('label_param4_desc'), builder.get_object('label_param5_desc'), builder.get_object('label_param6_desc')]
 $entry_script_search = builder.get_object('entry_script_search')
+$entry_loaded_item_id = builder.get_object('entry_loaded_item_id')
+$entry_loaded_item_name = builder.get_object('entry_loaded_item_name')
 window_text = builder.get_object('window_text')
+
 $text_view_edit = GtkSource::View.new()
 $text_view_edit.set_insert_spaces_instead_of_tabs(true)
 $text_view_edit.set_indent_width(2)
