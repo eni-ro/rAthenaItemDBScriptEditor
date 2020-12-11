@@ -40,7 +40,7 @@ class TablePickDialog
     def run
         @builder.connect_signals { |handler| method(handler) }
         result = @dlg.run
-        if result = Gtk::ResponseType::OK
+        if result == Gtk::ResponseType::OK
             store_selected_keyvalue()
         end
         @dlg.close
