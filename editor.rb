@@ -193,6 +193,7 @@ def on_btn_load_script_clicked
       $text_view_edit.buffer.text = $db.get_item_script(str)
       set_entry_str($entry_loaded_item_id,str)
       set_entry_str($entry_loaded_item_name,dlg.selected_key)
+      $btn_inject_script.sensitive = true
     end
   end
 end
@@ -200,10 +201,18 @@ end
 def on_btn_copy_script_clicked
   str = get_text_view_str($text_view_edit).dup
   Win32::Clipboard.set_data($db.decorate_to_yaml_format(str))
+  Gdk::beep()
 end
 def on_btn_inject_script_clicked
   str = get_text_view_str($text_view_edit).dup
-  $db.inject_item_script($entry_loaded_item_id.text,str)
+  if $db.inject_item_script($entry_loaded_item_id.text,str) == false
+    md = Gtk::MessageDialog.new(:parent => nil, :type => :info, :buttons_type => :close, :message => "Failed to inject script\nPlease paste manually")
+		md.signal_connect("response") do |widget, response|
+			md.destroy
+		end
+		md.show_all
+  end
+  Gdk::beep()
 end
 
 # load setting files
@@ -223,6 +232,8 @@ $label_param_desc = [builder.get_object('label_param1_desc'), builder.get_object
 $entry_script_search = builder.get_object('entry_script_search')
 $entry_loaded_item_id = builder.get_object('entry_loaded_item_id')
 $entry_loaded_item_name = builder.get_object('entry_loaded_item_name')
+$btn_inject_script = builder.get_object('btn_inject_script')
+$btn_inject_script.sensitive = false
 window_text = builder.get_object('window_text')
 
 $text_view_edit = GtkSource::View.new()
