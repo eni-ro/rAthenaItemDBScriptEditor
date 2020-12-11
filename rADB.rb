@@ -5,28 +5,28 @@ class RADB
     def initialize
         puts '  loading config file...'
         editor_conf = YAML.load_file('config.yml')
-        enc = editor_conf['Encoding']
-        if enc == nil
-            enc = 'utf-8'
+        @enc = editor_conf['Encoding']
+        if @enc == nil
+            @enc = 'utf-8'
         end
         puts '  loading script db file...'
-        @@script_conf = YAML.load_file('script.yml')
+        @script_conf = YAML.load_file('script.yml')
         puts '  setting up script db...'
         script_conf_generate_search_str(editor_conf)
         puts '  loading const db file...'
-        @@const_conf = YAML.load_file('const.yml')
-        db = YAML.load_file('db.yml')
+        @const_conf = YAML.load_file('const.yml')
+        @db = YAML.load_file('db.yml')
         puts '  loading item db files...'
         puts '    this may takes few minutes'
-        @@item_db = load_item_db(db['Item'],enc)
+        @item_db = load_item_db(@db['Item'],@enc)
         puts '  loading skill db file...'
-        @@skill_db = load_skill_db(db['Skill'],enc)
+        @skill_db = load_skill_db(@db['Skill'],@enc)
         puts '  loading mob db file...'
-        @@mob_db = load_mob_db(db['Mob'],enc)
+        @mob_db = load_mob_db(@db['Mob'],@enc)
     end
     def load_item_db(files,enc)
         db = {}
-        @@item_raw = []
+        @item_raw = []
         fdb = {}
         files.size.times do |i|
             puts "    loading #{files[i]}..."
@@ -44,7 +44,7 @@ class RADB
                         end
                     end
                 end
-                @@item_raw.push(x)
+                @item_raw.push(x)
             end
         end
         id_ary = db.keys.map{|x|x.to_s}
@@ -93,11 +93,11 @@ class RADB
     def script_conf_generate_search_str(editor_conf)
         #load config
         if editor_conf != nil && editor_conf['SearchOption'] != nil
-            @@match_case = editor_conf['SearchOption']['MatchCase']
+            @match_case = editor_conf['SearchOption']['MatchCase']
             include_desc = editor_conf['SearchOption']['SearchDescription']
         end
-        if @@match_case == nil || !(@@match_case.is_a?(TrueClass) || @@match_case.is_a?(FalseClass))
-            @@match_case = false
+        if @match_case == nil || !(@match_case.is_a?(TrueClass) || @match_case.is_a?(FalseClass))
+            @match_case = false
         end
         if include_desc == nil || !(include_desc.is_a?(TrueClass) || include_desc.is_a?(FalseClass))
             include_desc = false
@@ -111,7 +111,7 @@ class RADB
             end
             dummy_arg = ['','','','','']
             str += make_code(category,script,dummy_arg)
-            if @@match_case == false
+            if @match_case == false
                 str.downcase!
             end
             script_insert_search_string(category,script,str)
@@ -121,7 +121,7 @@ class RADB
     
     def get_filtered_script(filter)
         arr = []
-        if @@match_case == false
+        if @match_case == false
             filter.downcase!
         end
         script_category_str().each do |category|
@@ -135,7 +135,7 @@ class RADB
     end
 
     def pickup_category(category)
-        return @@script_conf.find{|v|v['Category']==category}
+        return @script_conf.find{|v|v['Category']==category}
     end
     def pickup_script(category,script)
         v = pickup_category(category)
@@ -159,7 +159,7 @@ class RADB
         return v[n]
     end
     def script_category_str
-        return @@script_conf.map{|n|n['Category']}
+        return @script_conf.map{|n|n['Category']}
     end
     def script_category_desc(category)
         v = pickup_category(category)
@@ -229,15 +229,15 @@ class RADB
         case type
             when 'Value' then
             when 'Item' then
-                input = @@item_db
+                input = @item_db
             when 'Mob' then
-                input = @@mob_db
+                input = @mob_db
             when 'Skill' then
-                input = @@skill_db
+                input = @skill_db
             when 'List' then
                 name = v['ListName']
                 if name != nil
-                    input = @@const_conf.find{|v|v['Name']==name}
+                    input = @const_conf.find{|v|v['Name']==name}
                     if input != nil
                         input = input['List']
                     end
@@ -246,12 +246,12 @@ class RADB
         return input
     end
     def get_item_list
-        return @@item_db
+        return @item_db
     end
     def get_item_script(id)
-        @@item_db.each do |x|
+        @item_db.each do |x|
             if x[1] == id
-                script = @@item_raw[x[2][0]]['Body'][x[2][1]]['Script']
+                script = @item_raw[x[2][0]]['Body'][x[2][1]]['Script']
                 if script == nil
                     return ""
                 end
@@ -259,6 +259,18 @@ class RADB
             end
         end
         return ""
+    end
+    def inject_item_script(id,script)
+        @item_db.each do |x|
+            if x[1] == id
+                inj = ItemYamlInjecter.new(@db['Item'][x[2][0]],@enc)
+                result = inj.inject_script(id,decorate_to_yaml_format(script))
+                if result == true
+                    @item_raw[x[2][0]]['Body'][x[2][1]]['Script'] = script
+                end
+                return result
+            end
+        end
     end
     def make_code(category,script,arg)
         v = pickup_script(category,script)
@@ -275,6 +287,12 @@ class RADB
         return code
     end
 
+    def decorate_to_yaml_format(str)
+        str = "    Script: |\n      " + str.gsub(/\n/,"\n      ").gsub(/\t/,"  ")
+        str.rstrip!
+        return str
+    end
+
     def if_array_join_to_str(item)
         if item == nil
             return ''
@@ -284,5 +302,87 @@ class RADB
         else
             return item.to_s
         end
+    end
+end
+
+class ItemYamlInjecter
+    def initialize( file,encoding)
+        File.open(file, mode = "r", encoding: encoding+':utf-8') do |f|
+            @str = f.read
+        end
+        @encoding = encoding
+        @file = file
+    end
+    def file_overwrite
+        File.open(@file, mode = "w", encoding: @encoding) do |f|
+            f.write(@str.encode(@encoding))
+        end
+    end
+
+    def apply_file_break_line(str)
+        tmp = @str.match(/\R/)[0]
+        if tmp == nil
+            tmp = "\n"
+        end
+        str.gsub!(/\R/,tmp)
+    end
+    def inject_script( id, script )
+        script = apply_file_break_line("\n"+script+"\n")
+
+        # find item text
+        item,pos,len = find_item(id)
+        if item == false
+            return false
+        end
+
+        # find script text
+        sc_pos,sc_len = find_script(item)
+        footer = @str.slice(pos+sc_pos+sc_len,@str.length-(pos+sc_pos+sc_len))
+        if footer != nil
+            if footer.start_with?(/\R/)
+                footer.delete_prefix!(footer.match(/\R/)[0])
+            end
+        else
+            footer = ""
+        end
+
+        #make new file content
+        @str = @str.slice(0,pos+sc_pos).chomp.concat(script).concat(footer)
+
+        #write
+        file_overwrite
+
+        return true
+    end
+    def find_item( id )
+        id_index = @str.index(/^  [ -] Id: #{id.to_s}[ \t]*(#.*)?$/)
+        if id_index == nil
+            return nil,nil,nil
+        end
+
+        start_pos = @str.rindex(/^  - /,id_index+1)
+        if start_pos == nil
+            return nil,nil,nil
+        end
+
+        end_pos = @str.index(/^  - /,id_index+1)
+        if end_pos == nil
+            end_pos = @str.length
+        end
+        item = @str.slice(start_pos,end_pos-start_pos)
+        return item,start_pos,end_pos-start_pos
+    end
+    def find_script( str )
+        start_pos = str.index(/^    Script:/)
+        if start_pos == nil
+            return str.length-1,0
+        end
+        end_pos = str.index(/^    [^ ]/,start_pos+1)
+        if end_pos == nil
+            end_pos = str.length
+        end
+        script = str.slice(start_pos,end_pos-start_pos)
+
+        return start_pos,end_pos-start_pos
     end
 end

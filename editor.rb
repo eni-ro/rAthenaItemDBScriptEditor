@@ -199,8 +199,11 @@ end
 
 def on_btn_copy_script_clicked
   str = get_text_view_str($text_view_edit).dup
-  str = "    Script: |\n      " + str.gsub(/\n/,"\n      ").gsub(/\t/,"  ")
-  Win32::Clipboard.set_data(str)
+  Win32::Clipboard.set_data($db.decorate_to_yaml_format(str))
+end
+def on_btn_inject_script_clicked
+  str = get_text_view_str($text_view_edit).dup
+  $db.inject_item_script($entry_loaded_item_id.text,str)
 end
 
 # load setting files

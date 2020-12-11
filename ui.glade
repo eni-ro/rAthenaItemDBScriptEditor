@@ -450,15 +450,42 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="btn_copy_script">
-                        <property name="label" translatable="yes">Copy Script</property>
-                        <property name="name">btn_copy_script</property>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="tooltip-text" translatable="yes">convert text to itemdb format
-and copy to your clip board</property>
-                        <signal name="clicked" handler="on_btn_copy_script_clicked" swapped="no"/>
+                        <property name="can-focus">False</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkButton" id="btn_copy_script">
+                            <property name="label" translatable="yes">Copy Script</property>
+                            <property name="name">btn_copy_script</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="tooltip-text" translatable="yes">convert text to itemdb format
+and copy to your clipboard</property>
+                            <signal name="clicked" handler="on_btn_copy_script_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_inject_script">
+                            <property name="label" translatable="yes">Inject Script</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="tooltip-text" translatable="yes">(Experimental) Inject text to YAML file</property>
+                            <signal name="clicked" handler="on_btn_inject_script_clicked" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
