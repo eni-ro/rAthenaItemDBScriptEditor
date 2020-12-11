@@ -273,7 +273,7 @@ $tee_view_script.model=$script_model
 
 builder.connect_signals { |handler| method(handler) }
 
-$win.title = $win.title + ' v0.3'
+$win.title = $win.title + ' v0.4'
 $win.show_all
 
 # hide param input entries

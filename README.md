@@ -1,6 +1,5 @@
 # rAthena ItemDB Script Editor
 This editor is a scripting support tool.  
-This editor DONOT insert scripts to YAML file automatically,so please paste manually.  
 <img src="https://user-images.githubusercontent.com/59181965/100858159-f6990f00-34d0-11eb-9a14-8deb720488e0.png" width=50%>
 <img src="https://user-images.githubusercontent.com/59181965/100858163-f8fb6900-34d0-11eb-9519-7ff1031cab18.png" width=25%>
 
@@ -30,6 +29,10 @@ I release this editor as it is,because I couldn't resolve this error and it work
 `Gdk-CRITICAL **: gdk_device_get_source: assertion 'GDK_IS_DEVICE (device)' failed`
 
 ## History
+* v0.4
+  * Improve insertion function to break lines with indentation
+  * Add script load and inject feature(experimental)
+
 * v0.3
   * Add auto complete function
   * Add scripts to access char info and count item  
