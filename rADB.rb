@@ -288,6 +288,9 @@ class RADB
     end
 
     def decorate_to_yaml_format(str)
+        if str.length == 0
+            return ""
+        end
         str = "    Script: |\n      " + str.gsub(/\n/,"\n      ").gsub(/\t/,"  ")
         str.rstrip!
         return str
