@@ -2590,6 +2590,12 @@
         ListName: Equipment Slot
   - Name: Get Refine Count
     Desc:
+      - .@r = getrefine();
+      - --------------------
+      - This function will return the refine count of the equipment from which the function is called.
+    Script: .@r = getrefine();
+  - Name: Get Refine Count (designate slot)
+    Desc:
       - .@r = getequiprefinerycnt(<equipment slot>);
       - --------------------
       - Returns the current number of pluses for the item in the specified equipment slot.
@@ -2614,12 +2620,6 @@
       - --------------------
       - This function will return the number of cards inserted into the equipment from which the function is called.
     Script: .@cnt = getrefine();
-  - Name: Get Refine Count
-    Desc:
-      - .@r = getrefine();
-      - --------------------
-      - This function will return the refine count of the equipment from which the function is called.
-    Script: .@r = getrefine();
 # Skill Script
 - Category: Skill Script
   Desc: Skill Script
