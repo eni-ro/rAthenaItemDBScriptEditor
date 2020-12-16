@@ -251,14 +251,16 @@ class RADB
     def get_item_script(id)
         @item_db.each do |x|
             if x[1] == id
-                script = @item_raw[x[2][0]]['Body'][x[2][1]]['Script']
-                if script == nil
-                    return ""
+                script = [@item_raw[x[2][0]]['Body'][x[2][1]]['Script'],@item_raw[x[2][0]]['Body'][x[2][1]]['EquipScript'],@item_raw[x[2][0]]['Body'][x[2][1]]['UnEquipScript']]
+                script.size.times do |i|
+                    if script[i] == nil
+                        script[i] = ""
+                    end
                 end
                 return script
             end
         end
-        return ""
+        return ["","",""]
     end
     def inject_item_script(id,script)
         @item_db.each do |x|
@@ -266,7 +268,9 @@ class RADB
                 inj = ItemYamlInjecter.new(@db['Item'][x[2][0]],@enc)
                 result = inj.inject_script(id,decorate_to_yaml_format(script))
                 if result == true
-                    @item_raw[x[2][0]]['Body'][x[2][1]]['Script'] = script
+                    @item_raw[x[2][0]]['Body'][x[2][1]]['Script'] = script[0]
+                    @item_raw[x[2][0]]['Body'][x[2][1]]['EquipScript'] = script[1]
+                    @item_raw[x[2][0]]['Body'][x[2][1]]['UnEquipScript'] = script[2]
                 end
                 return result
             end
@@ -287,12 +291,23 @@ class RADB
         return code
     end
 
-    def decorate_to_yaml_format(str)
-        if str.length == 0
-            return ""
+    def decorate_to_yaml_format(script)
+        str=""
+        if script[0].length > 0
+            str += "    Script: |\n      " + script[0].gsub(/\n/,"\n      ").gsub(/\t/,"  ")
+            str.rstrip!
+            str += "\n"
         end
-        str = "    Script: |\n      " + str.gsub(/\n/,"\n      ").gsub(/\t/,"  ")
-        str.rstrip!
+        if script[1].length > 0
+            str += "    EquipScript: |\n      " + script[1].gsub(/\n/,"\n      ").gsub(/\t/,"  ")
+            str.rstrip!
+            str += "\n"
+        end
+        if script[2].length > 0
+            str += "    UnEquipScript: |\n      " + script[2].gsub(/\n/,"\n      ").gsub(/\t/,"  ")
+            str.rstrip!
+            str += "\n"
+        end
         return str
     end
 
@@ -330,62 +345,67 @@ class ItemYamlInjecter
         str.gsub!(/\R/,tmp)
     end
     def inject_script( id, script )
-        script = apply_file_break_line("\n"+script+"\n")
+        script = apply_file_break_line(script)
 
         # find item text
-        item,pos,len = find_item(id)
-        if item == false
+        header,item,footer = extract_item(id)
+        if item == nil
             return false
         end
 
-        # find script text
-        sc_pos,sc_len = find_script(item)
-        footer = @str.slice(pos+sc_pos+sc_len,@str.length-(pos+sc_pos+sc_len))
-        if footer != nil
-            if footer.start_with?(/\R/)
-                footer.delete_prefix!(footer.match(/\R/)[0])
-            end
-        else
-            footer = ""
-        end
+        # delete existing script text
+        item = delete_script(item)
 
         #make new file content
-        @str = @str.slice(0,pos+sc_pos).chomp.concat(script).concat(footer)
+        @str = header.concat(item).concat(script).concat(footer)
 
         #write
         file_overwrite
 
         return true
     end
-    def find_item( id )
+    def extract_item( id )
         id_index = @str.index(/^  [ -] Id: #{id.to_s}[ \t]*(#.*)?$/)
         if id_index == nil
-            return nil,nil,nil
+            return @str,nil,nil
         end
 
         start_pos = @str.rindex(/^  - /,id_index+1)
         if start_pos == nil
-            return nil,nil,nil
+            return @str,nil,nil
         end
 
         end_pos = @str.index(/^  - /,id_index+1)
         if end_pos == nil
             end_pos = @str.length
         end
+        header = @str.slice(0,start_pos)
         item = @str.slice(start_pos,end_pos-start_pos)
-        return item,start_pos,end_pos-start_pos
-    end
-    def find_script( str )
-        start_pos = str.index(/^    Script:/)
-        if start_pos == nil
-            return str.length-1,0
+        footer = @str.slice(start_pos, @str.length-end_pos)
+        if footer == nil
+            footer = ""
         end
+        return header,item,footer
+    end
+    def delete_script( str )
+        str = delete_script_sub( str, /^    Script:/ )
+        str = delete_script_sub( str, /^    EquipScript:/ )
+        return delete_script_sub( str, /^    UnEquipScript:/ )
+    end
+    def delete_script_sub( str, mark )
+        
+        start_pos = str.index( mark )
+        if start_pos == nil
+            return str
+        end
+        header = str.slice(0,start_pos)
+
         end_pos = str.index(/^    [^ ]/,start_pos+1)
         if end_pos == nil
-            end_pos = str.length
+            return header
         end
         script = str.slice(start_pos,end_pos-start_pos)
 
-        return start_pos,end_pos-start_pos
+        return header + str.slice( end_pos, str.size - end_pos )
     end
 end

@@ -177,10 +177,11 @@ def get_indent_space(textstr,fpos)
 end
 
 def on_btn_ins_clicked
-  $text_view_edit.grab_focus()
+  source_view = $source_views[$note_script.page]
+  source_view.grab_focus()
   code = $db.make_code($category_str,$script_str,$entry_arg.map{|w|w.text})
-  code.gsub!("\n","\n"+get_indent_space($text_view_edit.buffer.text,$text_view_edit.buffer.cursor_position))
-  $text_view_edit.buffer.insert_at_cursor(code)
+  code.gsub!("\n","\n"+get_indent_space(source_view.buffer.text,source_view.buffer.cursor_position))
+  source_view.buffer.insert_at_cursor(code)
 end
 
 def on_btn_load_script_clicked
@@ -190,7 +191,10 @@ def on_btn_load_script_clicked
     $ignore_next_event = true
     if dlg.run == Gtk::ResponseType::OK
       str = dlg.selected_value
-      $text_view_edit.buffer.text = $db.get_item_script(str)
+      script = $db.get_item_script(str)
+      script.size.times do |i|
+        $source_views[i].buffer.text = script[i]
+      end
       set_entry_str($entry_loaded_item_id,str)
       set_entry_str($entry_loaded_item_name,dlg.selected_key)
       $btn_inject_script.sensitive = true
@@ -199,12 +203,12 @@ def on_btn_load_script_clicked
 end
 
 def on_btn_copy_script_clicked
-  str = get_text_view_str($text_view_edit).dup
+  str = $source_views.map{|x|x.buffer.text.dup}
   Win32::Clipboard.set_data($db.decorate_to_yaml_format(str))
   Gdk::beep()
 end
 def on_btn_inject_script_clicked
-  str = get_text_view_str($text_view_edit).dup
+  str = $source_views.map{|x|x.buffer.text.dup}
   if $db.inject_item_script($entry_loaded_item_id.text,str) == false
     md = Gtk::MessageDialog.new(:parent => nil, :type => :info, :buttons_type => :close, :message => "Failed to inject script\nPlease paste manually")
 		md.signal_connect("response") do |widget, response|
@@ -233,22 +237,8 @@ $entry_script_search = builder.get_object('entry_script_search')
 $entry_loaded_item_id = builder.get_object('entry_loaded_item_id')
 $entry_loaded_item_name = builder.get_object('entry_loaded_item_name')
 $btn_inject_script = builder.get_object('btn_inject_script')
+$note_script = builder.get_object('note_script')
 $btn_inject_script.sensitive = false
-window_text = builder.get_object('window_text')
-
-$text_view_edit = GtkSource::View.new()
-$text_view_edit.set_insert_spaces_instead_of_tabs(true)
-$text_view_edit.set_indent_width(2)
-$text_view_edit.set_auto_indent(true)
-$text_view_edit.set_highlight_current_line(true)
-$text_view_edit.buffer.set_language(GtkSource::LanguageManager.new().get_language("c"))
-window_text.add( $text_view_edit )
-
-text_completion = $text_view_edit.completion
-text_completion.auto_complete_delay=10
-view_provider = GtkSource::CompletionWords.new('this script')
-view_provider.register($text_view_edit.buffer)
-text_completion.add_provider(view_provider) 
 
 keyword_provider = GtkSource::CompletionWords.new('keyword')
 keyword_buffer = GtkSource::Buffer.new
@@ -256,7 +246,24 @@ File.open( 'auto_complete.txt', mode = "r") do |f|
   keyword_buffer.set_text(f.read)
 end
 keyword_provider.register(keyword_buffer)
-text_completion.add_provider(keyword_provider) 
+$source_views=[]
+[builder.get_object('window_text_script'),builder.get_object('window_text_equip_script'),builder.get_object('window_text_unequip_script')].each do |note|
+  source_view = GtkSource::View.new()
+  source_view.set_insert_spaces_instead_of_tabs(true)
+  source_view.set_indent_width(2)
+  source_view.set_auto_indent(true)
+  source_view.set_highlight_current_line(true)
+  source_view.buffer.set_language(GtkSource::LanguageManager.new().get_language("c"))
+  note.add( source_view )
+
+  text_completion = source_view.completion
+  text_completion.auto_complete_delay=10
+  view_provider = GtkSource::CompletionWords.new('this script')
+  view_provider.register(source_view.buffer)
+  text_completion.add_provider(view_provider) 
+  text_completion.add_provider(keyword_provider) 
+  $source_views.push(source_view)
+end
 
 # Setup TreeView Column
 renderer = Gtk::CellRendererText.new
