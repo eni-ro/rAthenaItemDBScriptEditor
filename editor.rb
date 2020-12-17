@@ -146,9 +146,9 @@ def on_entry_arg6_focus_in_event
 end
 def arg_input_dialog(n)
   if $ignore_next_event == false
-    table = $db.script_arg_input($category_str,$script_str,n)
+    table,multi = $db.script_arg_input($category_str,$script_str,n)
     if table != nil
-      dlg = TablePickDialog.new(table)
+      dlg = TablePickDialog.new(table,multi)
       $ignore_next_event = true
       if dlg.run == Gtk::ResponseType::OK
         str = dlg.selected_value
@@ -187,7 +187,7 @@ end
 def on_btn_load_script_clicked
   table = $db.get_item_list
   if table != nil
-    dlg = TablePickDialog.new(table)
+    dlg = TablePickDialog.new(table,false)
     $ignore_next_event = true
     if dlg.run == Gtk::ResponseType::OK
       str = dlg.selected_value

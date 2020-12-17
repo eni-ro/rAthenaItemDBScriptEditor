@@ -221,11 +221,12 @@ class RADB
     def script_arg_input(category,script,n)
         v = pickup_script_arg(category,script,n)
         if v == nil || v['Type'] == nil
-            return nil
+            return nil,false
         end
         
         type = v['Type']
         input = nil
+        multi = false
         case type
             when 'Value' then
             when 'Item' then
@@ -237,13 +238,17 @@ class RADB
             when 'List' then
                 name = v['ListName']
                 if name != nil
-                    input = @const_conf.find{|v|v['Name']==name}
-                    if input != nil
-                        input = input['List']
+                    listconf = @const_conf.find{|v|v['Name']==name}
+                    if listconf != nil
+                        input = listconf['List']
+                        multi = listconf['MultiSelect']
+                        if multi != true
+                            multi = false
+                        end
                     end
                 end
         end
-        return input
+        return input,multi
     end
     def get_item_list
         return @item_db

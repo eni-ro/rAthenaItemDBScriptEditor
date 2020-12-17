@@ -4,7 +4,7 @@ require 'yaml'
 
 class TablePickDialog
     
-    def initialize( table )
+    def initialize( table, multi )
         ObjectSpace.define_finalizer(self, TablePickDialog.callback)
 
         @builder = Gtk::Builder.new(file: 'dialog.glade')
@@ -13,6 +13,10 @@ class TablePickDialog
         @entry_filter = @builder.get_object('search_entry_dlg_filter')
 
         #Setup TreeView
+        if multi
+            @dlg.title = @dlg.title + ' (MultiSelectMode)'
+            @tree_view_dlg_table.selection.mode = Gtk::SelectionMode::MULTIPLE
+        end
         renderer = Gtk::CellRendererText.new
         @item_col = Gtk::TreeViewColumn.new( "key", renderer, :text => 0 )
         @item_col.set_title('Item')
@@ -21,9 +25,9 @@ class TablePickDialog
         @value_col.set_title('Value')
         @tree_view_dlg_table.append_column(@value_col)
         @model = Gtk::ListStore.new(String,String)
-        @tree_view_dlg_table.model=@model
         
         @current_table = table
+        
         set_table('')
     end
 
@@ -48,6 +52,7 @@ class TablePickDialog
     end
     
     def set_table( filter)
+        @tree_view_dlg_table.model=nil
         @model.clear
         if @current_table == nil || !@current_table.instance_of?(Array)
             return
@@ -73,6 +78,7 @@ class TablePickDialog
                 end
             end
         end
+        @tree_view_dlg_table.model=@model
     end
     def on_tree_view_dlg_table_button_press_event(widget,event)
         if event.event_type == Gdk::EventType::BUTTON2_PRESS
@@ -83,10 +89,16 @@ class TablePickDialog
         key = ''
         val = ''
         sel = @tree_view_dlg_table.selection
-        if sel.selected
-            key = @model.get_value(sel.selected,0)
-            val = @model.get_value(sel.selected,1)
-        end
+        sel.each{|m,p,itr|
+            if key != ''
+                key = key + ' | '
+            end
+            key = key + @model.get_value(itr,0)
+            if val != ''
+                val = val + ' | '
+            end
+            val = val + @model.get_value(itr,1)
+        }
         @selectedkey = key
         @selectedvalue = val
     end

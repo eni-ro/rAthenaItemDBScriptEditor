@@ -186,6 +186,7 @@
       - All
       - Size_All
 - Name: Trigger criteria(bf)
+  MultiSelect: true
   List:
     -
       - melee attacks
@@ -209,6 +210,7 @@
       - skills
       - BF_SKILL
 - Name: Trigger criteria(atf)
+  MultiSelect: true
   List:
     -
       - effect on self
