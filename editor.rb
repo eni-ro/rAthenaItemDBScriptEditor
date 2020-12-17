@@ -204,9 +204,10 @@ end
 
 def on_btn_copy_script_clicked
   str = $source_views.map{|x|x.buffer.text.dup}
+  Gdk::beep() #to avoid gdk error,beep before copying script to clipboard
   Win32::Clipboard.set_data($db.decorate_to_yaml_format(str))
-  Gdk::beep()
 end
+
 def on_btn_inject_script_clicked
   str = $source_views.map{|x|x.buffer.text.dup}
   if $db.inject_item_script($entry_loaded_item_id.text,str) == false
