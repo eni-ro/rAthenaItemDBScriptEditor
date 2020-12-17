@@ -1,6 +1,6 @@
 # rAthena ItemDB Script Editor
 This editor is a scripting support tool.  
-<img src="https://user-images.githubusercontent.com/59181965/100858159-f6990f00-34d0-11eb-9a14-8deb720488e0.png" width=50%>
+<img src="https://user-images.githubusercontent.com/59181965/102481969-db6bf900-40a5-11eb-982a-db88d4ec9ce9.png" width=50%>
 <img src="https://user-images.githubusercontent.com/59181965/100858163-f8fb6900-34d0-11eb-9519-7ff1031cab18.png" width=25%>
 
 ## Requirement
@@ -17,18 +17,24 @@ After Ruby installation finished,open command prompt and type commands below
     `gem install win32-clipboard`  
 
 ## Useage
-1. Open 'db.yml',and add your original ItemDB/MobDB file path
-2. Run 'editor.rb'
-3. After editing script,push `Copy Script` button
-4. Open your ItemDB
-5. Paste script
+1. Open `db.yml`,and add your original ItemDB/MobDB file path
+2. Run `editor.rb`
+3. Load item script by selecting `Load` button at the right-top of window
+4. Edit script
+5. Select `Inject Script` button to overwrite your ItemDB file
 
 ## Known Issue
-* When you select an item from parameter list, the following error message will be displayed.
-I release this editor as it is,because I couldn't resolve this error and it works.
+* When you select an item from parameter list, the following error message will be displayed.  
+I release this editor as it is,because I couldn't resolve this error and it works.  
 `Gdk-CRITICAL **: gdk_device_get_source: assertion 'GDK_IS_DEVICE (device)' failed`
 
 ## History
+* v0.5
+  * Fix corrupting yaml file when injecting script is blank
+  * Add Equip/Unequip script load and inject feature(experimental)
+  * Add some scripts
+  * Improve to be able to select multiple parameter from dialog(for criteria)
+
 * v0.4
   * Improve insertion function to break lines with indentation
   * Add script load and inject feature(experimental)
