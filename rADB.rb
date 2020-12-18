@@ -217,6 +217,10 @@ class RADB
         end
         return v['Default'].to_s
     end
+    def script_arg_input_is_list?(category,script,n)
+        t,m = script_arg_input(category,script,n)
+        return t != nil
+    end
     
     def script_arg_input(category,script,n)
         v = pickup_script_arg(category,script,n)

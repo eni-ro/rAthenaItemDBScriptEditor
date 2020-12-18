@@ -23,11 +23,6 @@ After Ruby installation finished,open command prompt and type commands below
 4. Edit script
 5. Select `Inject Script` button to overwrite your ItemDB file
 
-## Known Issue
-* When you select an item from parameter list, the following error message will be displayed.  
-I release this editor as it is,because I couldn't resolve this error and it works.  
-`Gdk-CRITICAL **: gdk_device_get_source: assertion 'GDK_IS_DEVICE (device)' failed`
-
 ## History
 * v0.5
   * Fix corrupting yaml file when injecting script is blank

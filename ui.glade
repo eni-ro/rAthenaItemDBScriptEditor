@@ -116,194 +116,185 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="box_args">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="hexpand">True</property>
+                        <property name="spacing">5</property>
                         <child>
-                          <object class="GtkFixed">
-                            <property name="width-request">390</property>
-                            <property name="height-request">200</property>
+                          <!-- n-columns=2 n-rows=6 -->
+                          <object class="GtkGrid">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="halign">center</property>
-                            <property name="hexpand">True</property>
+                            <property name="margin-top">5</property>
+                            <property name="margin-bottom">5</property>
+                            <property name="row-spacing">5</property>
+                            <property name="column-spacing">5</property>
                             <child>
                               <object class="GtkLabel" id="label_param1_desc">
-                                <property name="name">label_param1_desc</property>
-                                <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="margin-left">10</property>
+                                <property name="margin-start">10</property>
+                                <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
-                                <property name="x">10</property>
-                                <property name="y">10</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="entry_arg1">
-                                <property name="name">entry_arg1</property>
-                                <property name="width-request">180</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <signal name="focus-in-event" handler="on_entry_arg1_focus_in_event" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="x">10</property>
-                                <property name="y">30</property>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">0</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkLabel" id="label_param2_desc">
-                                <property name="name">label_param2_desc</property>
-                                <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="margin-left">10</property>
+                                <property name="margin-start">10</property>
+                                <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
-                                <property name="x">200</property>
-                                <property name="y">10</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="entry_arg2">
-                                <property name="name">entry_arg2</property>
-                                <property name="width-request">180</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <signal name="focus-in-event" handler="on_entry_arg2_focus_in_event" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="x">200</property>
-                                <property name="y">30</property>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">0</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkLabel" id="label_param3_desc">
-                                <property name="name">label_param3_desc</property>
-                                <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="margin-left">10</property>
+                                <property name="margin-start">10</property>
+                                <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
-                                <property name="x">10</property>
-                                <property name="y">70</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="entry_arg3">
-                                <property name="name">entry_arg3</property>
-                                <property name="width-request">180</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <signal name="focus-in-event" handler="on_entry_arg3_focus_in_event" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="x">10</property>
-                                <property name="y">90</property>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">2</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkLabel" id="label_param4_desc">
-                                <property name="name">label_param4_desc</property>
-                                <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="margin-left">10</property>
+                                <property name="margin-start">10</property>
+                                <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
-                                <property name="x">200</property>
-                                <property name="y">70</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="entry_arg4">
-                                <property name="name">entry_arg4</property>
-                                <property name="width-request">180</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <signal name="focus-in-event" handler="on_entry_arg4_focus_in_event" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="x">200</property>
-                                <property name="y">90</property>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">2</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkLabel" id="label_param5_desc">
-                                <property name="name">label_param5_desc</property>
-                                <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="margin-left">10</property>
+                                <property name="margin-start">10</property>
+                                <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
-                                <property name="x">10</property>
-                                <property name="y">130</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="entry_arg5">
-                                <property name="name">entry_arg5</property>
-                                <property name="width-request">180</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <signal name="focus-in-event" handler="on_entry_arg5_focus_in_event" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="x">10</property>
-                                <property name="y">150</property>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">4</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkLabel" id="label_param6_desc">
-                                <property name="name">label_param6_desc</property>
-                                <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="margin-left">10</property>
+                                <property name="margin-start">10</property>
+                                <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">label</property>
                               </object>
                               <packing>
-                                <property name="x">200</property>
-                                <property name="y">130</property>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg1">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="secondary-icon-stock">gtk-find-and-replace</property>
+                                <signal name="icon-press" handler="on_entry_arg1_icon_press" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg2">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="secondary-icon-stock">gtk-find-and-replace</property>
+                                <signal name="icon-press" handler="on_entry_arg2_icon_press" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg3">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="secondary-icon-stock">gtk-find-and-replace</property>
+                                <signal name="icon-press" handler="on_entry_arg3_icon_press" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg4">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="secondary-icon-stock">gtk-find-and-replace</property>
+                                <signal name="icon-press" handler="on_entry_arg4_icon_press" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="entry_arg5">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="secondary-icon-stock">gtk-find-and-replace</property>
+                                <signal name="icon-press" handler="on_entry_arg5_icon_press" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">5</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkEntry" id="entry_arg6">
-                                <property name="name">entry_arg6</property>
-                                <property name="width-request">180</property>
-                                <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <signal name="focus-in-event" handler="on_entry_arg6_focus_in_event" swapped="no"/>
+                                <property name="hexpand">True</property>
+                                <property name="secondary-icon-stock">gtk-find-and-replace</property>
+                                <signal name="icon-press" handler="on_entry_arg6_icon_press" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="x">200</property>
-                                <property name="y">150</property>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">5</property>
                               </packing>
                             </child>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
@@ -320,19 +311,19 @@
                             <property name="tooltip-text" translatable="yes">insert selected script to text box</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
-                            <property name="hexpand">True</property>
+                            <property name="margin-start">10</property>
                             <signal name="clicked" handler="on_btn_ins_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">True</property>
+                            <property name="fill">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">True</property>
+                        <property name="fill">False</property>
                         <property name="position">2</property>
                       </packing>
                     </child>

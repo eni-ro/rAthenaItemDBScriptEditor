@@ -49,15 +49,34 @@ def on_btn_collapse_clicked
   $tee_view_script.collapse_all
 end
 
+def hide_arg(index)
+  set_label_str($label_param_desc[index],'')
+  $entry_arg[index].sensitive = false
+  $entry_arg[index].opacity = 0
+end
+def reveal_arg(index,label_str,entry_str,icon)
+  set_label_str($label_param_desc[index],label_str)
+  if entry_str != nil
+    set_entry_str($entry_arg[index],entry_str)
+  end
+  if icon
+    $entry_arg[index].secondary_icon_sensitive = true
+    $entry_arg[index].secondary_icon_activatable  = true
+  else
+    $entry_arg[index].secondary_icon_sensitive = false
+    $entry_arg[index].secondary_icon_activatable  = false
+  end
+  $entry_arg[index].sensitive = true
+  $entry_arg[index].opacity = 1
+end
+
 def on_tee_view_script_cursor_changed
   sel = $tee_view_script.selection
   if sel.selected
-    $label_param_desc.each do |w|
-      set_label_str(w,'')
-    end
-    $entry_arg.each do |w|
-      w.hide
-    end
+    # hide param input entries
+    $max_arg_num.times{|i|
+      hide_arg(i)
+    }
 
     parent_str = $script_model.get_value(sel.selected,0)
     disp_str = $script_model.get_value(sel.selected,1)
@@ -72,14 +91,15 @@ def on_tee_view_script_cursor_changed
     else
       set_label_str($label_script_desc,$db.script_desc(parent_str,disp_str))
       $db.script_arg_num(parent_str,disp_str).times do |i|
-        set_label_str($label_param_desc[i],$db.script_arg_desc(parent_str,disp_str,i))
+        label = $db.script_arg_desc(parent_str,disp_str,i)
+        entry = nil
         if arg_set_default == true
-          set_entry_str( $entry_arg[i], $db.script_arg_default(parent_str,disp_str,i) )
+          entry = $db.script_arg_default(parent_str,disp_str,i)
         end
-        $entry_arg[i].show
+        icon = $db.script_arg_input_is_list?(parent_str,disp_str,i)
+        reveal_arg(i,label,entry,icon)
       end
     end
-    $ignore_next_event = false
   end
 end
 
@@ -126,30 +146,28 @@ def set_entry_str(widget,str)
   end
 end
 
-def on_entry_arg1_focus_in_event
+def on_entry_arg1_icon_press
   arg_input_dialog(0)
 end
-def on_entry_arg2_focus_in_event
+def on_entry_arg2_icon_press
   arg_input_dialog(1)
 end
-def on_entry_arg3_focus_in_event
+def on_entry_arg3_icon_press
   arg_input_dialog(2)
 end
-def on_entry_arg4_focus_in_event
+def on_entry_arg4_icon_press
   arg_input_dialog(3)
 end
-def on_entry_arg5_focus_in_event
+def on_entry_arg5_icon_press
   arg_input_dialog(4)
 end
-def on_entry_arg6_focus_in_event
+def on_entry_arg6_icon_press
   arg_input_dialog(5)
 end
 def arg_input_dialog(n)
-  if $ignore_next_event == false
     table,multi = $db.script_arg_input($category_str,$script_str,n)
     if table != nil
       dlg = TablePickDialog.new(table,multi)
-      $ignore_next_event = true
       if dlg.run == Gtk::ResponseType::OK
         str = dlg.selected_value
         if str != ''
@@ -157,9 +175,6 @@ def arg_input_dialog(n)
         end
       end
     end
-  else
-    $ignore_next_event = false
-  end
 end
 
 def get_indent_space(textstr,fpos)
@@ -188,7 +203,6 @@ def on_btn_load_script_clicked
   table = $db.get_item_list
   if table != nil
     dlg = TablePickDialog.new(table,false)
-    $ignore_next_event = true
     if dlg.run == Gtk::ResponseType::OK
       str = dlg.selected_value
       script = $db.get_item_script(str)
@@ -234,6 +248,7 @@ $tee_view_script = builder.get_object('tee_view_script')
 $entry_arg = [ builder.get_object('entry_arg1'), builder.get_object('entry_arg2'), builder.get_object('entry_arg3'), builder.get_object('entry_arg4'), builder.get_object('entry_arg5'), builder.get_object('entry_arg6')]
 $label_script_desc = builder.get_object('label_script_desc')
 $label_param_desc = [builder.get_object('label_param1_desc'), builder.get_object('label_param2_desc'), builder.get_object('label_param3_desc'), builder.get_object('label_param4_desc'), builder.get_object('label_param5_desc'), builder.get_object('label_param6_desc')]
+$max_arg_num = $entry_arg.size
 $entry_script_search = builder.get_object('entry_script_search')
 $entry_loaded_item_id = builder.get_object('entry_loaded_item_id')
 $entry_loaded_item_name = builder.get_object('entry_loaded_item_name')
@@ -285,12 +300,9 @@ $win.title = $win.title + ' v0.5'
 $win.show_all
 
 # hide param input entries
-$label_param_desc.each do |w|
-  set_label_str(w,'')
-end
-$entry_arg.each do |w|
-  w.hide
-end
+$max_arg_num.times{|i|
+  hide_arg(i)
+}
 
 puts 'launch editor'
 Gtk.main
