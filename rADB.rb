@@ -390,7 +390,7 @@ class ItemYamlInjecter
         end
         header = @str.slice(0,start_pos)
         item = @str.slice(start_pos,end_pos-start_pos)
-        footer = @str.slice(start_pos, @str.length-end_pos)
+        footer = @str.slice(end_pos, @str.length-end_pos)
         if footer == nil
             footer = ""
         end
