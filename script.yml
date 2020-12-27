@@ -1565,6 +1565,18 @@
         ListName: Status Effect
       - Desc: n
         Type: Value
+  - Name: Resist Effect
+    Desc:
+      - bonus2 bResEff,eff,n;
+      - --------------------
+      - Adds a n/100% tolerance to status eff
+    Script: bonus2 bResEff,ARG1,ARG2;
+    Args:
+      - Desc: eff
+        Type: List
+        ListName: Status Effect
+      - Desc: n
+        Type: Value
   - Name: Status Effect when Attack (with trigger)
     Desc:
       - bonus3 bAddEff,eff,n,atf;
@@ -2850,6 +2862,17 @@
       - Maximum amount of spell points.
     Script: MaxSp
     ScriptNoReturn: true
+  - Name: Status
+    Desc:
+      - readparam(st)
+      - --------------------
+      - Read status parameter.
+    Script: readparam(ARG1)
+    ScriptNoReturn: true
+    Args:
+      - Desc: st
+        Type: List
+        ListName: Status
   - Name: Status Point
     Desc:
       - StatusPoint
@@ -2927,6 +2950,32 @@
       - 0 if female, 1 if male.
     Script: Sex
     ScriptNoReturn: true
+  - Name: Check Weight
+    Desc:
+      - checkweight(<item id>,<amount>{,<item id>,<amount>,<item id>,<amount>,...});
+      - --------------------
+      - These functions will compute and return 1 if the total weight of the specified number of specific items does not exceed the invoking character's carrying capacity, and 0 otherwise.
+      - It is important to see if a player can carry the items you expect to give them, failing to do that may open your script up to abuse or create some very unfair errors.
+    Script: if( checkweight(ARG1,ARG2) == 0 ){}
+    ScriptNoReturn: true
+    Args:
+      - Desc: item id
+        Type: Item
+      - Desc: amount
+        Type: Value
+  - Name: Check Weight (array)
+    Desc:
+      - checkweight2(<id_array>,<amount_array>);
+      - --------------------
+      - These functions will compute and return 1 if the total weight of the specified number of specific items does not exceed the invoking character's carrying capacity, and 0 otherwise.
+      - It is important to see if a player can carry the items you expect to give them, failing to do that may open your script up to abuse or create some very unfair errors.
+    Script: if( checkweight2(ARG1,ARG2) == 0 ){}
+    ScriptNoReturn: true
+    Args:
+      - Desc: id_array
+        Type: Value
+      - Desc: amount_array
+        Type: Value
   - Name: Job
     Desc:
       - Class

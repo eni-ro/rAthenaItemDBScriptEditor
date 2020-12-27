@@ -714,4 +714,24 @@
   -
     - Summoner
     - EAJ_SUMMONER
+- Name: Status
+  List:
+  -
+    - Str
+    - bStr
+  -
+    - Agi
+    - bAgi
+  -
+    - Vit
+    - bVit
+  -
+    - Int
+    - bInt
+  -
+    - Dex
+    - bDex
+  -
+    - Luk
+    - bLuk
 ...
