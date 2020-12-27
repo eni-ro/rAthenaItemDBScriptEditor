@@ -24,8 +24,12 @@ After Ruby installation finished,open command prompt and type commands below
 5. Select `Inject Script` button to overwrite your ItemDB file
 
 ## History
+* v0.7
+  * Fix file corruption when injecting
+  * Add some scripts
+
 * v0.6
-  * Fixe GDK error asserted when selecting a parameter
+  * Fix GDK error asserted when selecting a parameter
 
 * v0.5
   * Fix corrupting yaml file when injecting script is blank
