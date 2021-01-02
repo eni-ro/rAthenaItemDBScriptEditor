@@ -79,6 +79,7 @@ petrecovery
 playBGM
 pow
 rand
+readparam
 repair
 repairall
 round

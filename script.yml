@@ -820,6 +820,8 @@
       - Adjust casting time of skill sk by n%.(If RENEWAL_CAST is defined, this bonus is equal to bVariableCastrate)
     Script: bonus2 bCastrate,ARG1,ARG2;
     Args:
+      - Desc: sk
+        Type: Skill
       - Desc: n
         Type: Value
   - Name: Increase Fixed Cast Time Rate
@@ -1806,11 +1808,12 @@
       - bonus4 bAutoSpell,sk,y,n,i;
       - --------------------
       - Adds a n/10% chance to cast skill sk of level y when attacking
-    Script: bonus4 bAutoSpell,ARG1,ARG2,ARG3,ARG4;
+      - i provides additional options (bitfield)
       - ' &0 = cast on self'
       - ' &1 = cast on enemy'
       - ' &2 = use random skill level in [1..y]'
       - ' &3 = 1+2 (random level on enemy)'
+    Script: bonus4 bAutoSpell,ARG1,ARG2,ARG3,ARG4;
     Args:
       - Desc: sk
         Type: Skill
@@ -1826,11 +1829,12 @@
       - bonus5 bAutoSpell,sk,y,n,bf,i;
       - --------------------
       - Adds a n/10% chance to cast skill sk of level y when attacking with trigger criteria bf
-    Script: bonus5 bAutoSpell,ARG1,ARG2,ARG3,ARG4,ARG5;
+      - i provides additional options (bitfield)
       - ' &0 = cast on self'
       - ' &1 = cast on enemy'
       - ' &2 = use random skill level in [1..y]'
       - ' &3 = 1+2 (random level on enemy)'
+    Script: bonus5 bAutoSpell,ARG1,ARG2,ARG3,ARG4,ARG5;
     Args:
       - Desc: sk
         Type: Skill
@@ -3033,7 +3037,7 @@
     Desc:
       - |
         set .@eac, eaclass();
-        if(( .@eac & EAJ_UPPERMASK4 ) == CheckedJob )
+        if(( .@eac & EAJ_UPPERMASK ) == CheckedJob )
         --------------------
         Just like Base Job Check
     Script: |
@@ -3177,7 +3181,7 @@
       And we usually use 'other script' to show visual effects.
       In all cases, when the script triggers, the attached player will be the one who holds the bonus.
       There is currently no way of knowing within this script who was the other character (the attacker in autobonus2, or the target in autobonus and autobonus3).
-    Script: autobonus2 "{}",ARG1,ARG2;
+    Script: autobonus2 "{}",ARG1,ARG2,ARG3;
     Args:
       - Desc: n
         Type: Value
