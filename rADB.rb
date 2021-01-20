@@ -355,6 +355,9 @@ class ItemYamlInjecter
     end
     def inject_script( id, script )
         script = apply_file_break_line(script)
+        if script== nil
+            script = ''
+        end
 
         # find item text
         header,item,footer = extract_item(id)
