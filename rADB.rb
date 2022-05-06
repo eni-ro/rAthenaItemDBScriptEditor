@@ -78,13 +78,19 @@ class RADB
         db = {}
         files.each do |f|
             puts "    loading #{f}..."
-            File.open(f, mode = "r", encoding: enc+':utf-8'){|fr|
-                fr.each_line{|line|
-                    if line =~ /^(\d+),[^,]+,([^,]+)/
-                        db[$1]=$2
+            File.open(f, mode = "r", encoding: enc+':utf-8') do |fr|
+                str = fr.read
+                x = YAML.load(str)
+                if x['Body'] != nil
+                    x['Body'].each do |mob|
+                        if mob['JapaneseName'] != nil
+                            db[mob['Id']] = mob['JapaneseName']
+                        else
+                            db[mob['Id']] = mob['Name']
+                        end
                     end
-                }
-            }
+                end
+            end
         end
         id_ary = db.keys.map{|x|x.to_s}
         name_ary = db.values

@@ -178,6 +178,9 @@ def arg_input_dialog(n)
 end
 
 def get_indent_space(textstr,fpos)
+  if fpos > 0
+    fpos = fpos - 1
+  end
   lhome = textstr.rindex("\n",fpos)
   if lhome == nil
       lhome = 0

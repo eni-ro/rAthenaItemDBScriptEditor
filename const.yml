@@ -43,6 +43,15 @@
     -
       - Stun
       - Eff_Stun
+    -
+      - Freezing
+      - Eff_Freezing
+    -
+      - Heat
+      - Eff_Heat
+    -
+      - Deepsleep
+      - Eff_Deepsleep
 - Name: Element
   List:
     - 
@@ -121,42 +130,90 @@
       - RC_All
 - Name: Monster Race
   List:
-    -
+    - 
       - Goblin
       - RC2_Goblin
-    -
+    - 
       - Kobold
       - RC2_Kobold
-    -
+    - 
       - Orc
       - RC2_Orc
-    -
+    - 
       - Golem
       - RC2_Golem
-    -
+    - 
       - Guardian
       - RC2_Guardian
-    -
+    - 
       - Ninja
       - RC2_Ninja
-    -
+    - 
+      - GVG
+      - RC2_GVG
+    - 
+      - Battlefield
+      - RC2_Battlefield
+    - 
+      - Treasure
+      - RC2_Treasure
+    - 
       - BioLab
       - RC2_BioLab
-    -
-      - SCARABA
-      - RC2_SCARABA
-    -
-      - FACEWORM
-      - RC2_FACEWORM
-    -
-      - THANATOS
-      - RC2_THANATOS
-    -
-      - CLOCKTOWER
-      - RC2_CLOCKTOWER
-    -
-      - ROCKRIDGE
-      - RC2_ROCKRIDGE
+    - 
+      - Manuk
+      - RC2_Manuk
+    - 
+      - Splendide
+      - RC2_Splendide
+    - 
+      - Scaraba
+      - RC2_Scaraba
+    - 
+      - OGH_ATK_DEF
+      - RC2_OGH_ATK_DEF
+    - 
+      - OGH_Hidden
+      - RC2_OGH_Hidden
+    - 
+      - Bio5_Swordman_Thief
+      - RC2_Bio5_Swordman_Thief
+    - 
+      - Bio5_Acolyte_Merchant
+      - RC2_Bio5_Acolyte_Merchant
+    - 
+      - Bio5_Mage_Archer
+      - RC2_Bio5_Mage_Archer
+    - 
+      - Bio5_MVP
+      - RC2_Bio5_MVP
+    - 
+      - Clocktower
+      - RC2_Clocktower
+    - 
+      - Thanatos
+      - RC2_Thanatos
+    - 
+      - Faceworm
+      - RC2_Faceworm
+    - 
+      - Hearthunter
+      - RC2_Hearthunter
+    - 
+      - Rockridge
+      - RC2_Rockridge
+    - 
+      - Werner_Lab
+      - RC2_Werner_Lab
+    - 
+      - Temple_Demon
+      - RC2_Temple_Demon
+    - 
+      - Illusion_Vampire
+      - RC2_Illusion_Vampire
+    - 
+      - Malangdo
+      - RC2_Malangdo
 - Name: Class
   List:
     -
@@ -714,6 +771,185 @@
   -
     - Summoner
     - EAJ_SUMMONER
+- Name: EAJL4
+  List:
+  -
+    - Novice
+    - EAJ_NOVICE
+  -
+    - Swordman
+    - EAJ_SWORDMAN
+  -
+    - Mage
+    - EAJ_MAGE
+  -
+    - Archer
+    - EAJ_ARCHER
+  -
+    - Acolyte
+    - EAJ_ACOLYTE
+  -
+    - Merchant
+    - EAJ_MERCHANT
+  -
+    - Thief
+    - EAJ_THIEF
+  -
+    - Knight
+    - EAJ_KNIGHT
+  -
+    - Wizard
+    - EAJ_WIZARD
+  -
+    - Hunter
+    - EAJ_HUNTER
+  -
+    - Priest
+    - EAJ_PRIEST
+  -
+    - Blacksmith
+    - EAJ_BLACKSMITH
+  -
+    - Assassin
+    - EAJ_ASSASSIN
+  -
+    - Crusader
+    - EAJ_CRUSADER
+  -
+    - Sage
+    - EAJ_SAGE
+  -
+    - Bard/Dancer
+    - EAJ_BARDDANCER
+  -
+    - Monk
+    - EAJ_MONK
+  -
+    - Alchemist
+    - EAJ_ALCHEMIST
+  -
+    - Rogue
+    - EAJ_ROGUE
+  -
+    - Rune Knight
+    - EAJ_RUNE_KNIGHT
+  -
+    - Warlock
+    - EAJ_WARLOCK
+  -
+    - Ranger
+    - EAJ_RANGER
+  -
+    - Arch Bishop
+    - EAJ_ARCH_BISHOP
+  -
+    - Mechanic
+    - EAJ_MECHANIC
+  -
+    - Guillotine Cross
+    - EAJ_GUILLOTINE_CROSS
+  -
+    - Royal Guard
+    - EAJ_ROYAL_GUARD
+  -
+    - Sorcerer
+    - EAJ_SORCERER
+  -
+    - Minstrel/Wanderer
+    - EAJ_MINSTRELWANDERER
+  -
+    - Sura
+    - EAJ_SURA
+  -
+    - Genetic
+    - EAJ_GENETIC
+  -
+    - Shadow Chaser
+    - EAJ_SHADOW_CHASER
+  -
+    - Super Novice
+    - EAJ_SUPER_NOVICE
+  -
+    - Taekwon
+    - EAJ_TAEKWON
+  -
+    - Star Gladiator
+    - EAJ_STAR_GLADIATOR
+  -
+    - Soul Linker
+    - EAJ_SOUL_LINKER
+  -
+    - Star Emperor
+    - EAJ_STAR_EMPEROR
+  -
+    - Soul Reaper
+    - EAJ_SOUL_REAPER
+  -
+    - Gunslinger
+    - EAJ_GUNSLINGER
+  -
+    - Rebellion
+    - EAJ_REBELLION
+  -
+    - Ninja
+    - EAJ_NINJA
+  -
+    - Kagerou/Oboro
+    - EAJ_KAGEROUOBORO
+  -
+    - Summoner
+    - EAJ_SUMMONER
+  -
+    - Hyper Novice
+    - EAJ_HYPER_NOVICE
+  -
+    - Dragon Knight
+    - EAJ_DRAGON_KNIGHT
+  -
+    - Arch Mage
+    - EAJ_ARCH_MAGE
+  -
+    - Windhawk
+    - EAJ_WINDHAWK
+  -
+    - Cardinal
+    - EAJ_CARDINAL
+  -
+    - Meister
+    - EAJ_MEISTER
+  -
+    - Shadow Cross
+    - EAJ_SHADOW_CROSS
+  -
+    - Sky Emperor
+    - EAJ_SKY_EMPEROR
+  -
+    - Night Watch
+    - EAJ_NIGHT_WATCH
+  -
+    - Shinkiro Shiranui
+    - EAJ_SHINKIRO_SHIRANUI
+  -
+    - Imperial_Guard
+    - EAJ_IMPERIAL_GUARD
+  -
+    - Elemental Master
+    - EAJ_ELEMENTAL_MASTER
+  -
+    - Troubadourtrouvere
+    - EAJ_TROUBADOURTROUVERE
+  -
+    - Inquisitor
+    - EAJ_INQUISITOR
+  -
+    - Biolo
+    - EAJ_BIOLO
+  -
+    - Abyss Chaser
+    - EAJ_ABYSS_CHASER
+  -
+    - Soul Ascetic
+    - EAJ_SOUL_ASCETIC
 - Name: Status
   List:
   -

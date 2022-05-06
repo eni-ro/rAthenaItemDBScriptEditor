@@ -88,9 +88,72 @@
     Args:
       - Desc: n
         Type: Value
-# HP/SP
-- Category: Basic HP/SP Bonus
-  Desc: Basic Max HP/SP Bonus
+  - Name: Pow
+    Desc:
+      - bonus bPow,n;
+      - --------------------
+      - POW + n
+    Script: bonus bPow,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Sta
+    Desc:
+      - bonus bSta,n;
+      - --------------------
+      - STA + n
+    Script: bonus bSta,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Wis
+    Desc:
+      - bonus bWis,n;
+      - --------------------
+      - WIS + n
+    Script: bonus bWis,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Spl
+    Desc:
+      - bonus bSpl,n;
+      - --------------------
+      - SPL + n
+    Script: bonus bSpl,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Con
+    Desc:
+      - bonus bCon,n;
+      - --------------------
+      - CON + n
+    Script: bonus bCon,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Crt
+    Desc:
+      - bonus bCrt,n;
+      - --------------------
+      - CRT + n
+    Script: bonus bCrt,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: AllTraitStats
+    Desc:
+      - bonus bAllTraitStats,n;
+      - --------------------
+      - POW + n, STA + n, WIS + n, SPL + n, CON + n, CRT + n
+    Script: bonus bAllTraitStats,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+# HP/SP/AP
+- Category: Basic HP/SP/AP Bonus
+  Desc: Basic Max HP/SP/AP Bonus
   Script:
   - Name: MaxHP
     Desc:
@@ -125,6 +188,24 @@
       - --------------------
       - MaxSP + n%
     Script: bonus bMaxSPrate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MaxAP
+    Desc:
+      - bonus bMaxAP,n;
+      - --------------------
+      - MaxAP + n
+    Script: bonus bMaxAP,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MaxAP[%]
+    Desc:
+      - bonus bMaxAPrate,n;
+      - --------------------
+      - MaxAP + n%
+    Script: bonus bMaxAPrate,ARG1;
     Args:
       - Desc: n
         Type: Value
@@ -449,6 +530,114 @@
     Args:
       - Desc: n
         Type: Value
+  - Name: PAtk
+    Desc:
+      - bonus bPAtk,n;
+      - --------------------
+      - PAtk + n
+    Script: bonus bPAtk,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: PAtk[%]
+    Desc:
+      - bonus bPAtkRate,n;
+      - --------------------
+      - PAtk + n%
+    Script: bonus bPAtkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: SMatk
+    Desc:
+      - bonus bSMatk,n;
+      - --------------------
+      - SMatk + n
+    Script: bonus bSMatk,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: SMatk[%]
+    Desc:
+      - bonus bSMatkRate,n;
+      - --------------------
+      - SMatk + n%
+    Script: bonus bSMatkRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Res
+    Desc:
+      - bonus bRes,n;
+      - --------------------
+      - Res + n
+    Script: bonus bRes,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Res[%]
+    Desc:
+      - bonus bResRate,n;
+      - --------------------
+      - Res + n%
+    Script: bonus bResRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MRes
+    Desc:
+      - bonus bMRes,n;
+      - --------------------
+      - MRes + n
+    Script: bonus bMRes,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: MRes[%]
+    Desc:
+      - bonus bMResRate,n;
+      - --------------------
+      - MRes + n%
+    Script: bonus bMResRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: HPlus
+    Desc:
+      - bonus bHPlus,n;
+      - --------------------
+      - HPlus + n
+    Script: bonus bHPlus,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: HPlus[%]
+    Desc:
+      - bonus bHPlusRate,n;
+      - --------------------
+      - HPlus + n%
+    Script: bonus bHPlusRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: CRate
+    Desc:
+      - bonus bCRate,n;
+      - --------------------
+      - CRate + n
+    Script: bonus bCRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: CRate[%]
+    Desc:
+      - bonus bCRateRate,n;
+      - --------------------
+      - CRate + n%
+    Script: bonus bCRateRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
 # Extended HP/SP Bonus
 - Category: Extended HP/SP Bonus
   Desc: Extended HP/SP Bonus
@@ -768,7 +957,7 @@
         Type: Skill
       - Desc: n
         Type: Value
-  - Name: Healed Bonus (all items)
+  - Name: Healed HP Bonus (all items)
     Desc:
       - bonus bAddItemHealRate,n;
       - --------------------
@@ -777,7 +966,7 @@
     Args:
       - Desc: n
         Type: Value
-  - Name: Healed Bonus (specific items)
+  - Name: Healed HP Bonus (specific items)
     Desc:
       - bonus2 bAddItemHealRate,iid,n;
       - --------------------
@@ -788,12 +977,43 @@
         Type: Item
       - Desc: n
         Type: Value
-  - Name: Healed Bonus (specific item group)
+  - Name: Healed HP Bonus (specific item group)
     Desc:
       - bonus2 bAddItemGroupHealRate,ig,n;
       - --------------------
       - Increases HP recovered by n% for items of item group ig
     Script: bonus2 bAddItemGroupHealRate,ARG1,ARG2;
+    Args:
+      - Desc: ig
+        Type: Value
+      - Desc: n
+        Type: Value
+  - Name: Healed SP Bonus (all items)
+    Desc:
+      - bonus bAddItemSPHealRate,n;
+      - --------------------
+      - Increases SP recovered by n% for healing items
+    Script: bonus bAddItemSPHealRate,ARG1;
+    Args:
+      - Desc: n
+        Type: Value
+  - Name: Healed SP Bonus (specific items)
+    Desc:
+      - bonus2 bAddItemSPHealRate,iid,n;
+      - --------------------
+      - Increases SP recovered by n% for item iid
+    Script: bonus2 bAddItemSPHealRate,ARG1,ARG2;
+    Args:
+      - Desc: iid
+        Type: Item
+      - Desc: n
+        Type: Value
+  - Name: Healed SP Bonus (specific item group)
+    Desc:
+      - bonus2 bAddItemGroupSPHealRate,ig,n;
+      - --------------------
+      - Increases SP recovered by n% for items of item group ig
+    Script: bonus2 bAddItemGroupSPHealRate,ARG1,ARG2;
     Args:
       - Desc: ig
         Type: Value
@@ -3072,6 +3292,31 @@
     Script: |
         set .@eac, eaclass();
         if( .@eac & EAJL_THIRD )
+  - Name: eAJ 4th Job Check
+    Desc:
+      - |
+        set .@eac, eaclass();
+        if(( .@eac & EAJL_FOURTH ) == CheckedJob )
+        --------------------
+        Just like Base Job Check
+    Script: |
+        set .@eac, eaclass();
+        if(( .@eac & EAJL_FOURTH ) == ARG1 )
+    Args:
+      - Desc: CheckedJob
+        Type: List
+        ListName: EAJL4
+  - Name: eAJ Is 4th
+    Desc:
+      - |
+        set .@eac, eaclass();
+        if( .@eac & EAJL_FOURTH )
+        --------------------
+        Only Check if Current Job is 4th Job or not
+        Be careful Star Emperor and Soul Reaper fall true.
+    Script: |
+        set .@eac, eaclass();
+        if( .@eac & EAJL_FOURTH )
   - Name: Karma
     Desc:
       - |
