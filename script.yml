@@ -3418,7 +3418,7 @@
         Type: Value
   - Name: Auto Bonus when using skill
     Desc: |
-      autobonus2 <bonus script>,n,t,sk,{<other script>};
+      autobonus3 <bonus script>,n,t,sk,{<other script>};
       --------------------
       Adds a n/10% chance to get bonus t msec when using skill sk
       The difference between the optional argument 'other script' and the 'bonus script' is that,the former one triggers only when attacking(or attacked) and the latter one runs on status calculation as well, which makes sure, within the duration, the "bonus" that get lost on status calculation is restored.
@@ -3426,7 +3426,7 @@
       And we usually use 'other script' to show visual effects.
       In all cases, when the script triggers, the attached player will be the one who holds the bonus.
       There is currently no way of knowing within this script who was the other character (the attacker in autobonus2, or the target in autobonus and autobonus3).
-    Script: autobonus2 "{}",ARG1,ARG2,ARG3;
+    Script: autobonus3 "{}",ARG1,ARG2,ARG3;
     Args:
       - Desc: n
         Type: Value
