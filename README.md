@@ -24,6 +24,10 @@ After Ruby installation finished,open command prompt and type commands below
 5. Select `Inject Script` button to overwrite your ItemDB file
 
 ## History
+* v0.8
+  * Change Mob DB format to YAML
+  * Add some scripts
+
 * v0.7
   * Fix file corruption when injecting
   * Add some scripts
