@@ -3,10 +3,11 @@ Item:
   - re/item_db_usable.yml
   - re/item_db_equip.yml
   - re/item_db_etc.yml
-#  - import/item_db_equip_original.yml
+  - import/item_db.yml
 Mob:
-  - re/mob_db.txt
-  - import/mob_db.txt
+  - re/mob_db.yml
+  - import/mob_db.yml
 Skill:
   - re/skill_db.yml
+  - import/skill_db.yml
 ...
