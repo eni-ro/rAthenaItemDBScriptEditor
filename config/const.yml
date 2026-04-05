@@ -1,0 +1,702 @@
+---
+- Name: Status Effect
+  List:
+    - - Bleeding
+      - Eff_Bleeding
+    - - Blind
+      - Eff_Blind
+    - - Burning
+      - Eff_Burning
+    - - Confusion
+      - Eff_Confusion
+    - - Crystalize
+      - Eff_Crystalize
+    - - Curse
+      - Eff_Curse
+    - - DPoison
+      - Eff_DPoison
+    - - Fear
+      - Eff_Fear
+    - - Freeze
+      - Eff_Freeze
+    - - Poison
+      - Eff_Poison
+    - - Silence
+      - Eff_Silence
+    - - Sleep
+      - Eff_Sleep
+    - - Stone
+      - Eff_Stone
+    - - Stun
+      - Eff_Stun
+    - - Freezing
+      - Eff_Freezing
+    - - Heat
+      - Eff_Heat
+    - - Deepsleep
+      - Eff_Deepsleep
+    - - WhiteImprison
+      - Eff_WhiteImprison
+    - - Hallucination
+      - Eff_Hallucination
+- Name: Element
+  List:
+    - - Dark
+      - Ele_Dark
+    - - Earth
+      - Ele_Earth
+    - - Fire
+      - Ele_Fire
+    - - Ghost
+      - Ele_Ghost
+    - - Holy
+      - Ele_Holy
+    - - Neutral
+      - Ele_Neutral
+    - - Poison
+      - Ele_Poison
+    - - Undead
+      - Ele_Undead
+    - - Water
+      - Ele_Water
+    - - Wind
+      - Ele_Wind
+    - - All
+      - Ele_All
+- Name: Race
+  List:
+    - - Angel
+      - RC_Angel
+    - - Brute
+      - RC_Brute
+    - - DemiHuman
+      - RC_DemiHuman
+    - - Demon
+      - RC_Demon
+    - - Dragon
+      - RC_Dragon
+    - - Fish
+      - RC_Fish
+    - - Formless
+      - RC_Formless
+    - - Insect
+      - RC_Insect
+    - - Plant
+      - RC_Plant
+    - - Player_Human
+      - RC_Player_Human
+    - - Player_Doram
+      - RC_Player_Doram
+    - - Undead
+      - RC_Undead
+    - - All
+      - RC_All
+- Name: Monster Race
+  List:
+    - - Goblin
+      - RC2_Goblin
+    - - Kobold
+      - RC2_Kobold
+    - - Orc
+      - RC2_Orc
+    - - Golem
+      - RC2_Golem
+    - - Guardian
+      - RC2_Guardian
+    - - Ninja
+      - RC2_Ninja
+    - - GVG
+      - RC2_GVG
+    - - Battlefield
+      - RC2_Battlefield
+    - - Treasure
+      - RC2_Treasure
+    - - BioLab
+      - RC2_BioLab
+    - - Manuk
+      - RC2_Manuk
+    - - Splendide
+      - RC2_Splendide
+    - - Scaraba
+      - RC2_Scaraba
+    - - OGH_ATK_DEF
+      - RC2_OGH_ATK_DEF
+    - - OGH_Hidden
+      - RC2_OGH_Hidden
+    - - Bio5_Swordman_Thief
+      - RC2_Bio5_Swordman_Thief
+    - - Bio5_Acolyte_Merchant
+      - RC2_Bio5_Acolyte_Merchant
+    - - Bio5_Mage_Archer
+      - RC2_Bio5_Mage_Archer
+    - - Bio5_MVP
+      - RC2_Bio5_MVP
+    - - Clocktower
+      - RC2_Clocktower
+    - - Thanatos
+      - RC2_Thanatos
+    - - Faceworm
+      - RC2_Faceworm
+    - - Hearthunter
+      - RC2_Hearthunter
+    - - Rockridge
+      - RC2_Rockridge
+    - - Werner_Lab
+      - RC2_Werner_Lab
+    - - Temple_Demon
+      - RC2_Temple_Demon
+    - - Illusion_Vampire
+      - RC2_Illusion_Vampire
+    - - Malangdo
+      - RC2_Malangdo
+    - - RC2_EP172ALPHA
+      - EP172ALPHA
+    - - RC2_EP172BETA
+      - EP172BETA
+    - - RC2_EP172BATH
+      - EP172BATH
+    - - RC2_Illusion_Turtle
+      - Illusion_Turtle
+    - - RC2_Rachel_Sanctuary
+      - Rachel_Sanctuary
+    - - RC2_Illusion_Luanda
+      - Illusion_Luanda
+    - - RC2_Illusion_Frozen
+      - Illusion_Frozen
+    - - RC2_Illusion_Moonlight
+      - Illusion_Moonlight
+    - - RC2_Ep16_def
+      - Ep16_def
+    - - RC2_Edda_Arunafeltz
+      - Edda_Arunafeltz
+    - - RC2_Lasagna
+      - Lasagna
+    - - RC2_Glast_Heim_Abyss
+      - Glast_Heim_Abyss
+    - - RC2_Destroyed_Valkyrie_Realm
+      - Destroyed_Valkyrie_Realm
+    - - RC2_Encroached_Gephenia
+      - Encroached_Gephenia
+- Name: Class
+  List:
+    - - Normal
+      - Class_Normal
+    - - Boss
+      - Class_Boss
+    - - Guardian
+      - Class_Guardian
+    - - All
+      - Class_All
+- Name: Size
+  List:
+    - - Small
+      - Size_Small
+    - - Medium
+      - Size_Medium
+    - - Large
+      - Size_Large
+    - - All
+      - Size_All
+- Name: Trigger criteria(bf)
+  MultiSelect: true
+  List:
+    - - melee attacks
+      - BF_SHORT
+    - - ranged attacks
+      - BF_LONG
+    - - weapon attacks
+      - BF_WEAPON
+    - - magic attacks
+      - BF_MAGIC
+    - - misc attacks
+      - BF_MISC
+    - - normal attacks
+      - BF_NORMAL
+    - - skills
+      - BF_SKILL
+- Name: Trigger criteria(atf)
+  MultiSelect: true
+  List:
+    - - effect on self
+      - ATF_SELF
+    - - effect on target
+      - ATF_TARGET
+    - - melee attacks
+      - ATF_SHORT
+    - - ranged attacks
+      - ATF_LONG
+    - - magic/misc skills
+      - ATF_SKILL
+    - - weapon skill / physical attacks
+      - ATF_WEAPON
+    - - magic skills
+      - ATF_MAGIC
+    - - misc skills
+      - ATF_MISC
+- Name: Equipment Slot
+  List:
+    - - Item slot that calls this script
+      - EQI_COMPOUND_ON
+    - - Accessory 1
+      - EQI_ACC_L
+    - - Accessory 2
+      - EQI_ACC_R
+    - - Footgear
+      - EQI_SHOES
+    - - Garment
+      - EQI_GARMENT
+    - - Lower Headgear
+      - EQI_HEAD_LOW
+    - - Middle Headgear
+      - EQI_HEAD_MID
+    - - Upper Headgear
+      - EQI_HEAD_TOP
+    - - Armor
+      - EQI_ARMOR
+    - - Left hand (weapons, shields)
+      - EQI_HAND_L
+    - - Right hand (weapons)
+      - EQI_HAND_R
+    - - Upper Costume Headgear
+      - EQI_COSTUME_HEAD_TOP
+    - - Middle Costume Headgear
+      - EQI_COSTUME_HEAD_MID
+    - - Lower Costume Headgear
+      - EQI_COSTUME_HEAD_LOW
+    - - Costume Garment
+      - EQI_COSTUME_GARMENT
+    - - Arrow/Ammunition
+      - EQI_AMMO
+    - - Shadow Armor
+      - EQI_SHADOW_ARMOR
+    - - Shadow Weapon
+      - EQI_SHADOW_WEAPON
+    - - Shadow Shield
+      - EQI_SHADOW_SHIELD
+    - - Shadow Shoes
+      - EQI_SHADOW_SHOES
+    - - Shadow Accessory 2
+      - EQI_SHADOW_ACC_R
+    - - Shadow Accessory 1
+      - EQI_SHADOW_ACC_L
+- Name: WeaponSubType
+  List:
+    - Fist
+    - Dagger
+    - 1hSword
+    - 2hSword
+    - 1hSpear
+    - 2hSpear
+    - 1hAxe
+    - 2hAxe
+    - Mace
+    - Staff
+    - Bow
+    - Knuckle
+    - Musical
+    - Whip
+    - Book
+    - Katar
+    - Revolver
+    - Rifle
+    - Gatling
+    - Shotgun
+    - Grenade
+    - Huuma
+    - 2hStaff
+- Name: Job_BaseClass
+  List:
+    - - Novice
+      - Job_Novice
+    - - Swordman
+      - Job_Swordman
+    - - Mage
+      - Job_Mage
+    - - Archer
+      - Job_Archer
+    - - Acolyte
+      - Job_Acolyte
+    - - Merchant
+      - Job_Merchant
+    - - Thief
+      - Job_Thief
+    - - Super Novice
+      - Job_Super_Novice
+    - - Taekwon
+      - Job_Taekwon
+    - - Gunslinger
+      - Job_Gunslinger
+    - - Ninja
+      - Job_Ninja
+    - - Summoner
+      - Job_Summoner
+- Name: Job_Base
+  List:
+    - - Novice
+      - Job_Novice
+    - - Swordman
+      - Job_Swordman
+    - - Mage
+      - Job_Mage
+    - - Archer
+      - Job_Archer
+    - - Acolyte
+      - Job_Acolyte
+    - - Merchant
+      - Job_Merchant
+    - - Thief
+      - Job_Thief
+    - - Knight
+      - Job_Knight
+    - - Wizard
+      - Job_Wizard
+    - - Hunter
+      - Job_Hunter
+    - - Priest
+      - Job_Priest
+    - - Blacksmith
+      - Job_Blacksmith
+    - - Assassin
+      - Job_Assassin
+    - - Crusader
+      - Job_Crusader
+    - - Sage
+      - Job_Sage
+    - - Bard
+      - Job_Bard
+    - - Dancer
+      - Job_Dancer
+    - - Monk
+      - Job_Monk
+    - - Alchemist
+      - Job_Alchemist
+    - - Rogue
+      - Job_Rogue
+    - - Super Novice
+      - Job_Super_Novice
+    - - Taekwon
+      - Job_Taekwon
+    - - Star Gladiator
+      - Job_Star_Gladiator
+    - - Soul Linker
+      - Job_Soul_Linker
+    - - Gunslinger
+      - Job_Gunslinger
+    - - Rebellion
+      - Job_Rebellion
+    - - Ninja
+      - Job_Ninja
+    - - Kagerou
+      - Job_Kagerou
+    - - Oboro
+      - Job_Oboro
+    - - Summoner
+      - Job_Summoner
+
+- Name: EAJ_Base
+  List:
+    - - Novice
+      - EAJ_NOVICE
+    - - Swordman
+      - EAJ_SWORDMAN
+    - - Mage
+      - EAJ_MAGE
+    - - Archer
+      - EAJ_ARCHER
+    - - Acolyte
+      - EAJ_ACOLYTE
+    - - Merchant
+      - EAJ_MERCHANT
+    - - Thief
+      - EAJ_THIEF
+    - - Super Novice
+      - EAJ_SUPER_NOVICE
+    - - Taekwon
+      - EAJ_TAEKWON
+    - - Gunslinger
+      - EAJ_GUNSLINGER
+    - - Ninja
+      - EAJ_NINJA
+    - - Summoner
+      - EAJ_SUMMONER
+
+- Name: EAJL2
+  List:
+    - - Novice
+      - EAJ_NOVICE
+    - - Swordman
+      - EAJ_SWORDMAN
+    - - Mage
+      - EAJ_MAGE
+    - - Archer
+      - EAJ_ARCHER
+    - - Acolyte
+      - EAJ_ACOLYTE
+    - - Merchant
+      - EAJ_MERCHANT
+    - - Thief
+      - EAJ_THIEF
+    - - Knight
+      - EAJ_KNIGHT
+    - - Wizard
+      - EAJ_WIZARD
+    - - Hunter
+      - EAJ_HUNTER
+    - - Priest
+      - EAJ_PRIEST
+    - - Blacksmith
+      - EAJ_BLACKSMITH
+    - - Assassin
+      - EAJ_ASSASSIN
+    - - Crusader
+      - EAJ_CRUSADER
+    - - Sage
+      - EAJ_SAGE
+    - - Bard/Dancer
+      - EAJ_BARDDANCER
+    - - Monk
+      - EAJ_MONK
+    - - Alchemist
+      - EAJ_ALCHEMIST
+    - - Rogue
+      - EAJ_ROGUE
+    - - Super Novice
+      - EAJ_SUPER_NOVICE
+    - - Taekwon
+      - EAJ_TAEKWON
+    - - Star Gladiator
+      - EAJ_STAR_GLADIATOR
+    - - Soul Linker
+      - EAJ_SOUL_LINKER
+    - - Gunslinger
+      - EAJ_GUNSLINGER
+    - - Rebellion
+      - EAJ_REBELLION
+    - - Ninja
+      - EAJ_NINJA
+    - - Kagerou/Oboro
+      - EAJ_KAGEROUOBORO
+    - - Summoner
+      - EAJ_SUMMONER
+
+- Name: EAJL3
+  List:
+    - - Novice
+      - EAJ_NOVICE
+    - - Swordman
+      - EAJ_SWORDMAN
+    - - Mage
+      - EAJ_MAGE
+    - - Archer
+      - EAJ_ARCHER
+    - - Acolyte
+      - EAJ_ACOLYTE
+    - - Merchant
+      - EAJ_MERCHANT
+    - - Thief
+      - EAJ_THIEF
+    - - Knight
+      - EAJ_KNIGHT
+    - - Wizard
+      - EAJ_WIZARD
+    - - Hunter
+      - EAJ_HUNTER
+    - - Priest
+      - EAJ_PRIEST
+    - - Blacksmith
+      - EAJ_BLACKSMITH
+    - - Assassin
+      - EAJ_ASSASSIN
+    - - Crusader
+      - EAJ_CRUSADER
+    - - Sage
+      - EAJ_SAGE
+    - - Bard/Dancer
+      - EAJ_BARDDANCER
+    - - Monk
+      - EAJ_MONK
+    - - Alchemist
+      - EAJ_ALCHEMIST
+    - - Rogue
+      - EAJ_ROGUE
+    - - Rune Knight
+      - EAJ_RUNE_KNIGHT
+    - - Warlock
+      - EAJ_WARLOCK
+    - - Ranger
+      - EAJ_RANGER
+    - - Arch Bishop
+      - EAJ_ARCH_BISHOP
+    - - Mechanic
+      - EAJ_MECHANIC
+    - - Guillotine Cross
+      - EAJ_GUILLOTINE_CROSS
+    - - Royal Guard
+      - EAJ_ROYAL_GUARD
+    - - Sorcerer
+      - EAJ_SORCERER
+    - - Minstrel/Wanderer
+      - EAJ_MINSTRELWANDERER
+    - - Sura
+      - EAJ_SURA
+    - - Genetic
+      - EAJ_GENETIC
+    - - Shadow Chaser
+      - EAJ_SHADOW_CHASER
+    - - Super Novice
+      - EAJ_SUPER_NOVICE
+    - - Taekwon
+      - EAJ_TAEKWON
+    - - Star Gladiator
+      - EAJ_STAR_GLADIATOR
+    - - Soul Linker
+      - EAJ_SOUL_LINKER
+    - - Star Emperor
+      - EAJ_STAR_EMPEROR
+    - - Soul Reaper
+      - EAJ_SOUL_REAPER
+    - - Gunslinger
+      - EAJ_GUNSLINGER
+    - - Rebellion
+      - EAJ_REBELLION
+    - - Ninja
+      - EAJ_NINJA
+    - - Kagerou/Oboro
+      - EAJ_KAGEROUOBORO
+    - - Summoner
+      - EAJ_SUMMONER
+- Name: EAJL4
+  List:
+    - - Novice
+      - EAJ_NOVICE
+    - - Swordman
+      - EAJ_SWORDMAN
+    - - Mage
+      - EAJ_MAGE
+    - - Archer
+      - EAJ_ARCHER
+    - - Acolyte
+      - EAJ_ACOLYTE
+    - - Merchant
+      - EAJ_MERCHANT
+    - - Thief
+      - EAJ_THIEF
+    - - Knight
+      - EAJ_KNIGHT
+    - - Wizard
+      - EAJ_WIZARD
+    - - Hunter
+      - EAJ_HUNTER
+    - - Priest
+      - EAJ_PRIEST
+    - - Blacksmith
+      - EAJ_BLACKSMITH
+    - - Assassin
+      - EAJ_ASSASSIN
+    - - Crusader
+      - EAJ_CRUSADER
+    - - Sage
+      - EAJ_SAGE
+    - - Bard/Dancer
+      - EAJ_BARDDANCER
+    - - Monk
+      - EAJ_MONK
+    - - Alchemist
+      - EAJ_ALCHEMIST
+    - - Rogue
+      - EAJ_ROGUE
+    - - Rune Knight
+      - EAJ_RUNE_KNIGHT
+    - - Warlock
+      - EAJ_WARLOCK
+    - - Ranger
+      - EAJ_RANGER
+    - - Arch Bishop
+      - EAJ_ARCH_BISHOP
+    - - Mechanic
+      - EAJ_MECHANIC
+    - - Guillotine Cross
+      - EAJ_GUILLOTINE_CROSS
+    - - Royal Guard
+      - EAJ_ROYAL_GUARD
+    - - Sorcerer
+      - EAJ_SORCERER
+    - - Minstrel/Wanderer
+      - EAJ_MINSTRELWANDERER
+    - - Sura
+      - EAJ_SURA
+    - - Genetic
+      - EAJ_GENETIC
+    - - Shadow Chaser
+      - EAJ_SHADOW_CHASER
+    - - Super Novice
+      - EAJ_SUPER_NOVICE
+    - - Taekwon
+      - EAJ_TAEKWON
+    - - Star Gladiator
+      - EAJ_STAR_GLADIATOR
+    - - Soul Linker
+      - EAJ_SOUL_LINKER
+    - - Star Emperor
+      - EAJ_STAR_EMPEROR
+    - - Soul Reaper
+      - EAJ_SOUL_REAPER
+    - - Gunslinger
+      - EAJ_GUNSLINGER
+    - - Rebellion
+      - EAJ_REBELLION
+    - - Ninja
+      - EAJ_NINJA
+    - - Kagerou/Oboro
+      - EAJ_KAGEROUOBORO
+    - - Summoner
+      - EAJ_SUMMONER
+    - - Hyper Novice
+      - EAJ_HYPER_NOVICE
+    - - Dragon Knight
+      - EAJ_DRAGON_KNIGHT
+    - - Arch Mage
+      - EAJ_ARCH_MAGE
+    - - Windhawk
+      - EAJ_WINDHAWK
+    - - Cardinal
+      - EAJ_CARDINAL
+    - - Meister
+      - EAJ_MEISTER
+    - - Shadow Cross
+      - EAJ_SHADOW_CROSS
+    - - Sky Emperor
+      - EAJ_SKY_EMPEROR
+    - - Night Watch
+      - EAJ_NIGHT_WATCH
+    - - Shinkiro Shiranui
+      - EAJ_SHINKIRO_SHIRANUI
+    - - Imperial_Guard
+      - EAJ_IMPERIAL_GUARD
+    - - Elemental Master
+      - EAJ_ELEMENTAL_MASTER
+    - - Troubadourtrouvere
+      - EAJ_TROUBADOURTROUVERE
+    - - Inquisitor
+      - EAJ_INQUISITOR
+    - - Biolo
+      - EAJ_BIOLO
+    - - Abyss Chaser
+      - EAJ_ABYSS_CHASER
+    - - Soul Ascetic
+      - EAJ_SOUL_ASCETIC
+- Name: Status
+  List:
+    - - Str
+      - bStr
+    - - Agi
+      - bAgi
+    - - Vit
+      - bVit
+    - - Int
+      - bInt
+    - - Dex
+      - bDex
+    - - Luk
+      - bLuk
+...

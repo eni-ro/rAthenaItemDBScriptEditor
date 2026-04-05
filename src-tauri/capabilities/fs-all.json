@@ -1,0 +1,27 @@
+{
+  "identifier": "fs-all",
+  "description": "Capability for file system access",
+  "windows": ["main"],
+  "permissions": [
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [{ "path": "**/*" }]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [{ "path": "**/*" }]
+    },
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "**/*" }]
+    },
+    {
+      "identifier": "fs:allow-read-dir",
+      "allow": [{ "path": "**/*" }]
+    },
+    {
+      "identifier": "fs:allow-read-file",
+      "allow": [{ "path": "**/*" }]
+    }
+  ]
+}

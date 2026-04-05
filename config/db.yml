@@ -1,0 +1,13 @@
+---
+Item:
+  - E:\ROEmu\rAthena\db\re\item_db_usable.yml
+  - E:\ROEmu\rAthena\db\re\item_db_equip.yml
+  - E:\ROEmu\rAthena\db\re\item_db_etc.yml
+  - E:\ROEmu\rAthena\db\import\item_db.yml
+Mob:
+  - E:\ROEmu\rAthena\db\re\mob_db.yml
+  - E:\ROEmu\rAthena\db\import\mob_db.yml
+Skill:
+  - E:\ROEmu\rAthena\db\re\skill_db.yml
+  - E:\ROEmu\rAthena\db\import\skill_db.yml
+...
