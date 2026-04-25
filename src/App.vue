@@ -1,71 +1,110 @@
 <template>
   <v-app>
+    <!-- Menu Bar -->
+    <v-app-bar color="grey-darken-4" density="compact" elevation="2">
+      <v-app-bar-title>
+        <span class="text-subtitle-1 font-weight-bold">rAthena Item DB Script Editor</span>
+      </v-app-bar-title>
+
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn v-bind="props" variant="text" class="mr-1">Settings</v-btn>
+        </template>
+        <v-list density="compact">
+          <v-list-item prepend-icon="mdi-database-cog" title="DB Paths" @click="openSettings" />
+        </v-list>
+      </v-menu>
+    </v-app-bar>
+
     <v-main>
       <v-container fluid class="fill-height pa-0">
+        <!-- Loading / Error -->
         <v-row class="fill-height ma-0" justify="center" align="center" v-if="!isLoaded">
           <div v-if="loadError" class="text-center px-4">
             <v-icon color="error" size="48">mdi-alert-circle</v-icon>
             <h2 class="text-h6 text-error mt-4">初期データの読み込みに失敗しました</h2>
             <div class="text-body-1 mt-2 text-pre-wrap">{{ loadError }}</div>
             <div class="text-caption mt-4">
-              実行ファイルと同じフォルダに「db.ml」などが配置されているか確認してください。<br/>
-              また、開発環境(tauri dev)の場合は「src-tauri/target/debug/」に配置されている必要があります。
+              実行ファイルと同じフォルダに「db.yml」などが配置されているか確認してください。<br/>
+              開発環境では「src-tauri/target/debug/」に配置が必要です。
             </div>
             <v-btn color="primary" @click="retryLoad" class="mt-4">再試行</v-btn>
           </div>
-          <v-progress-circular v-else indeterminate color="primary"></v-progress-circular>
+          <v-progress-circular v-else indeterminate color="primary" />
         </v-row>
-        
-        <div class="layout-grid fill-height" v-else-if="isLoaded" ref="containerRef">
-          <!-- Left Pane -->
-          <div class="pane-left border-e position-relative">
-            <LeftPane 
-              @inject="onInject"
-            />
-          </div>
-          
-          <!-- Middle Separator / Inject button / Resizer -->
-          <div 
-            class="pane-divider d-flex align-center justify-center pa-2 border-e bg-grey-darken-4"
-            @mousedown="startResize"
-          >
-            <InjectButton @click="triggerInject" />
-            <div class="resizer-handle"></div>
+
+        <!-- Main Layout -->
+        <div v-else class="main-layout" ref="containerRef">
+
+          <!-- Left: Search Panel -->
+          <div class="pane-search border-e">
+            <SearchPanel />
           </div>
 
-          <!-- Right Pane -->
-          <div class="pane-right d-flex flex-column position-relative" style="min-width: 0;">
-            <RightPane ref="rightPane" />
+          <!-- Horizontal Resizer -->
+          <div
+            class="pane-divider d-flex align-center justify-center bg-grey-darken-4 border-e"
+            @mousedown="startResize"
+          >
+            <div class="resizer-handle" />
+          </div>
+
+          <!-- Right: Tabs (Items / Combos) -->
+          <div class="pane-content d-flex flex-column">
+            <v-tabs v-model="mainTab" bg-color="grey-darken-3" density="compact">
+              <v-tab value="items">
+                <v-icon size="small" class="mr-1">mdi-sword</v-icon>
+                Items
+              </v-tab>
+              <v-tab value="combos">
+                <v-icon size="small" class="mr-1">mdi-link-variant</v-icon>
+                Combos
+              </v-tab>
+            </v-tabs>
+
+            <v-window v-model="mainTab" class="flex-grow-1" style="overflow:hidden" :transition="false" :reverse-transition="false">
+              <v-window-item value="items" class="fill-height">
+                <ItemEditPanel />
+              </v-window-item>
+              <v-window-item value="combos" class="fill-height">
+                <ComboEditPanel />
+              </v-window-item>
+            </v-window>
           </div>
         </div>
       </v-container>
     </v-main>
+
+    <SettingsView ref="settingsView" />
   </v-app>
 </template>
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
-import LeftPane from './components/LeftPane.vue';
-import RightPane from './components/RightPane.vue';
-import InjectButton from './components/InjectButton.vue';
+import { invoke as tauriInvoke } from '@tauri-apps/api/core';
+import * as jsYaml from 'js-yaml';
 import { useGlobals } from './composables/useAppModel';
 import { settings, type WindowState } from './lib/SettingsStore';
+import SearchPanel from './components/SearchPanel.vue';
+import ItemEditPanel from './components/ItemEditPanel.vue';
+import ComboEditPanel from './components/ComboEditPanel.vue';
+import SettingsView from './components/SettingsView.vue';
+
 
 const appModel = useGlobals();
 const isLoaded = appModel.isLoaded;
-const rightPane = ref<any>(null);
+const mainTab = appModel.mainTab;  // ref to use in template
 const containerRef = ref<HTMLElement | null>(null);
 const appWindow = getCurrentWindow();
+const settingsView = ref<any>(null);
 
-// Horizontal Resizing State
-const leftWidth = ref(40);
+// ─── Horizontal Resizing ─────────────────────────────────────────────
+const leftWidth = ref(25);
 const isResizing = ref(false);
 
 const startResize = (e: MouseEvent) => {
-  // Only start if clicking the divider itself, not the button
   if ((e.target as HTMLElement).closest('button')) return;
-  
   isResizing.value = true;
   document.body.style.cursor = 'col-resize';
   document.body.style.userSelect = 'none';
@@ -73,15 +112,9 @@ const startResize = (e: MouseEvent) => {
 
 const handleResize = (e: MouseEvent) => {
   if (!isResizing.value || !containerRef.value) return;
-
   const rect = containerRef.value.getBoundingClientRect();
-  const pointerX = e.clientX - rect.left;
-  const totalW = rect.width;
-  let newLeftPercent = (pointerX / totalW) * 100;
-
-  // Enforce 10% - 80%
-  newLeftPercent = Math.max(10, Math.min(newLeftPercent, 80));
-  leftWidth.value = newLeftPercent;
+  const newLeft = Math.max(15, Math.min(((e.clientX - rect.left) / rect.width) * 100, 60));
+  leftWidth.value = newLeft;
 };
 
 const stopResize = () => {
@@ -89,60 +122,58 @@ const stopResize = () => {
   isResizing.value = false;
   document.body.style.cursor = '';
   document.body.style.userSelect = '';
-  
-  // Save to SettingsStore
   settings.leftWidth = leftWidth.value;
   settings.save();
 };
 
-// Window State Debounced Saving
+// ─── Window State ────────────────────────────────────────────────────
 let saveTimeout: number | null = null;
 const debouncedSaveWindowState = async () => {
   if (saveTimeout) clearTimeout(saveTimeout);
   saveTimeout = window.setTimeout(async () => {
     const isMaximized = await appWindow.isMaximized();
     const size = await appWindow.innerSize();
-    // We only save size if not maximized to avoid saving maximized dimensions as "normal" size
     const state: WindowState = {
       isMaximized,
       width: isMaximized && settings.data.windowState ? settings.data.windowState.width : size.width,
-      height: isMaximized && settings.data.windowState ? settings.data.windowState.height : size.height
+      height: isMaximized && settings.data.windowState ? settings.data.windowState.height : size.height,
     };
     settings.data.windowState = state;
     await settings.save();
   }, 500);
 };
 
-// We need to keep track of the selected script/args from LeftPane
-// Instead of propagating events all the way, LeftPane can expose 
-// current script and args, or they can be in a separate composable/state.
-// For simplicity, LeftPane can emit the inject event with the prepared string.
+// ─── Settings ────────────────────────────────────────────────────────
+function openSettings() {
+  const invoke = async () => {
+    try {
+      const dbPath = appModel.dbYmlPath.value;
+      const raw: string = await tauriInvoke('read_file_raw', { path: dbPath });
+      const conf = (jsYaml.load(raw) as any) || {};
+      settingsView.value?.open({
+        Item: conf.Item || [],
+        ItemCombos: conf.ItemCombos || [],
+        ItemName: conf.ItemName || [],
+        Mob: conf.Mob || [],
+        Skill: conf.Skill || [],
+      }, dbPath);
+    } catch (e) {
+      settingsView.value?.open({ Item: [], ItemCombos: [], ItemName: [], Mob: [], Skill: [] }, appModel.dbYmlPath.value);
+    }
+  };
+  invoke();
+}
 
-const onInject = (code: string) => {
-  if (rightPane.value) {
-    rightPane.value.injectCode(code);
-  }
-};
-
-// Trigger inject from the middle button
-const triggerInject = () => {
-  // We can use an EventBus or a shared state to tell LeftPane to generate code
-  // Let's create a global inject trigger
-  document.dispatchEvent(new CustomEvent('app:trigger-inject'));
-};
-
-const loadError = ref<string>('');
+// ─── Load ────────────────────────────────────────────────────────────
+const loadError = ref('');
 
 const doLoad = async () => {
   loadError.value = '';
   appModel.isLoaded.value = false;
-
   try {
-    // 1. Load Settings
     const data = await settings.load();
-    leftWidth.value = data.leftWidth;
+    leftWidth.value = data.leftWidth || 25;
 
-    // 2. Apply Window State
     if (data.windowState) {
       if (data.windowState.isMaximized) {
         await appWindow.maximize();
@@ -151,25 +182,19 @@ const doLoad = async () => {
       }
     }
 
-    // 3. Detect Base Path (Executable Directory)
     const prefix = await settings.getBasePath();
-
-    // 4. Load Data
     await appModel.loadData(
       prefix + 'script.yml',
       prefix + 'const.yml',
       prefix + 'db.yml'
     );
-    console.log("Data loaded successfully from:", prefix);
-  } catch(e: any) {
-    console.error("Failed to load initial data", e);
-    loadError.value = String(e?.message || e || "Unknown Error");
+    localStorage.setItem('app:basePath', prefix);
+  } catch (e: any) {
+    loadError.value = String(e?.message || e || 'Unknown Error');
   }
 };
 
-const retryLoad = () => {
-  doLoad();
-};
+const retryLoad = () => doLoad();
 
 let unlistenResize: any;
 let unlistenMoved: any;
@@ -178,14 +203,8 @@ onMounted(async () => {
   await doLoad();
   window.addEventListener('mousemove', handleResize);
   window.addEventListener('mouseup', stopResize);
-
-  // Monitor window state
-  unlistenResize = await appWindow.onResized(() => {
-    debouncedSaveWindowState();
-  });
-  unlistenMoved = await appWindow.onMoved(() => {
-    debouncedSaveWindowState();
-  });
+  unlistenResize = await appWindow.onResized(() => debouncedSaveWindowState());
+  unlistenMoved = await appWindow.onMoved(() => debouncedSaveWindowState());
 });
 
 onUnmounted(() => {
@@ -210,16 +229,21 @@ html, body, #app {
   font-size: 10pt !important;
 }
 
-/* Resizable Layout Grid */
-.layout-grid {
+.main-layout {
   display: grid;
-  grid-template-columns: v-bind(leftWidth + '%') auto 1fr;
+  grid-template-columns: v-bind('leftWidth + "%"') auto 1fr;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-.pane-left, .pane-right {
+.pane-search {
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pane-content {
   min-width: 0;
   height: 100%;
   overflow: hidden;
@@ -231,10 +255,12 @@ html, body, #app {
   z-index: 10;
   user-select: none;
   transition: background-color 0.2s;
+  width: 6px;
 }
 
 .pane-divider:hover {
-  background-color: #333 !important;
+  background-color: var(--v-theme-primary) !important;
+  opacity: 0.7;
 }
 
 .resizer-handle {
@@ -244,5 +270,9 @@ html, body, #app {
   right: 0;
   bottom: 0;
   pointer-events: none;
+}
+
+:deep(.v-window), :deep(.v-window__container) {
+  height: 100% !important;
 }
 </style>

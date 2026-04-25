@@ -1,0 +1,8 @@
+---
+Item:
+  - E:/ROEmu/rAthenaItemDBScriptEditor2/sample/input/item_db_equip.yml
+Mob:
+  - E:/ROEmu/rAthenaItemDBScriptEditor2/sample/input/mob_db.yml
+Skill:
+  - E:/ROEmu/rAthenaItemDBScriptEditor2/sample/input/skill_db.yml
+...

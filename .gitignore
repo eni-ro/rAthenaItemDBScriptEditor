@@ -24,3 +24,13 @@ dist-ssr
 *.sw?
 .aider*
 /release/
+
+# Python build artifacts
+scripts/.venv/
+scripts/build/
+scripts/__pycache__/
+scripts/*.spec
+scripts/pyproject.toml
+scripts/uv.lock
+# db_processor (without target triple) is intermediate - keep only the triple-named binary
+src-tauri/binaries/db_processor.exe

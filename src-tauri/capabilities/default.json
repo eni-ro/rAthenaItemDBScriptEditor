@@ -22,6 +22,8 @@
     "fs:allow-write-text-file",
     "fs:allow-exists",
     "fs:allow-read-dir",
-    "fs:allow-read-file"
+    "fs:allow-read-file",
+    "shell:default",
+    "shell:allow-execute"
   ]
 }
