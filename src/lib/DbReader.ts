@@ -60,36 +60,36 @@ export interface ItemTrade {
 export interface ItemDbEntry extends DbEntry {
   id: number;
   filePath: string;
-  type: string;
+  type?: string;
   subType?: string;
   buy?: number;
   sell?: number;
-  weight: number;
-  attack: number;
-  magicAttack: number;
-  defense: number;
-  range: number;
-  slots: number;
-  jobs: string[];
-  classes: string[];
-  gender: string;
-  locations: string[];
+  weight?: number;
+  attack?: number;
+  magicAttack?: number;
+  defense?: number;
+  range?: number;
+  slots?: number;
+  jobs?: string[];
+  classes?: string[];
+  gender?: string;
+  locations?: string[];
   weaponLevel?: number;
   armorLevel?: number;
-  equipLevelMin: number;
-  equipLevelMax: number;
-  refineable: boolean;
-  gradable: boolean;
+  equipLevelMin?: number;
+  equipLevelMax?: number;
+  refineable?: boolean;
+  gradable?: boolean;
   view?: number;
   aliasName?: string;
-  flags: ItemFlags;
+  flags?: ItemFlags;
   delay?: ItemDelay;
   stack?: ItemStack;
   noUse?: ItemNoUse;
   trade?: ItemTrade;
-  script: string;
-  equipScript: string;
-  unEquipScript: string;
+  script?: string;
+  equipScript?: string;
+  unEquipScript?: string;
 }
 
 // ─── コンボDBエントリ ─────────────────────────────────────────────────
@@ -128,68 +128,68 @@ function parseItemEntry(item: any, filePath: string): ItemDbEntry {
     aegis_name: item.AegisName?.toString() || '',
     name: item.Name?.toString() || '',
     filePath,
-    type: item.Type?.toString() || 'Etc',
+    type: item.Type?.toString(),
     subType: item.SubType?.toString(),
     buy: item.Buy != null ? Number(item.Buy) : undefined,
     sell: item.Sell != null ? Number(item.Sell) : undefined,
-    weight: Number(item.Weight) || 0,
-    attack: Number(item.Attack) || 0,
-    magicAttack: Number(item.MagicAttack) || 0,
-    defense: Number(item.Defense) || 0,
-    range: Number(item.Range) || 0,
-    slots: Number(item.Slots) || 0,
-    jobs: extractBoolMap(item.Jobs),
-    classes: extractBoolMap(item.Classes),
-    gender: item.Gender?.toString() || 'Both',
-    locations: extractBoolMap(item.Locations),
+    weight: item.Weight != null ? Number(item.Weight) : undefined,
+    attack: item.Attack != null ? Number(item.Attack) : undefined,
+    magicAttack: item.MagicAttack != null ? Number(item.MagicAttack) : undefined,
+    defense: item.Defense != null ? Number(item.Defense) : undefined,
+    range: item.Range != null ? Number(item.Range) : undefined,
+    slots: item.Slots != null ? Number(item.Slots) : undefined,
+    jobs: item.Jobs ? extractBoolMap(item.Jobs) : undefined,
+    classes: item.Classes ? extractBoolMap(item.Classes) : undefined,
+    gender: item.Gender?.toString(),
+    locations: item.Locations ? extractBoolMap(item.Locations) : undefined,
     weaponLevel: item.WeaponLevel != null ? Number(item.WeaponLevel) : undefined,
     armorLevel: item.ArmorLevel != null ? Number(item.ArmorLevel) : undefined,
-    equipLevelMin: Number(item.EquipLevelMin) || 0,
-    equipLevelMax: Number(item.EquipLevelMax) || 0,
-    refineable: item.Refineable === true,
-    gradable: item.Gradable === true,
+    equipLevelMin: item.EquipLevelMin != null ? Number(item.EquipLevelMin) : undefined,
+    equipLevelMax: item.EquipLevelMax != null ? Number(item.EquipLevelMax) : undefined,
+    refineable: item.Refineable != null ? item.Refineable === true : undefined,
+    gradable: item.Gradable != null ? item.Gradable === true : undefined,
     view: item.View != null ? Number(item.View) : undefined,
     aliasName: item.AliasName?.toString(),
     flags: item.Flags ? {
-      BuyingStore: item.Flags.BuyingStore === true,
-      DeadBranch: item.Flags.DeadBranch === true,
-      Container: item.Flags.Container === true,
-      UniqueId: item.Flags.UniqueId === true,
-      BindOnEquip: item.Flags.BindOnEquip === true,
-      DropAnnounce: item.Flags.DropAnnounce === true,
-      NoConsume: item.Flags.NoConsume === true,
-      DropEffect: item.Flags.DropEffect === true,
-    } : {},
+      BuyingStore: item.Flags.BuyingStore === true ? true : undefined,
+      DeadBranch: item.Flags.DeadBranch === true ? true : undefined,
+      Container: item.Flags.Container === true ? true : undefined,
+      UniqueId: item.Flags.UniqueId === true ? true : undefined,
+      BindOnEquip: item.Flags.BindOnEquip === true ? true : undefined,
+      DropAnnounce: item.Flags.DropAnnounce === true ? true : undefined,
+      NoConsume: item.Flags.NoConsume === true ? true : undefined,
+      DropEffect: item.Flags.DropEffect === true ? true : undefined,
+    } : undefined,
     delay: item.Delay ? {
       Duration: item.Delay.Duration != null ? Number(item.Delay.Duration) : undefined,
       Status: item.Delay.Status?.toString(),
     } : undefined,
     stack: item.Stack ? {
       Amount: item.Stack.Amount != null ? Number(item.Stack.Amount) : undefined,
-      Inventory: item.Stack.Inventory === true,
-      Cart: item.Stack.Cart === true,
-      Storage: item.Stack.Storage === true,
-      GuildStorage: item.Stack.GuildStorage === true,
+      Inventory: item.Stack.Inventory === true ? true : undefined,
+      Cart: item.Stack.Cart === true ? true : undefined,
+      Storage: item.Stack.Storage === true ? true : undefined,
+      GuildStorage: item.Stack.GuildStorage === true ? true : undefined,
     } : undefined,
     noUse: item.NoUse ? {
-      Override: item.NoUse.Override != null ? Number(item.NoUse.Override) : 100,
-      Sitting: item.NoUse.Sitting === true,
+      Override: item.NoUse.Override != null ? Number(item.NoUse.Override) : undefined,
+      Sitting: item.NoUse.Sitting === true ? true : undefined,
     } : undefined,
     trade: item.Trade ? {
-      Override: item.Trade.Override != null ? Number(item.Trade.Override) : 100,
-      NoDrop: item.Trade.NoDrop === true,
-      NoTrade: item.Trade.NoTrade === true,
-      TradePartner: item.Trade.TradePartner === true,
-      NoSell: item.Trade.NoSell === true,
-      NoCart: item.Trade.NoCart === true,
-      NoStorage: item.Trade.NoStorage === true,
-      NoGuildStorage: item.Trade.NoGuildStorage === true,
-      NoMail: item.Trade.NoMail === true,
-      NoAuction: item.Trade.NoAuction === true,
+      Override: item.Trade.Override != null ? Number(item.Trade.Override) : undefined,
+      NoDrop: item.Trade.NoDrop === true ? true : undefined,
+      NoTrade: item.Trade.NoTrade === true ? true : undefined,
+      TradePartner: item.Trade.TradePartner === true ? true : undefined,
+      NoSell: item.Trade.NoSell === true ? true : undefined,
+      NoCart: item.Trade.NoCart === true ? true : undefined,
+      NoStorage: item.Trade.NoStorage === true ? true : undefined,
+      NoGuildStorage: item.Trade.NoGuildStorage === true ? true : undefined,
+      NoMail: item.Trade.NoMail === true ? true : undefined,
+      NoAuction: item.Trade.NoAuction === true ? true : undefined,
     } : undefined,
-    script: item.Script || '',
-    equipScript: item.EquipScript || '',
-    unEquipScript: item.UnEquipScript || '',
+    script: item.Script || undefined,
+    equipScript: item.EquipScript || undefined,
+    unEquipScript: item.UnEquipScript || undefined,
   };
 }
 
@@ -264,11 +264,7 @@ export class DbReader {
           this.items.push({
             id: 0, aegis_name: 'ERROR',
             name: `Read Error: ${filePath} - ${e?.message ?? e}`,
-            filePath, type: 'Etc', weight: 0, attack: 0, magicAttack: 0,
-            defense: 0, range: 0, slots: 0, jobs: [], classes: [],
-            gender: 'Both', locations: [], equipLevelMin: 0, equipLevelMax: 0,
-            refineable: false, gradable: false, flags: {},
-            script: '', equipScript: '', unEquipScript: '',
+            filePath
           });
         }
       }

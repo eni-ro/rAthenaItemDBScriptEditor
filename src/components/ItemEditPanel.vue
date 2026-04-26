@@ -285,19 +285,19 @@ function loadForm(val: ItemDbEntry) {
   _suppressDirty = true;
   Object.assign(form, {
     id: val.id, aegis_name: val.aegis_name, name: val.name, filePath: val.filePath,
-    type: val.type, subType: val.subType, buy: val.buy, sell: val.sell,
+    type: val.type || 'Etc', subType: val.subType, buy: val.buy, sell: val.sell,
     weight: val.weight, attack: val.attack, magicAttack: val.magicAttack,
     defense: val.defense, range: val.range, slots: val.slots,
-    jobs: [...val.jobs], classes: [...val.classes], gender: val.gender, locations: [...val.locations],
+    jobs: val.jobs ? [...val.jobs] : [], classes: val.classes ? [...val.classes] : [], gender: val.gender || 'Both', locations: val.locations ? [...val.locations] : [],
     weaponLevel: val.weaponLevel, armorLevel: val.armorLevel,
     equipLevelMin: val.equipLevelMin, equipLevelMax: val.equipLevelMax,
-    refineable: val.refineable, gradable: val.gradable, view: val.view, aliasName: val.aliasName,
+    refineable: val.refineable || false, gradable: val.gradable || false, view: val.view, aliasName: val.aliasName,
     flags: { ...val.flags },
     delay: { ...val.delay },
     stack: { ...val.stack },
     noUse: { Override: 100, ...val.noUse },
     trade: { Override: 100, ...val.trade },
-    script: val.script, equipScript: val.equipScript, unEquipScript: val.unEquipScript,
+    script: val.script || '', equipScript: val.equipScript || '', unEquipScript: val.unEquipScript || '',
   });
   setTimeout(() => {
     isDirty.value = false;
