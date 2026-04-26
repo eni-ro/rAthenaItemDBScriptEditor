@@ -290,7 +290,9 @@
     - 1hAxe
     - 2hAxe
     - Mace
+    - 2hMace
     - Staff
+    - 2hStaff
     - Bow
     - Knuckle
     - Musical
@@ -303,7 +305,6 @@
     - Shotgun
     - Grenade
     - Huuma
-    - 2hStaff
 - Name: Job_BaseClass
   List:
     - - Novice

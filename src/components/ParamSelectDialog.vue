@@ -23,30 +23,36 @@
         <v-divider></v-divider>
         
         <!-- Table view for the list -->
-        <v-data-table
+        <v-data-table-virtual
           :headers="headers"
           :items="filteredItems"
-          :search="search"
-          :items-per-page="-1"
           density="compact"
           hover
           class="flex-grow-1"
-          style="overflow-y: auto; max-height: 400px;"
+          height="400"
           @click:row="onRowClick"
         >
-          <!-- Hide default footer to show all items -->
-          <template v-slot:bottom></template>
-        </v-data-table>
+        </v-data-table-virtual>
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const dialog = ref(false);
 const search = ref('');
+const debouncedSearch = ref('');
+
+// 検索のデバウンス
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+watch(search, (val) => {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    debouncedSearch.value = val || '';
+  }, 200);
+});
 
 const headers = [
   { title: 'Value', key: 'value', sortable: true },
@@ -57,13 +63,18 @@ const listItems = ref<{ value: string, desc: string }[]>([]);
 
 let currentCallback: ((val: string) => void) | null = null;
 
+// 検索対象の文字列を事前に構築
+const allItems = computed(() => {
+  return listItems.value.map(item => ({
+    ...item,
+    _search: (item.value + ' ' + item.desc).toLowerCase()
+  }));
+});
+
 const filteredItems = computed(() => {
-  if (!search.value) return listItems.value;
-  const lower = search.value.toLowerCase();
-  return listItems.value.filter(item => 
-    item.value.toLowerCase().includes(lower) || 
-    item.desc.toLowerCase().includes(lower)
-  );
+  const q = debouncedSearch.value.trim().toLowerCase();
+  if (!q) return allItems.value;
+  return allItems.value.filter(item => item._search.includes(q));
 });
 
 export interface ParamSelectOptions {
@@ -75,6 +86,7 @@ const openDialog = (options: ParamSelectOptions) => {
   listItems.value = options.items;
   currentCallback = options.onSelect;
   search.value = '';
+  debouncedSearch.value = '';
   dialog.value = true;
 };
 
@@ -83,9 +95,9 @@ const close = () => {
   currentCallback = null;
 };
 
-const onRowClick = (_event: Event, item: any) => {
-  if (currentCallback) {
-    currentCallback(item.item.value);
+const onRowClick = (_event: Event, { item }: any) => {
+  if (currentCallback && item && item.value) {
+    currentCallback(item.value);
   }
   close();
 };

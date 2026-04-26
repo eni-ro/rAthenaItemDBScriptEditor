@@ -27,30 +27,38 @@
 
         <v-divider></v-divider>
 
-        <v-data-table
+        <v-data-table-virtual
           :headers="headers"
           :items="filteredItems"
-          :search="search"
-          :items-per-page="50"
           density="compact"
           hover
           class="flex-grow-1"
-          style="overflow-y: auto; max-height: 500px"
+          height="500"
           @click:row="onRowClick"
         >
-        </v-data-table>
+        </v-data-table-virtual>
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useGlobals } from "../composables/useAppModel";
 
 const dialog = ref(false);
 const search = ref("");
+const debouncedSearch = ref("");
 const appModel = useGlobals();
+
+// 検索のデバウンス
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+watch(search, (val) => {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    debouncedSearch.value = val || "";
+  }, 200);
+});
 
 const headers = [
   { title: "AegisName", key: "aegis_name", sortable: true },
@@ -59,26 +67,38 @@ const headers = [
 
 let onSelectCallback: ((aegis_name: string) => void) | null = null;
 
+// 検索対象の文字列を事前に構築
+const allItems = computed(() => {
+  const items = appModel.getItems();
+  const itemNames = appModel.getItemNames();
+  return items.map((item) => ({
+    ...item,
+    _search: (
+      item.aegis_name +
+      " " +
+      item.name +
+      " " +
+      (itemNames.get(item.id) || "")
+    ).toLowerCase(),
+  }));
+});
+
 const filteredItems = computed(() => {
-  const allItems = appModel.getItems();
-  if (!search.value) return allItems;
-  const lower = search.value.toLowerCase();
-  return allItems.filter(
-    (item) =>
-      item.aegis_name.includes(lower) ||
-      item.name.toLowerCase().includes(lower),
-  );
+  const q = debouncedSearch.value.trim().toLowerCase();
+  if (!q) return allItems.value;
+  return allItems.value.filter((item) => item._search.includes(q));
 });
 
 const openDialog = (onSelect: (aegis_name: string) => void) => {
   onSelectCallback = onSelect;
   search.value = "";
+  debouncedSearch.value = "";
   dialog.value = true;
 };
 
-const onRowClick = (_event: Event, item: any) => {
-  if (onSelectCallback && item.item && item.item.aegis_name) {
-    onSelectCallback(item.item.aegis_name);
+const onRowClick = (_event: Event, { item }: any) => {
+  if (onSelectCallback && item && item.aegis_name) {
+    onSelectCallback(item.aegis_name);
   }
   dialog.value = false;
 };

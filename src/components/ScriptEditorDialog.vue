@@ -3,8 +3,8 @@
     <div style="display:flex; flex-direction:column; height:100vh; background:#1e1e1e; color:#fff;">
 
       <!-- ─── Header ─────────────────────────────────────────────── -->
-      <div style="display:flex; align-items:center; background:#333; padding:4px 8px; flex-shrink:0; border-bottom:1px solid #555;">
-        <span style="font-size:13px; font-weight:600; margin-right:auto;">Script Editor</span>
+      <div class="editor-header">
+        <span class="editor-title">Script Editor</span>
         <v-btn color="success" variant="flat" size="small" class="mr-2" @click="onConfirm">確定</v-btn>
         <v-btn variant="text" icon="mdi-close" size="small" @click="onCancel" />
       </div>
@@ -23,32 +23,31 @@
           :style="{ width: leftWidth + 'px', minWidth: '160px', display:'flex', flexDirection:'column', overflow:'hidden', borderRight:'1px solid #555' }"
         >
           <!-- Script Search -->
-          <div style="padding:4px; border-bottom:1px solid #444; flex-shrink:0;">
+          <div class="editor-search-box">
             <input
               v-model="scriptSearch"
               placeholder="Search scripts..."
-              style="width:100%; box-sizing:border-box; background:#2a2a2a; color:#fff; border:1px solid #555; border-radius:4px; padding:4px 6px; font-size:11px; outline:none;"
+              class="editor-search-input"
             />
-            <div style="display:flex; gap:4px; margin-top:4px;">
-              <button @click="expandAll" style="flex:1; background:#3a3a3a; color:#aaa; border:none; border-radius:3px; padding:2px; font-size:10px; cursor:pointer;">全展開</button>
-              <button @click="collapseAll" style="flex:1; background:#3a3a3a; color:#aaa; border:none; border-radius:3px; padding:2px; font-size:10px; cursor:pointer;">全折畳</button>
+            <div class="editor-tree-controls">
+              <button @click="expandAll">全展開</button>
+              <button @click="collapseAll">全折畳</button>
             </div>
           </div>
 
           <!-- Script List (top) -->
-          <div :style="{ flex: topFlex, overflow:'auto', minHeight:'80px' }">
+          <div class="editor-list-container" :style="{ flex: topFlex }">
             <v-list density="compact" open-strategy="multiple" v-model:opened="openedGroups" @update:selected="onScriptSelected"
-              bg-color="transparent" style="font-size:11px;">
+              bg-color="transparent" class="editor-list">
               <template v-for="cat in filteredCategories" :key="cat.name">
                 <v-list-group :value="cat.name">
                   <template v-slot:activator="{ props }">
-                    <v-list-item v-bind="props" :title="cat.name" density="compact"
-                      style="background:#2d2d2d; font-size:11px; font-weight:600;" />
+                    <v-list-item v-bind="props" :title="cat.name" density="compact" class="editor-list-group-header" />
                   </template>
                   <v-list-item
                     v-for="script in cat.scripts" :key="script.Name"
                     :title="script.Name" :value="script" color="primary" density="compact"
-                    style="font-size:11px; padding-left:24px;"
+                    class="editor-list-item"
                   />
                 </v-list-group>
               </template>
@@ -62,26 +61,25 @@
           />
 
           <!-- Params (middle) -->
-          <div :style="{ flex: midFlex, overflow:'auto', padding:'6px', background:'#252525', minHeight:'60px' }">
-            <div style="font-size:11px; font-weight:700; margin-bottom:4px; color:#bbb;">Parameters</div>
+          <div class="editor-params-container" :style="{ flex: midFlex }">
+            <div class="editor-section-title">Parameters</div>
             <template v-if="selectedScript">
-              <div v-if="!selectedScript.Args || selectedScript.Args.length === 0" style="font-size:11px; color:#888;">No parameters.</div>
-              <div v-else style="display:grid; grid-template-columns: repeat(3,1fr); gap:4px;">
+              <div v-if="!selectedScript.Args || selectedScript.Args.length === 0" class="editor-empty-text">No parameters.</div>
+              <div v-else class="editor-params-grid">
                 <div v-for="(arg, idx) in selectedScript.Args" :key="idx">
-                  <div style="font-size:10px; color:#aaa; margin-bottom:2px;">{{ getDesc(arg.Desc).split('\n')[0] }}</div>
-                  <div style="display:flex; align-items:center;">
+                  <div class="editor-arg-desc">{{ getDesc(arg.Desc).split('\n')[0] }}</div>
+                  <div class="editor-arg-input-wrapper">
                     <input
                       v-model="argValues[idx]"
                       :readonly="hasList(arg.Type)"
-                      style="flex:1; min-width:0; background:#1e1e1e; color:#fff; border:1px solid #555; border-radius:3px; padding:2px 4px; font-size:11px; outline:none;"
+                      class="editor-arg-input"
                     />
-                    <button v-if="hasList(arg.Type)" @click="openParamSelect(arg, idx)"
-                      style="margin-left:3px; background:#444; color:#fff; border:none; border-radius:3px; padding:2px 5px; cursor:pointer; font-size:11px;">…</button>
+                    <button v-if="hasList(arg.Type)" @click="openParamSelect(arg, idx)" class="editor-arg-btn">…</button>
                   </div>
                 </div>
               </div>
             </template>
-            <div v-else style="font-size:11px; color:#888;">スクリプトを選択してください</div>
+            <div v-else class="editor-empty-text">スクリプトを選択してください</div>
           </div>
 
           <!-- Vertical Resizer 2 -->
@@ -91,9 +89,9 @@
           />
 
           <!-- Description (bottom) -->
-          <div :style="{ flex: botFlex, overflow:'auto', padding:'6px', background:'#1a1a1a', minHeight:'40px' }">
-            <div style="font-size:11px; font-weight:700; margin-bottom:4px; color:#bbb;">Description</div>
-            <pre style="font-size:10px; color:#ccc; white-space:pre-wrap; margin:0; font-family:inherit; line-height:1.4;">{{ selectedScript ? getDesc(selectedScript.Desc) : 'Select a script to see its description.' }}</pre>
+          <div class="editor-desc-container" :style="{ flex: botFlex }">
+            <div class="editor-section-title">Description</div>
+            <pre class="editor-desc-text">{{ selectedScript ? getDesc(selectedScript.Desc) : 'Select a script to see its description.' }}</pre>
           </div>
         </div>
 
@@ -217,7 +215,7 @@ const editorOptions = {
   wordWrap: 'on' as const,
   tabSize: 2,
   insertSpaces: true,
-  fontSize: 13,
+  fontSize: 15,
 };
 let editorInstance: any = null;
 let monacoInstance: any = null;
@@ -347,3 +345,137 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style scoped>
+.editor-header {
+  display: flex;
+  align-items: center;
+  background: #333;
+  padding: 8px 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #555;
+}
+.editor-title {
+  font-size: 14pt;
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.editor-search-box {
+  padding: 8px;
+  border-bottom: 1px solid #444;
+  flex-shrink: 0;
+}
+.editor-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 11pt;
+  outline: none;
+}
+.editor-tree-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.editor-tree-controls button {
+  flex: 1;
+  background: #3a3a3a;
+  color: #aaa;
+  border: none;
+  border-radius: 3px;
+  padding: 4px;
+  font-size: 10pt;
+  cursor: pointer;
+}
+.editor-tree-controls button:hover {
+  background: #4a4a4a;
+  color: #fff;
+}
+
+.editor-list-container {
+  overflow: auto;
+  min-height: 80px;
+}
+.editor-list {
+  /* Inherits from global */
+}
+.editor-list-group-header {
+  background: #2d2d2d;
+  font-weight: 600;
+}
+.editor-list-item {
+  padding-left: 24px;
+}
+
+.editor-params-container {
+  overflow: auto;
+  padding: 10px;
+  background: #252525;
+  min-height: 60px;
+}
+.editor-section-title {
+  font-size: 11pt;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #bbb;
+}
+.editor-empty-text {
+  font-size: 11pt;
+  color: #888;
+}
+.editor-params-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.editor-arg-desc {
+  font-size: 10pt;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+.editor-arg-input-wrapper {
+  display: flex;
+  align-items: center;
+}
+.editor-arg-input {
+  flex: 1;
+  min-width: 0;
+  background: #1e1e1e;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 11pt;
+  outline: none;
+}
+.editor-arg-btn {
+  margin-left: 6px;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 11pt;
+}
+
+.editor-desc-container {
+  overflow: auto;
+  padding: 10px;
+  background: #1a1a1a;
+  min-height: 40px;
+}
+.editor-desc-text {
+  font-size: 11pt;
+  color: #ccc;
+  white-space: pre-wrap;
+  margin: 0;
+  font-family: inherit;
+  line-height: 1.5;
+}
+</style>

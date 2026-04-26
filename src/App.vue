@@ -217,13 +217,53 @@ html, body, #app {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  font-size: 10pt;
+  /* Use a consistent base font size */
+  font-size: 13px;
+  line-height: 1.5;
 }
-.v-application, .text-body-1, .text-body-2, .text-caption, .text-subtitle-1, .text-subtitle-2 {
+
+/* Vuetify typography overrides for global consistency */
+.v-application {
+  font-size: 13px !important;
+}
+
+.text-body-1 {
+  font-size: 12pt !important;
+  line-height: 1.6 !important;
+}
+
+.text-body-2 {
+  font-size: 11pt !important;
+  line-height: 1.5 !important;
+}
+
+.text-caption {
+  font-size: 10.5pt !important;
+}
+
+.text-subtitle-1 {
+  font-size: 12pt !important;
+  font-weight: 600 !important;
+}
+
+.text-subtitle-2 {
+  font-size: 11pt !important;
+  font-weight: 600 !important;
+}
+
+/* Standardize list and button sizes */
+.v-list-item-title {
+  font-size: 11.5pt !important;
+}
+.v-list-item-subtitle {
   font-size: 10pt !important;
 }
-.v-list-item-title, .v-list-item-subtitle, .v-tab, .v-btn {
-  font-size: 10pt !important;
+.v-tab, .v-btn {
+  font-size: 11pt !important;
+  text-transform: none !important;
+}
+.v-label, .v-field__input {
+  font-size: 11pt !important;
 }
 
 .main-layout {

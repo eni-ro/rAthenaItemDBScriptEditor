@@ -14,13 +14,12 @@
       />
       <div class="text-caption text-grey mt-1 px-1">
         {{ results.length }} 件
-        <span v-if="results.length >= MAX_DISPLAY"> (表示上限{{ MAX_DISPLAY }}件)</span>
       </div>
     </div>
 
     <!-- Result List (virtual scroll) -->
     <v-virtual-scroll
-      :items="displayResults"
+      :items="results"
       item-height="36"
       class="flex-grow-1"
       style="min-height: 0; height: 0;"
@@ -28,7 +27,7 @@
       <template #default="{ item: r }">
         <v-list-item
           :key="r.key"
-          :class="['text-caption result-item', r.type === 'item' ? 'item-row' : 'combo-row']"
+          :class="['result-item', r.type === 'item' ? 'item-row' : 'combo-row']"
           density="compact"
           @click="onSelect(r)"
           :active="isActive(r)"
@@ -43,7 +42,7 @@
               label
             >{{ r.type === 'item' ? 'I' : 'C' }}</v-chip>
           </template>
-          <v-list-item-title class="text-caption result-label">{{ r.label }}</v-list-item-title>
+          <v-list-item-title class="result-label">{{ r.label }}</v-list-item-title>
         </v-list-item>
       </template>
     </v-virtual-scroll>
@@ -58,7 +57,6 @@ import type { ItemDbEntry, ComboDbEntry } from '../lib/DbReader';
 const appModel = useGlobals();
 const rawSearch = ref('');
 const debouncedSearch = ref('');
-const MAX_DISPLAY = 300;
 
 // debounce: 200ms
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -75,6 +73,7 @@ interface SearchResult {
   label: string;
   item?: ItemDbEntry;
   combo?: ComboDbEntry;
+  _search: string;
 }
 
 // 事前にアイテム一覧を構築（起動後固定）
@@ -90,46 +89,53 @@ const allItemResults = computed<SearchResult[]>(() => {
 
 const allComboResults = computed<SearchResult[]>(() => {
   const out: SearchResult[] = [];
+  const allItems = appModel.getItems();
+  const itemNames = appModel.getItemNames();
+
+  // AegisNameからアイテムへのマップを作成して検索を高速化
+  const aegisMap = new Map<string, ItemDbEntry>();
+  for (const itm of allItems) {
+    aegisMap.set(itm.aegis_name, itm);
+  }
+
   for (const combo of appModel.getCombos()) {
     const labelStr = combo.combos
       .map(c => c.items.map(a => appModel.getItemSearchName(a)).join('+'))
       .join(' / ');
-    const searchStr = combo.combos
-      .flatMap(c => c.items.flatMap(aegis => {
-        const itm = appModel.getItems().find(i => i.aegis_name === aegis);
-        return itm
-          ? [aegis.toLowerCase(), itm.name.toLowerCase(), (appModel.getItemNames().get(itm.id) || '').toLowerCase()]
-          : [aegis.toLowerCase()];
-      }))
-      .join(' ');
+    
+    // コンボ内のアイテム名やAegisNameも含めて検索対象にする
+    const searchTerms: string[] = [];
+    for (const c of combo.combos) {
+      for (const aegis of c.items) {
+        searchTerms.push(aegis.toLowerCase());
+        const itm = aegisMap.get(aegis);
+        if (itm) {
+          searchTerms.push(itm.name.toLowerCase());
+          const jpName = itemNames.get(itm.id);
+          if (jpName) searchTerms.push(jpName.toLowerCase());
+        }
+      }
+    }
+
     out.push({
       key: `combo-${combo.filePath}-${combo.index}`,
       type: 'combo',
       label: `Combo: ${labelStr}`,
-      _search: searchStr,
+      _search: searchTerms.join(' '),
       combo,
-    } as any);
+    });
   }
   return out;
 });
+
+const allResults = computed<SearchResult[]>(() => [...allItemResults.value, ...allComboResults.value]);
 
 const results = computed<SearchResult[]>(() => {
   const q = debouncedSearch.value?.trim().toLowerCase() || '';
-  if (!q) {
-    // 未検索: アイテムを先頭MAX_DISPLAY件
-    return [...allItemResults.value, ...allComboResults.value].slice(0, MAX_DISPLAY);
-  }
-  const out: SearchResult[] = [];
-  for (const r of allItemResults.value) {
-    if ((r as any)._search?.includes(q)) out.push(r);
-  }
-  for (const r of allComboResults.value) {
-    if ((r as any)._search?.includes(q)) out.push(r);
-  }
-  return out;
-});
+  if (!q) return allResults.value;
 
-const displayResults = computed(() => results.value.slice(0, MAX_DISPLAY));
+  return allResults.value.filter(r => r._search.includes(q));
+});
 
 function isActive(r: SearchResult): boolean {
   if (r.type === 'item') return appModel.currentItem.value?.aegis_name === r.item?.aegis_name;
@@ -153,7 +159,6 @@ function onSelect(r: SearchResult) {
 .combo-row { border-left: 3px solid #2e7d32; }
 .chip-label { min-width: 18px; }
 .result-label {
-  font-size: 11px !important;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

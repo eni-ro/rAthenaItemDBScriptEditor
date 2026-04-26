@@ -242,13 +242,13 @@ const confirmDialog = reactive<{
 
 // ─── Constants ──────────────────────────────────────────────────────
 const TYPES = ['Healing','Usable','Etc','Armor','Weapon','Card','PetEgg','PetArmor','Ammo','DelayConsume','ShadowGear','Cash'];
-const WEAPON_SUBTYPES = ['Fist','Dagger','1hSword','2hSword','1hSpear','2hSpear','1hAxe','2hAxe','Mace','Staff','Bow','Knuckle','Musical','Whip','Book','Katar','Revolver','Rifle','Gatling','Shotgun','Grenade','Huuma','2hStaff'];
+const WEAPON_SUBTYPES = ['Fist','Dagger','1hSword','2hSword','1hSpear','2hSpear','1hAxe','2hAxe','Mace','2hMace','Staff','2hStaff','Bow','Knuckle','Musical','Whip','Book','Katar','Revolver','Rifle','Gatling','Shotgun','Grenade','Huuma'];
 const AMMO_SUBTYPES = ['Arrow','Dagger','Bullet','Shell','Grenade','Shuriken','Kunai','CannonBall','ThrowWeapon'];
 const CARD_SUBTYPES = ['Normal','Enchant'];
-const GENDERS = ['Both','Female','Male'];
-const JOB_LIST = ['All','Acolyte','Alchemist','Archer','Assassin','BardDancer','Blacksmith','Crusader','Gunslinger','Hunter','KagerouOboro','Knight','Mage','Merchant','Monk','Ninja','Novice','Priest','Rebellion','Rogue','Sage','SoulLinker','StarGladiator','Summoner','SuperNovice','Swordman','Taekwon','Thief','Wizard'];
-const CLASS_LIST = ['All','Normal','Upper','Baby','Third','Third_Upper','Third_Baby','Fourth','All_Upper','All_Baby','All_Third'];
-const LOCATION_LIST = ['Head_Top','Head_Mid','Head_Low','Armor','Right_Hand','Left_Hand','Garment','Shoes','Right_Accessory','Left_Accessory','Costume_Head_Top','Costume_Head_Mid','Costume_Head_Low','Costume_Garment','Ammo','Shadow_Armor','Shadow_Weapon','Shadow_Shield','Shadow_Shoes','Shadow_Right_Accessory','Shadow_Left_Accessory','Both_Hand','Both_Accessory'];
+const GENDERS = ['Both','Male','Female'];
+const JOB_LIST = ['All','Novice','Swordman','Knight','Crusader','Merchant','Blacksmith','Alchemist','Thief','Assassin','Rogue','Mage','Wizard','Sage','Acolyte','Priest','Monk','Archer','Hunter','BardDancer','SuperNovice','Gunslinger','Ninja','KagerouOboro','Rebellion','Taekwon','StarGladiator','SoulLinker','Summoner'];
+const CLASS_LIST = ['All','Normal','Upper','All_Upper','Third','Third_Upper','All_Third','Fourth','Baby','Third_Baby','All_Baby'];
+const LOCATION_LIST = ['Head_Top','Head_Mid','Head_Low','Armor','Right_Hand','Left_Hand','Both_Hand','Garment','Shoes','Both_Accessory','Right_Accessory','Left_Accessory','Costume_Head_Top','Costume_Head_Mid','Costume_Head_Low','Shadow_Armor','Costume_Garment','Shadow_Weapon','Shadow_Shield','Shadow_Shoes','Shadow_Right_Accessory','Shadow_Left_Accessory','Ammo'];
 const FLAG_LIST = ['BuyingStore','DeadBranch','Container','UniqueId','BindOnEquip','DropAnnounce','NoConsume','DropEffect'] as const;
 const TRADE_BOOLS = ['NoDrop','NoTrade','TradePartner','NoSell','NoCart','NoStorage','NoGuildStorage','NoMail','NoAuction'];
 const SCRIPT_FIELDS = [
