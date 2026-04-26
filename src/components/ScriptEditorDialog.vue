@@ -1,119 +1,127 @@
 <template>
   <v-dialog v-model="dialog" fullscreen :scrim="false" transition="dialog-bottom-transition">
-    <v-card class="d-flex flex-column h-100">
-      <!-- Header -->
-      <v-toolbar color="grey-darken-3" density="compact">
-        <v-toolbar-title>Script Editor</v-toolbar-title>
-        <v-spacer />
-        <v-btn color="success" variant="flat" class="mr-2" @click="onConfirm">確定</v-btn>
-        <v-btn variant="text" icon="mdi-close" @click="onCancel" />
-      </v-toolbar>
+    <div style="display:flex; flex-direction:column; height:100vh; background:#1e1e1e; color:#fff;">
 
-      <div class="editor-layout flex-grow-1" ref="containerRef">
-        <!-- Left: Built-in script selector -->
-        <div class="pane-left border-e" ref="leftRef">
-          <div class="left-pane-grid">
-            <!-- Top: Script list -->
-            <div class="grid-top border-b">
-              <div class="pa-1 bg-grey-lighten-4 d-flex align-center position-sticky top-0" style="z-index:10">
-                <v-text-field
-                  v-model="scriptSearch"
-                  append-inner-icon="mdi-magnify"
-                  density="compact"
-                  hide-details
-                  label="Search Scripts"
-                  variant="outlined"
-                  class="me-2 text-caption"
-                />
-                <v-btn icon="mdi-unfold-more-horizontal" size="x-small" variant="text" @click="expandAll" />
-                <v-btn icon="mdi-unfold-less-horizontal" size="x-small" variant="text" @click="collapseAll" />
-              </div>
-              <v-list density="compact" open-strategy="multiple" v-model:opened="openedGroups" @update:selected="onScriptSelected">
-                <template v-for="cat in filteredCategories" :key="cat.name">
-                  <v-list-group :value="cat.name">
-                    <template v-slot:activator="{ props }">
-                      <v-list-item v-bind="props" :title="cat.name" class="font-weight-bold bg-grey-lighten-5" density="compact" />
-                    </template>
-                    <v-list-item
-                      v-for="script in cat.scripts"
-                      :key="script.Name"
-                      :title="script.Name"
-                      :value="script"
-                      color="primary"
-                      density="compact"
-                    />
-                  </v-list-group>
-                </template>
-              </v-list>
+      <!-- ─── Header ─────────────────────────────────────────────── -->
+      <div style="display:flex; align-items:center; background:#333; padding:4px 8px; flex-shrink:0; border-bottom:1px solid #555;">
+        <span style="font-size:13px; font-weight:600; margin-right:auto;">Script Editor</span>
+        <v-btn color="success" variant="flat" size="small" class="mr-2" @click="onConfirm">確定</v-btn>
+        <v-btn variant="text" icon="mdi-close" size="small" @click="onCancel" />
+      </div>
+
+      <!-- ─── Main area (Left | Divider | Right) ────────────────── -->
+      <div
+        ref="containerRef"
+        style="display:flex; flex:1; overflow:hidden; min-height:0;"
+        @mousemove="onMouseMove"
+        @mouseup="onMouseUp"
+      >
+
+        <!-- ─── Left Pane ─────────────────────────────────────────── -->
+        <div
+          ref="leftPaneRef"
+          :style="{ width: leftWidth + 'px', minWidth: '160px', display:'flex', flexDirection:'column', overflow:'hidden', borderRight:'1px solid #555' }"
+        >
+          <!-- Script Search -->
+          <div style="padding:4px; border-bottom:1px solid #444; flex-shrink:0;">
+            <input
+              v-model="scriptSearch"
+              placeholder="Search scripts..."
+              style="width:100%; box-sizing:border-box; background:#2a2a2a; color:#fff; border:1px solid #555; border-radius:4px; padding:4px 6px; font-size:11px; outline:none;"
+            />
+            <div style="display:flex; gap:4px; margin-top:4px;">
+              <button @click="expandAll" style="flex:1; background:#3a3a3a; color:#aaa; border:none; border-radius:3px; padding:2px; font-size:10px; cursor:pointer;">全展開</button>
+              <button @click="collapseAll" style="flex:1; background:#3a3a3a; color:#aaa; border:none; border-radius:3px; padding:2px; font-size:10px; cursor:pointer;">全折畳</button>
             </div>
+          </div>
 
-            <!-- Resizer 1 -->
-            <div class="resizer" @mousedown="startResize(1)" />
-
-            <!-- Middle: Params -->
-            <div class="grid-middle pa-2 border-b bg-grey-lighten-5">
-              <h3 class="text-subtitle-2 mb-1 font-weight-bold">Parameters</h3>
-              <template v-if="selectedScript">
-                <v-row density="comfortable">
-                  <v-col cols="4" v-for="(arg, index) in selectedScript.Args" :key="index">
-                    <v-text-field
-                      v-model="argValues[index]"
-                      :label="getDesc(arg.Desc)"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      :append-inner-icon="hasList(arg.Type) ? 'mdi-magnify' : undefined"
-                      @click:append-inner="openParamSelect(arg, index)"
-                      :readonly="hasList(arg.Type)"
-                      class="text-caption"
-                    />
-                  </v-col>
-                </v-row>
-                <div v-if="!selectedScript.Args || selectedScript.Args.length === 0" class="text-caption text-grey mt-1">No parameters required.</div>
+          <!-- Script List (top) -->
+          <div :style="{ flex: topFlex, overflow:'auto', minHeight:'80px' }">
+            <v-list density="compact" open-strategy="multiple" v-model:opened="openedGroups" @update:selected="onScriptSelected"
+              bg-color="transparent" style="font-size:11px;">
+              <template v-for="cat in filteredCategories" :key="cat.name">
+                <v-list-group :value="cat.name">
+                  <template v-slot:activator="{ props }">
+                    <v-list-item v-bind="props" :title="cat.name" density="compact"
+                      style="background:#2d2d2d; font-size:11px; font-weight:600;" />
+                  </template>
+                  <v-list-item
+                    v-for="script in cat.scripts" :key="script.Name"
+                    :title="script.Name" :value="script" color="primary" density="compact"
+                    style="font-size:11px; padding-left:24px;"
+                  />
+                </v-list-group>
               </template>
-              <div v-else class="text-caption text-grey mt-1">Select a script from the list above.</div>
-            </div>
+            </v-list>
+          </div>
 
-            <!-- Resizer 2 -->
-            <div class="resizer" @mousedown="startResize(2)" />
+          <!-- Vertical Resizer 1 -->
+          <div
+            style="height:5px; background:#444; cursor:ns-resize; flex-shrink:0;"
+            @mousedown.prevent="startVResize(1)"
+          />
 
-            <!-- Bottom: Description -->
-            <div class="grid-bottom pa-2">
-              <h3 class="text-subtitle-2 mb-1 font-weight-bold">Description</h3>
-              <div class="text-caption" style="white-space:pre-wrap;line-height:1.2">
-                <template v-if="selectedScript">{{ getDesc(selectedScript.Desc) }}</template>
-                <template v-else>Select a script to see its description.</template>
+          <!-- Params (middle) -->
+          <div :style="{ flex: midFlex, overflow:'auto', padding:'6px', background:'#252525', minHeight:'60px' }">
+            <div style="font-size:11px; font-weight:700; margin-bottom:4px; color:#bbb;">Parameters</div>
+            <template v-if="selectedScript">
+              <div v-if="!selectedScript.Args || selectedScript.Args.length === 0" style="font-size:11px; color:#888;">No parameters.</div>
+              <div v-else style="display:grid; grid-template-columns: repeat(3,1fr); gap:4px;">
+                <div v-for="(arg, idx) in selectedScript.Args" :key="idx">
+                  <div style="font-size:10px; color:#aaa; margin-bottom:2px;">{{ getDesc(arg.Desc).split('\n')[0] }}</div>
+                  <div style="display:flex; align-items:center;">
+                    <input
+                      v-model="argValues[idx]"
+                      :readonly="hasList(arg.Type)"
+                      style="flex:1; min-width:0; background:#1e1e1e; color:#fff; border:1px solid #555; border-radius:3px; padding:2px 4px; font-size:11px; outline:none;"
+                    />
+                    <button v-if="hasList(arg.Type)" @click="openParamSelect(arg, idx)"
+                      style="margin-left:3px; background:#444; color:#fff; border:none; border-radius:3px; padding:2px 5px; cursor:pointer; font-size:11px;">…</button>
+                  </div>
+                </div>
               </div>
-            </div>
+            </template>
+            <div v-else style="font-size:11px; color:#888;">スクリプトを選択してください</div>
+          </div>
+
+          <!-- Vertical Resizer 2 -->
+          <div
+            style="height:5px; background:#444; cursor:ns-resize; flex-shrink:0;"
+            @mousedown.prevent="startVResize(2)"
+          />
+
+          <!-- Description (bottom) -->
+          <div :style="{ flex: botFlex, overflow:'auto', padding:'6px', background:'#1a1a1a', minHeight:'40px' }">
+            <div style="font-size:11px; font-weight:700; margin-bottom:4px; color:#bbb;">Description</div>
+            <pre style="font-size:10px; color:#ccc; white-space:pre-wrap; margin:0; font-family:inherit; line-height:1.4;">{{ selectedScript ? getDesc(selectedScript.Desc) : 'Select a script to see its description.' }}</pre>
           </div>
         </div>
 
-        <!-- Inject button / Resize handle -->
-        <div class="pane-divider d-flex flex-column align-center justify-center bg-grey-darken-4" @mousedown="startHResize">
-          <v-btn
-            icon="mdi-chevron-double-right"
-            size="small"
-            color="primary"
-            variant="flat"
-            class="inject-btn"
-            title="スクリプトを挿入 (選択スクリプト+パラメータ)"
+        <!-- ─── Horizontal Resizer / Inject button ────────────────── -->
+        <div
+          style="width:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#2d2d2d; border-right:1px solid #555; cursor:col-resize; flex-shrink:0;"
+          @mousedown.prevent="startHResize"
+        >
+          <button
             @click.stop="triggerInject"
-          />
+            title="スクリプトをMonacoEditorに挿入"
+            style="width:30px; height:30px; border-radius:50%; background:#0078d4; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; pointer-events:auto;"
+          >›</button>
         </div>
 
-        <!-- Right: Monaco Editor -->
-        <div class="pane-right d-flex flex-column" ref="rightRef">
+        <!-- ─── Right Pane: Monaco Editor ─────────────────────────── -->
+        <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; min-width:0;">
           <vue-monaco-editor
             v-model:value="editingScript"
             theme="vs-dark"
             language="rust"
             :options="editorOptions"
             @mount="handleMount"
-            height="100%"
+            style="flex:1; height:100%;"
           />
         </div>
       </div>
-    </v-card>
+    </div>
 
     <ParamSelectDialog ref="paramDialog" />
   </v-dialog>
@@ -134,7 +142,7 @@ const editingScript = ref('');
 let resolveCallback: ((s: string | null) => void) | null = null;
 
 const containerRef = ref<HTMLElement | null>(null);
-const leftRef = ref<HTMLElement | null>(null);
+const leftPaneRef = ref<HTMLElement | null>(null);
 
 // ─── Left pane state ────────────────────────────────────────────────
 const scriptSearch = ref('');
@@ -143,68 +151,75 @@ const selectedScript = ref<ScriptItemConf | null>(null);
 const argValues = ref<string[]>(['', '', '', '', '', '']);
 const paramDialog = ref<any>(null);
 
+// ─── Layout sizes ────────────────────────────────────────────────────
+const leftWidth = ref(360);     // px
+const topFlex = ref(5);         // flex values (relative)
+const midFlex = ref(3);
+const botFlex = ref(2);
+
 // ─── Horizontal resize ───────────────────────────────────────────────
-const leftWidth = ref(40);
-const isHResizing = ref(false);
+let isHResizing = false;
+const startHResize = () => { isHResizing = true; };
 
-const startHResize = (e: MouseEvent) => {
-  if ((e.target as HTMLElement).closest('button')) return;
-  isHResizing.value = true;
-  document.body.style.cursor = 'col-resize';
-  document.body.style.userSelect = 'none';
+// ─── Vertical resize ─────────────────────────────────────────────────
+let vResizeIdx = 0;
+let vResizeStartY = 0;
+let vResizeStartTop = 0;
+let vResizeStartMid = 0;
+let vResizeStartBot = 0;
+
+const startVResize = (idx: number) => {
+  vResizeIdx = idx;
+  vResizeStartY = 0;
+  vResizeStartTop = topFlex.value;
+  vResizeStartMid = midFlex.value;
+  vResizeStartBot = botFlex.value;
 };
 
-const handleHResize = (e: MouseEvent) => {
-  if (!isHResizing.value || !containerRef.value) return;
-  const rect = containerRef.value.getBoundingClientRect();
-  const newLeft = Math.max(10, Math.min(((e.clientX - rect.left) / rect.width) * 100, 80));
-  leftWidth.value = newLeft;
-};
-
-const stopHResize = () => {
-  isHResizing.value = false;
-  document.body.style.cursor = '';
-  document.body.style.userSelect = '';
-};
-
-// ─── Vertical resize (left pane) ─────────────────────────────────────
-const topHeight = ref(50);
-const midHeight = ref(25);
-const botHeight = ref(25);
-const isVResizing = ref(0);
-
-const startResize = (idx: number) => {
-  isVResizing.value = idx;
-  document.body.style.cursor = 'ns-resize';
-  document.body.style.userSelect = 'none';
-};
-
-const stopVResize = () => {
-  isVResizing.value = 0;
-  document.body.style.cursor = '';
-  document.body.style.userSelect = '';
-};
-
-const handleVResize = (e: MouseEvent) => {
-  if (isVResizing.value === 0 || !leftRef.value) return;
-  const rect = leftRef.value.getBoundingClientRect();
-  const pct = ((e.clientY - rect.top) / rect.height) * 100;
-  const minH = 10;
-  if (isVResizing.value === 1) {
-    const maxTop = topHeight.value + midHeight.value - minH;
-    const newTop = Math.max(minH, Math.min(pct, maxTop));
-    midHeight.value -= newTop - topHeight.value;
-    topHeight.value = newTop;
-  } else if (isVResizing.value === 2) {
-    const maxMid = midHeight.value + botHeight.value - minH;
-    const newMid = Math.max(minH, Math.min(pct - topHeight.value, maxMid));
-    botHeight.value -= newMid - midHeight.value;
-    midHeight.value = newMid;
+const onMouseMove = (e: MouseEvent) => {
+  if (isHResizing && containerRef.value) {
+    const rect = containerRef.value.getBoundingClientRect();
+    const newW = Math.max(160, Math.min(e.clientX - rect.left, rect.width - 200));
+    leftWidth.value = newW;
+    return;
+  }
+  if (vResizeIdx > 0 && leftPaneRef.value) {
+    if (vResizeStartY === 0) { vResizeStartY = e.clientY; return; }
+    const rect = leftPaneRef.value.getBoundingClientRect();
+    const totalFlex = topFlex.value + midFlex.value + botFlex.value;
+    const pct = (e.clientY - rect.top) / rect.height;
+    const total = vResizeStartTop + vResizeStartMid + vResizeStartBot;
+    if (vResizeIdx === 1) {
+      const newTop = Math.max(1, Math.min(pct * total, total - 2));
+      const diff = newTop - vResizeStartTop;
+      topFlex.value = Math.max(1, vResizeStartTop + diff);
+      midFlex.value = Math.max(1, vResizeStartMid - diff);
+    } else if (vResizeIdx === 2) {
+      const aboveMid = (e.clientY - rect.top - (topFlex.value / (topFlex.value + midFlex.value + botFlex.value)) * rect.height);
+      const pct2 = aboveMid / rect.height;
+      const newMid = Math.max(1, Math.min(pct2 * total + vResizeStartTop, total - 1 - topFlex.value));
+      const diff2 = newMid - vResizeStartMid;
+      midFlex.value = Math.max(1, vResizeStartMid + diff2);
+      botFlex.value = Math.max(1, vResizeStartBot - diff2);
+    }
   }
 };
 
+const onMouseUp = () => {
+  isHResizing = false;
+  vResizeIdx = 0;
+  vResizeStartY = 0;
+};
+
 // ─── Monaco editor ──────────────────────────────────────────────────
-const editorOptions = { automaticLayout: true, minimap: { enabled: false }, wordWrap: 'on' as const, tabSize: 2, insertSpaces: true };
+const editorOptions = {
+  automaticLayout: true,
+  minimap: { enabled: false },
+  wordWrap: 'on' as const,
+  tabSize: 2,
+  insertSpaces: true,
+  fontSize: 13,
+};
 let editorInstance: any = null;
 let monacoInstance: any = null;
 let autocompleteKeywords: string[] = [];
@@ -238,8 +253,12 @@ const triggerInject = () => {
       const lineContent = model.getLineContent(pos.lineNumber);
       const indent = (lineContent.match(/^(\s*)/) || ['', ''])[1];
       const lines = code.split('\n');
-      const formatted = lines.map((l, i) => i === 0 ? l : indent + l).join('\n');
-      editorInstance.executeEdits('inject', [{ range: new monacoInstance.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column), text: formatted, forceMoveMarkers: true }]);
+      const formatted = lines.map((l: string, i: number) => i === 0 ? l : indent + l).join('\n');
+      editorInstance.executeEdits('inject', [{
+        range: new monacoInstance.Range(pos.lineNumber, pos.column, pos.lineNumber, pos.column),
+        text: formatted,
+        forceMoveMarkers: true,
+      }]);
       editorInstance.focus();
     }
   } else {
@@ -250,8 +269,9 @@ const triggerInject = () => {
 // ─── Script list ────────────────────────────────────────────────────
 const filteredCategories = computed(() => {
   if (!scriptSearch.value) return appModel.categories.value.map(c => ({ name: c.Category, scripts: c.Script }));
+  const q = scriptSearch.value.toLowerCase();
   return appModel.categories.value
-    .map(c => ({ name: c.Category, scripts: c.Script.filter(s => s.SearchString?.includes(scriptSearch.value.toLowerCase())) }))
+    .map(c => ({ name: c.Category, scripts: c.Script.filter(s => s.SearchString?.includes(q)) }))
     .filter(c => c.scripts.length > 0);
 });
 
@@ -274,7 +294,6 @@ const onScriptSelected = (sel: unknown) => {
 
 const expandAll = () => { openedGroups.value = appModel.categories.value.map(c => c.Category); };
 const collapseAll = () => { openedGroups.value = []; };
-
 watch(scriptSearch, v => { if (v) expandAll(); });
 
 const openParamSelect = (arg: ScriptArgConf, index: number) => {
@@ -296,10 +315,6 @@ const openParamSelect = (arg: ScriptArgConf, index: number) => {
 };
 
 // ─── Public API ─────────────────────────────────────────────────────
-/**
- * ダイアログを開いて編集後のスクリプトを返す Promise
- * キャンセルした場合は null を返す
- */
 function open(initialScript: string): Promise<string | null> {
   editingScript.value = initialScript;
   dialog.value = true;
@@ -322,11 +337,6 @@ defineExpose({ open });
 
 // ─── Lifecycle ──────────────────────────────────────────────────────
 onMounted(async () => {
-  window.addEventListener('mousemove', handleHResize);
-  window.addEventListener('mouseup', stopHResize);
-  window.addEventListener('mousemove', handleVResize);
-  window.addEventListener('mouseup', stopVResize);
-
   try {
     const basePath = localStorage.getItem('app:basePath') || '';
     let prefix = basePath;
@@ -337,70 +347,4 @@ onMounted(async () => {
     console.warn('Failed to load auto_complete', e);
   }
 });
-
-onUnmounted(() => {
-  window.removeEventListener('mousemove', handleHResize);
-  window.removeEventListener('mouseup', stopHResize);
-  window.removeEventListener('mousemove', handleVResize);
-  window.removeEventListener('mouseup', stopVResize);
-});
 </script>
-
-<style scoped>
-.editor-layout {
-  display: grid;
-  grid-template-columns: v-bind('leftWidth + "%"') 48px 1fr;
-  height: 100%;
-  overflow: hidden;
-}
-.pane-left {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.left-pane-grid {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-.grid-top {
-  flex: 0 0 v-bind('topHeight + "%"');
-  height: v-bind('topHeight + "%"');
-  overflow-y: auto;
-}
-.grid-middle {
-  flex: 0 0 v-bind('midHeight + "%"');
-  height: v-bind('midHeight + "%"');
-  overflow-y: auto;
-}
-.grid-bottom {
-  flex: 0 0 v-bind('botHeight + "%"');
-  height: v-bind('botHeight + "%"');
-  overflow-y: auto;
-}
-.resizer {
-  height: 4px;
-  background: transparent;
-  cursor: ns-resize;
-  flex: 0 0 auto;
-  transition: background 0.2s;
-}
-.resizer:hover {
-  background: var(--v-theme-primary);
-  opacity: 0.5;
-}
-.pane-divider {
-  cursor: col-resize;
-  z-index: 10;
-  user-select: none;
-  transition: background-color 0.2s;
-}
-.pane-divider:hover {
-  background-color: #333 !important;
-}
-.pane-right {
-  overflow: hidden;
-  min-width: 0;
-}
-</style>

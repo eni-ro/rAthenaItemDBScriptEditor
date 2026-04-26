@@ -306,12 +306,27 @@ function loadForm(val: ItemDbEntry) {
 }
 
 // アイテム切り替え時のdirty確認
+// _ignoreNextItemChange: キャンセル時に loadItem → watch の再トリガーを防ぐフラグ
+let _ignoreNextItemChange = false;
+
 watch(item, (newVal, oldVal) => {
   if (!newVal) return;
+
+  // キャンセルによる revert の場合はダイアログを出さずフォームを戻す
+  if (_ignoreNextItemChange) {
+    _ignoreNextItemChange = false;
+    loadForm(newVal);
+    return;
+  }
+
   if (isDirty.value && oldVal) {
-    // 新しいアイテムを一時保存してキャンセル時に戻す
     confirmDialog.confirm = () => { loadForm(newVal); };
-    confirmDialog.cancel = () => { appModel.loadItem(oldVal.aegis_name); };
+    confirmDialog.cancel = () => {
+      // watch を再トリガーするが、フラグで止める
+      _ignoreNextItemChange = true;
+      // currentItem を直接元の値に戻す（SearchPanel のハイライトも復元）
+      appModel.currentItem.value = oldVal;
+    };
     confirmDialog.show = true;
   } else {
     loadForm(newVal);

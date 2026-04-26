@@ -35,6 +35,7 @@ def make_yaml():
     yaml.preserve_quotes = True
     yaml.indent(mapping=2, sequence=4, offset=2)
     yaml.width = 4096
+    yaml.allow_duplicate_keys = True  # 既存YAMLファイルに重複キーがある場合も許容
     return yaml
 
 
