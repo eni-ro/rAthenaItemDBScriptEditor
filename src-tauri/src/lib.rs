@@ -43,6 +43,11 @@ fn read_file_raw(path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+fn read_file_bytes(path: String) -> Result<Vec<u8>, String> {
+    std::fs::read(&path).map_err(|e| format!("{}: {}", path, e))
+}
+
+#[tauri::command]
 fn read_file_encoded(path: String, encoding: String) -> Result<String, String> {
     let bytes = std::fs::read(&path).map_err(|e| format!("{}: {}", path, e))?;
     Ok(decode_bytes(&bytes, &encoding))
@@ -146,6 +151,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             read_file_raw,
             read_file_encoded,
+            read_file_bytes,
             write_file_raw,
             write_file_encoded,
             get_exe_dir,

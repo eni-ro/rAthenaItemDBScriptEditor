@@ -193,12 +193,35 @@ function parseItemEntry(item: any, filePath: string): ItemDbEntry {
   };
 }
 
+function removeByteSequence(source: Uint8Array, seq: number[]): Uint8Array {
+  const result: number[] = [];
+  for (let i = 0; i < source.length; i++) {
+    let match = true;
+    for (let j = 0; j < seq.length; j++) {
+      if (source[i + j] !== seq[j]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      i += seq.length - 1;
+    } else {
+      result.push(source[i]);
+    }
+  }
+  return new Uint8Array(result);
+}
+
 /** エンコーディングを指定してYAMLファイルを読み込む */
 async function readYaml(filePath: string, encoding: string): Promise<string> {
-  if (encoding.toLowerCase() === 'utf-8' || encoding.toLowerCase() === 'utf8') {
-    return invoke<string>('read_file_raw', { path: filePath });
-  }
-  return invoke<string>('read_file_encoded', { path: filePath, encoding });
+  const bytesArray = await invoke<number[]>('read_file_bytes', { path: filePath });
+  let bytes = new Uint8Array(bytesArray);
+  
+  // UTF-8のゼロ幅スペース(E2 80 8B)をバイト列から除去
+  bytes = removeByteSequence(bytes, [0xE2, 0x80, 0x8B]);
+  
+  const decoder = new TextDecoder(encoding.toLowerCase() === 'utf8' ? 'utf-8' : encoding);
+  return decoder.decode(bytes);
 }
 
 export class DbReader {
