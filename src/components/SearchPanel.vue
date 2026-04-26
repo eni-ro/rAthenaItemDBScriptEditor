@@ -82,7 +82,7 @@ const allItemResults = computed<SearchResult[]>(() => {
     key: `item-${item.aegis_name}`,
     type: 'item' as const,
     label: appModel.getDisplayName(item),
-    _search: (item.aegis_name + item.name + (appModel.getItemNames().get(item.id) || '')).toLowerCase(),
+    _search: (item.aegis_name + item.name + (appModel.getItemNames().get(item.id) || '') + (item.slots != null ? `[${item.slots}]` : '')).toLowerCase(),
     item,
   }));
 });

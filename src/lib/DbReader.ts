@@ -353,8 +353,9 @@ export class DbReader {
 
   getDisplayName(item: ItemDbEntry): string {
     const jpName = this.itemNames.get(item.id);
-    if (jpName) return `${jpName}(${item.aegis_name})`;
-    return `${item.name}(${item.aegis_name})`;
+    const baseName = jpName || item.name;
+    const slotsStr = item.slots != null ? `[${item.slots}]` : '';
+    return `${baseName}${slotsStr}(${item.aegis_name})`;
   }
 
   getCombosForItem(aegis_name: string): ComboDbEntry[] {
