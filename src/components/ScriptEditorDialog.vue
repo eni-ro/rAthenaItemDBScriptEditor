@@ -128,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, watch, onMounted, nextTick } from 'vue';
 import { useGlobals } from '../composables/useAppModel';
 import ParamSelectDialog from './ParamSelectDialog.vue';
 import { VueMonacoEditor } from '@guolao/vue-monaco-editor';
@@ -186,7 +186,6 @@ const onMouseMove = (e: MouseEvent) => {
   if (vResizeIdx > 0 && leftPaneRef.value) {
     if (vResizeStartY === 0) { vResizeStartY = e.clientY; return; }
     const rect = leftPaneRef.value.getBoundingClientRect();
-    const totalFlex = topFlex.value + midFlex.value + botFlex.value;
     const pct = (e.clientY - rect.top) / rect.height;
     const total = vResizeStartTop + vResizeStartMid + vResizeStartBot;
     if (vResizeIdx === 1) {

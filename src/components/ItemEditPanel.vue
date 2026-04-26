@@ -117,7 +117,7 @@
       <div class="text-caption font-weight-bold mb-1">Flags</div>
       <v-row dense>
         <v-col v-for="f in FLAG_LIST" :key="f" cols="2">
-          <v-checkbox v-model="form.flags[f as keyof typeof form.flags]" :label="f" density="compact" hide-details />
+          <v-checkbox v-model="form.flags[f]" :label="f" density="compact" hide-details />
         </v-col>
       </v-row>
 
@@ -221,7 +221,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, reactive, onBeforeMount } from 'vue';
+import { ref, computed, watch, reactive } from 'vue';
 import { useGlobals } from '../composables/useAppModel';
 import ScriptEditorDialog from './ScriptEditorDialog.vue';
 import { saveItemToYaml } from '../lib/DbProcessor';
@@ -247,7 +247,7 @@ const GENDERS = ['Both','Female','Male'];
 const JOB_LIST = ['All','Acolyte','Alchemist','Archer','Assassin','BardDancer','Blacksmith','Crusader','Gunslinger','Hunter','KagerouOboro','Knight','Mage','Merchant','Monk','Ninja','Novice','Priest','Rebellion','Rogue','Sage','SoulLinker','StarGladiator','Summoner','SuperNovice','Swordman','Taekwon','Thief','Wizard'];
 const CLASS_LIST = ['All','Normal','Upper','Baby','Third','Third_Upper','Third_Baby','Fourth','All_Upper','All_Baby','All_Third'];
 const LOCATION_LIST = ['Head_Top','Head_Mid','Head_Low','Armor','Right_Hand','Left_Hand','Garment','Shoes','Right_Accessory','Left_Accessory','Costume_Head_Top','Costume_Head_Mid','Costume_Head_Low','Costume_Garment','Ammo','Shadow_Armor','Shadow_Weapon','Shadow_Shield','Shadow_Shoes','Shadow_Right_Accessory','Shadow_Left_Accessory','Both_Hand','Both_Accessory'];
-const FLAG_LIST = ['BuyingStore','DeadBranch','Container','UniqueId','BindOnEquip','DropAnnounce','NoConsume','DropEffect'];
+const FLAG_LIST = ['BuyingStore','DeadBranch','Container','UniqueId','BindOnEquip','DropAnnounce','NoConsume','DropEffect'] as const;
 const TRADE_BOOLS = ['NoDrop','NoTrade','TradePartner','NoSell','NoCart','NoStorage','NoGuildStorage','NoMail','NoAuction'];
 const SCRIPT_FIELDS = [
   { key: 'script', label: 'Script' },
@@ -258,7 +258,10 @@ const SCRIPT_FIELDS = [
 // ─── Form ────────────────────────────────────────────────────────────
 const item = computed(() => appModel.currentItem.value);
 
-interface FormData extends Omit<ItemDbEntry, 'flags' | 'delay' | 'stack' | 'noUse' | 'trade'> {
+interface FormData extends Omit<ItemDbEntry, 'flags' | 'delay' | 'stack' | 'noUse' | 'trade' | 'jobs' | 'classes' | 'locations'> {
+  jobs: string[];
+  classes: string[];
+  locations: string[];
   flags: Partial<ItemFlags>;
   delay: Partial<ItemDelay>;
   stack: Partial<ItemStack> & Record<string, any>;
@@ -350,7 +353,7 @@ function onTypeChange() { form.subType = undefined; }
 // ─── Jobs: Allと他の排他 ─────────────────────────────────────────────
 function onJobsChange(val: string[]) {
   if (!val) { form.jobs = []; return; }
-  const lastAdded = val.filter(v => !form.jobs.includes(v));
+  const lastAdded = val.filter(v => !(form.jobs || []).includes(v));
   if (lastAdded.includes('All')) form.jobs = ['All'];
   else form.jobs = val.filter(v => v !== 'All');
 }
@@ -358,7 +361,7 @@ function onJobsChange(val: string[]) {
 // ─── Classes: Allと他の排他 ──────────────────────────────────────────
 function onClassesChange(val: string[]) {
   if (!val) { form.classes = []; return; }
-  const lastAdded = val.filter(v => !form.classes.includes(v));
+  const lastAdded = val.filter(v => !(form.classes || []).includes(v));
   if (lastAdded.includes('All')) form.classes = ['All'];
   else form.classes = val.filter(v => v !== 'All');
 }
@@ -366,7 +369,7 @@ function onClassesChange(val: string[]) {
 // ─── Locations: Both_Hand / Both_Accessory 排他 ───────────────────────
 function onLocationsChange(val: string[]) {
   if (!val) { form.locations = []; return; }
-  const lastAdded = val.filter(v => !form.locations.includes(v));
+  const lastAdded = val.filter(v => !(form.locations || []).includes(v));
   let result = [...val];
 
   // Both_Hand が選ばれたら Right_Hand / Left_Hand を除外
