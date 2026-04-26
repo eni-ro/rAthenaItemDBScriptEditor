@@ -88,9 +88,17 @@
           </div>
         </div>
 
-        <!-- Divider / Inject button -->
-        <div class="pane-divider d-flex align-center justify-center pa-2 border-e bg-grey-darken-4" @mousedown="startHResize">
-          <v-btn icon="mdi-chevron-right" size="small" color="primary" variant="flat" @click.stop="triggerInject" />
+        <!-- Inject button / Resize handle -->
+        <div class="pane-divider d-flex flex-column align-center justify-center bg-grey-darken-4" @mousedown="startHResize">
+          <v-btn
+            icon="mdi-chevron-double-right"
+            size="small"
+            color="primary"
+            variant="flat"
+            class="inject-btn"
+            title="スクリプトを挿入 (選択スクリプト+パラメータ)"
+            @click.stop="triggerInject"
+          />
         </div>
 
         <!-- Right: Monaco Editor -->
@@ -341,7 +349,8 @@ onUnmounted(() => {
 <style scoped>
 .editor-layout {
   display: grid;
-  grid-template-columns: v-bind('leftWidth + "%"') auto 1fr;
+  grid-template-columns: v-bind('leftWidth + "%"') 48px 1fr;
+  height: 100%;
   overflow: hidden;
 }
 .pane-left {

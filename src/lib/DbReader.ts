@@ -94,13 +94,13 @@ export interface ItemDbEntry extends DbEntry {
 
 // ─── コンボDBエントリ ─────────────────────────────────────────────────
 export interface ComboEntry {
-  items: string[];  // AegisName のリスト
+  items: string[];
 }
 
 export interface ComboDbEntry {
-  index: number;           // Body 内のインデックス (更新用)
+  index: number;
   filePath: string;
-  combos: ComboEntry[];    // Combos ブロック内の各 Combo
+  combos: ComboEntry[];
   script: string;
 }
 
@@ -193,16 +193,27 @@ function parseItemEntry(item: any, filePath: string): ItemDbEntry {
   };
 }
 
+/** エンコーディングを指定してYAMLファイルを読み込む */
+async function readYaml(filePath: string, encoding: string): Promise<string> {
+  if (encoding.toLowerCase() === 'utf-8' || encoding.toLowerCase() === 'utf8') {
+    return invoke<string>('read_file_raw', { path: filePath });
+  }
+  return invoke<string>('read_file_encoded', { path: filePath, encoding });
+}
+
 export class DbReader {
   public items: ItemDbEntry[] = [];
   public skills: DbEntry[] = [];
   public mobs: DbEntry[] = [];
   public combos: ComboDbEntry[] = [];
-  public itemNames: Map<number, string> = new Map();  // id -> 検索名
+  public itemNames: Map<number, string> = new Map();
+  public encoding: string = 'utf-8';
 
   async load(dbPath: string) {
+    // db.yml は常に UTF-8
     const dbRaw: string = await invoke('read_file_raw', { path: dbPath });
     const dbConf = jsYaml.load(dbRaw, { json: true }) as {
+      Encoding?: string;
       Item?: string[];
       ItemCombos?: string[];
       ItemName?: string[];
@@ -210,11 +221,14 @@ export class DbReader {
       Mob?: string[];
     };
 
+    // エンコーディング設定を取得（デフォルト: utf-8）
+    this.encoding = dbConf.Encoding || 'utf-8';
+
     // ─── Item ────────────────────────────────────────────────────
     if (dbConf.Item) {
       for (const filePath of dbConf.Item) {
         try {
-          const raw: string = await invoke('read_file_raw', { path: filePath });
+          const raw = await readYaml(filePath, this.encoding);
           const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
           if (parsed?.Body) {
             for (const item of parsed.Body) {
@@ -225,11 +239,9 @@ export class DbReader {
           }
         } catch (e: any) {
           this.items.push({
-            id: 0,
-            aegis_name: 'ERROR',
-            name: `Read Error: filepath : ${filePath} - ${e?.message ?? e}`,
-            filePath,
-            type: 'Etc', weight: 0, attack: 0, magicAttack: 0,
+            id: 0, aegis_name: 'ERROR',
+            name: `Read Error: ${filePath} - ${e?.message ?? e}`,
+            filePath, type: 'Etc', weight: 0, attack: 0, magicAttack: 0,
             defense: 0, range: 0, slots: 0, jobs: [], classes: [],
             gender: 'Both', locations: [], equipLevelMin: 0, equipLevelMax: 0,
             refineable: false, gradable: false, flags: {},
@@ -243,34 +255,34 @@ export class DbReader {
     if (dbConf.ItemCombos) {
       for (const filePath of dbConf.ItemCombos) {
         try {
-          const raw: string = await invoke('read_file_raw', { path: filePath });
+          const raw = await readYaml(filePath, this.encoding);
           const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
           if (parsed?.Body) {
             parsed.Body.forEach((entry: any, index: number) => {
               if (entry.Combos) {
-                const comboEntry: ComboDbEntry = {
+                this.combos.push({
                   index,
                   filePath,
                   combos: entry.Combos.map((c: any) => ({
                     items: Array.isArray(c.Combo) ? c.Combo.map((x: any) => x.toString()) : [],
                   })),
                   script: entry.Script || '',
-                };
-                this.combos.push(comboEntry);
+                });
               }
             });
           }
         } catch (e) {
-          console.warn(`Failed to read ItemCombos file: ${filePath}`, e);
+          console.warn(`Failed to read ItemCombos: ${filePath}`, e);
         }
       }
     }
 
     // ─── ItemName ────────────────────────────────────────────────
+    // ItemName は専用エンコーディングで読む（例: shift-jis）
     if (dbConf.ItemName) {
       for (const filePath of dbConf.ItemName) {
         try {
-          const raw: string = await invoke('read_file_raw', { path: filePath });
+          const raw = await readYaml(filePath, this.encoding);
           const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
           if (parsed?.Body) {
             for (const entry of parsed.Body) {
@@ -280,8 +292,7 @@ export class DbReader {
             }
           }
         } catch (e) {
-          console.warn(`Failed to read ItemName file: ${filePath}`, e);
-          // ItemName は任意なのでエラーは警告のみ
+          console.warn(`Failed to read ItemName: ${filePath}`, e);
         }
       }
     }
@@ -290,7 +301,7 @@ export class DbReader {
     if (dbConf.Skill) {
       for (const filePath of dbConf.Skill) {
         try {
-          const raw: string = await invoke('read_file_raw', { path: filePath });
+          const raw = await readYaml(filePath, this.encoding);
           const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
           if (parsed?.Body) {
             for (const skill of parsed.Body) {
@@ -303,7 +314,7 @@ export class DbReader {
             }
           }
         } catch (e) {
-          console.warn(`Failed to read Skill file: ${filePath}`);
+          console.warn(`Failed to read Skill: ${filePath}`);
         }
       }
     }
@@ -312,7 +323,7 @@ export class DbReader {
     if (dbConf.Mob) {
       for (const filePath of dbConf.Mob) {
         try {
-          const raw: string = await invoke('read_file_raw', { path: filePath });
+          const raw = await readYaml(filePath, this.encoding);
           const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
           if (parsed?.Body) {
             for (const mob of parsed.Body) {
@@ -326,7 +337,7 @@ export class DbReader {
             }
           }
         } catch (e) {
-          console.warn(`Failed to read Mob file: ${filePath}`, e);
+          console.warn(`Failed to read Mob: ${filePath}`, e);
         }
       }
     }
@@ -340,16 +351,12 @@ export class DbReader {
     return this.items.find(i => i.id === id);
   }
 
-  /** アイテムの表示名を返す: 検索名(AegisName) or Name(AegisName) */
   getDisplayName(item: ItemDbEntry): string {
     const jpName = this.itemNames.get(item.id);
-    if (jpName) {
-      return `${jpName}(${item.aegis_name})`;
-    }
+    if (jpName) return `${jpName}(${item.aegis_name})`;
     return `${item.name}(${item.aegis_name})`;
   }
 
-  /** AegisNameからコンボを検索 (当該アイテムが含まれる全コンボ) */
   getCombosForItem(aegis_name: string): ComboDbEntry[] {
     return this.combos.filter(combo =>
       combo.combos.some(c => c.items.includes(aegis_name))

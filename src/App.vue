@@ -151,6 +151,7 @@ function openSettings() {
       const raw: string = await tauriInvoke('read_file_raw', { path: dbPath });
       const conf = (jsYaml.load(raw) as any) || {};
       settingsView.value?.open({
+        Encoding: conf.Encoding || 'utf-8',
         Item: conf.Item || [],
         ItemCombos: conf.ItemCombos || [],
         ItemName: conf.ItemName || [],
@@ -158,7 +159,7 @@ function openSettings() {
         Skill: conf.Skill || [],
       }, dbPath);
     } catch (e) {
-      settingsView.value?.open({ Item: [], ItemCombos: [], ItemName: [], Mob: [], Skill: [] }, appModel.dbYmlPath.value);
+      settingsView.value?.open({ Encoding: 'utf-8', Item: [], ItemCombos: [], ItemName: [], Mob: [], Skill: [] }, appModel.dbYmlPath.value);
     }
   };
   invoke();

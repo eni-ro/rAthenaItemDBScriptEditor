@@ -18,7 +18,7 @@ async function callProcessor(request: object): Promise<DbProcessorResult> {
 }
 
 /** アイテムをYAMLファイルに保存する */
-export async function saveItemToYaml(item: ItemDbEntry): Promise<DbProcessorResult> {
+export async function saveItemToYaml(item: ItemDbEntry, encoding = 'utf-8'): Promise<DbProcessorResult> {
   const data: Record<string, any> = {
     Id: item.id,
     AegisName: item.aegis_name,
@@ -60,6 +60,7 @@ export async function saveItemToYaml(item: ItemDbEntry): Promise<DbProcessorResu
     file: item.filePath,
     aegis_name: item.aegis_name,
     data,
+    encoding,
   });
 }
 
@@ -69,12 +70,14 @@ export async function updateComboInYaml(
   comboIndex: number,
   combos: string[][],
   script: string,
+  encoding = 'utf-8',
 ): Promise<DbProcessorResult> {
   return callProcessor({
     action: 'update_combo',
     file: filePath,
     combo_index: comboIndex,
     data: { combos, script },
+    encoding,
   });
 }
 
@@ -83,11 +86,13 @@ export async function addComboToYaml(
   filePath: string,
   combos: string[][],
   script: string,
+  encoding = 'utf-8',
 ): Promise<DbProcessorResult> {
   return callProcessor({
     action: 'add_combo',
     file: filePath,
     data: { combos, script },
+    encoding,
   });
 }
 
@@ -95,11 +100,13 @@ export async function addComboToYaml(
 export async function deleteComboFromYaml(
   filePath: string,
   comboIndex: number,
+  encoding = 'utf-8',
 ): Promise<DbProcessorResult> {
   return callProcessor({
     action: 'delete_combo',
     file: filePath,
     combo_index: comboIndex,
+    encoding,
   });
 }
 
@@ -107,6 +114,7 @@ export async function deleteComboFromYaml(
 export async function updateDbYml(
   filePath: string,
   config: {
+    Encoding?: string;
     Item?: string[];
     ItemCombos?: string[];
     ItemName?: string[];

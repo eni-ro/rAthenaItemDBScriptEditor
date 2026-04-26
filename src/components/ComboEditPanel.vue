@@ -77,20 +77,34 @@
 
       <!-- Actions -->
       <div class="d-flex justify-space-between mt-3">
-        <v-btn v-if="!isNew && combo" color="error" variant="tonal" :loading="deleting" @click="deleteCombo">
+        <v-btn v-if="!isNew && combo" color="error" variant="tonal" :loading="deleting" @click="onDeleteCombo">
           <v-icon class="mr-1">mdi-delete</v-icon> 削除
         </v-btn>
         <v-spacer />
+        <v-chip v-if="isDirty" color="warning" size="small" class="mr-2">未保存の変更あり</v-chip>
         <v-btn color="success" variant="flat" :loading="saving" @click="save">
           <v-icon class="mr-1">mdi-content-save</v-icon> Save
         </v-btn>
       </div>
     </template>
 
-    <!-- Item Select Dialog (アイテムをComboに追加する用) -->
+    <!-- Item Select Dialog -->
     <ComboItemSelectDialog ref="itemSelectDialog" @select="onItemSelected" />
     <ScriptEditorDialog ref="scriptEditorDialog" />
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">{{ snackbar.text }}</v-snackbar>
+
+    <!-- 変更破棄確認 -->
+    <v-dialog v-model="confirmDialog.show" max-width="400">
+      <v-card>
+        <v-card-title>変更を破棄しますか？</v-card-title>
+        <v-card-text>現在のコンボに未保存の変更があります。破棄して移動しますか？</v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="confirmDialog.show = false; confirmDialog.cancel?.();">キャンセル</v-btn>
+          <v-btn color="error" variant="flat" @click="confirmDialog.show = false; confirmDialog.confirm?.();">破棄する</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -111,6 +125,8 @@ const deleting = ref(false);
 const snackbar = ref({ show: false, text: '', color: 'success' });
 const isNew = ref(false);
 const targetFile = ref('');
+const isDirty = ref(false);
+const confirmDialog = reactive<{ show: boolean; confirm?: () => void; cancel?: () => void }>({ show: false });
 
 const SCRIPT_FIELDS = [
   { key: 'script', label: 'Script' },
@@ -128,14 +144,34 @@ const form = reactive<FormData>({ combos: [], script: '' });
 // 追加先のcomboインデックス(どのComboにアイテム追加するか)
 let addingToComboIdx = -1;
 
-watch(combo, (val) => {
-  if (val) {
-    isNew.value = false;
-    form.combos = val.combos.map(c => ({ items: [...c.items] }));
-    form.script = val.script;
-    targetFile.value = val.filePath;
+let _suppressDirty = false;
+
+watch(combo, (newVal, oldVal) => {
+  if (newVal) {
+    if (isDirty.value && oldVal) {
+      confirmDialog.confirm = () => {
+        isNew.value = false;
+        form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
+        form.script = newVal.script;
+        targetFile.value = newVal.filePath;
+        isDirty.value = false;
+      };
+      confirmDialog.cancel = () => { appModel.currentCombo.value = oldVal; };
+      confirmDialog.show = true;
+    } else {
+      _suppressDirty = true;
+      isNew.value = false;
+      form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
+      form.script = newVal.script;
+      targetFile.value = newVal.filePath;
+      setTimeout(() => { isDirty.value = false; _suppressDirty = false; }, 50);
+    }
   }
 }, { deep: false });
+
+watch(() => JSON.stringify(form), () => {
+  if (!_suppressDirty) isDirty.value = true;
+}, { deep: true });
 
 function startNew() {
   isNew.value = true;
@@ -204,7 +240,7 @@ async function save() {
         snackbar.value = { show: true, text: '保存先ファイルを指定してください', color: 'error' };
         return;
       }
-      result = await addComboToYaml(targetFile.value, combosData, form.script);
+      result = await addComboToYaml(targetFile.value, combosData, form.script, appModel.getEncoding());
       if (result.success && result.index != null) {
         const newCombo: ComboDbEntry = {
           index: result.index,
@@ -217,7 +253,7 @@ async function save() {
         isNew.value = false;
       }
     } else if (combo.value) {
-      result = await updateComboInYaml(combo.value.filePath, combo.value.index, combosData, form.script);
+      result = await updateComboInYaml(combo.value.filePath, combo.value.index, combosData, form.script, appModel.getEncoding());
       if (result.success) {
         const updated: ComboDbEntry = {
           ...combo.value,
@@ -230,7 +266,8 @@ async function save() {
     }
 
     if (result?.success) {
-      snackbar.value = { show: true, text: 'Saved successfully', color: 'success' };
+      isDirty.value = false;
+      snackbar.value = { show: true, text: '保存しました', color: 'success' };
     } else {
       snackbar.value = { show: true, text: `Save failed: ${result?.error}`, color: 'error' };
     }
@@ -241,12 +278,12 @@ async function save() {
   }
 }
 
-async function deleteCombo() {
+async function onDeleteCombo() {
   if (!combo.value) return;
   if (!confirm('このコンボを削除しますか？')) return;
   deleting.value = true;
   try {
-    const result = await deleteComboFromYaml(combo.value.filePath, combo.value.index);
+    const result = await deleteComboFromYaml(combo.value.filePath, combo.value.index, appModel.getEncoding());
     if (result.success) {
       appModel.deleteComboFromMemory(combo.value.filePath, combo.value.index);
       appModel.currentCombo.value = null;

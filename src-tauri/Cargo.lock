@@ -1805,6 +1805,7 @@ dependencies = [
 name = "itemdb-script-editor"
 version = "0.1.0"
 dependencies = [
+ "encoding_rs",
  "serde",
  "serde_json",
  "tauri",

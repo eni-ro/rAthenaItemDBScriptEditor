@@ -1,8 +1,11 @@
 ---
 Item:
-  - E:/ROEmu/rAthenaItemDBScriptEditor2/sample/input/item_db_equip.yml
+  - E:/ROEmu/rAthenaItemDBScriptEditor/sample/input/item_db_equip.yml
+ItemCombos:
+  - E:/ROEmu/rAthenaItemDBScriptEditor/sample/input/item_combos.yml
+ItemName:
+  - E:/ROEmu/rAthenaItemDBScriptEditor/sample/input/item_db_jpname.yml
 Mob:
-  - E:/ROEmu/rAthenaItemDBScriptEditor2/sample/input/mob_db.yml
+  - E:/ROEmu/rAthenaItemDBScriptEditor/sample/input/mob_db.yml
 Skill:
-  - E:/ROEmu/rAthenaItemDBScriptEditor2/sample/input/skill_db.yml
-...
+  - E:/ROEmu/rAthenaItemDBScriptEditor/sample/input/skill_db.yml
