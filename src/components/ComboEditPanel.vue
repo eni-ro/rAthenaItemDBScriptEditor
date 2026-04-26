@@ -1,7 +1,7 @@
 <template>
-  <div class="combo-edit-panel d-flex flex-column h-100 overflow-y-auto pa-3">
+  <div class="combo-edit-panel pa-3" style="position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;">
     <!-- New Combo Button -->
-    <div class="d-flex align-center mb-3">
+    <div class="d-flex align-center mb-3 flex-shrink-0">
       <span class="text-subtitle-2 font-weight-bold">{{ isNew ? '新規コンボ作成' : 'コンボ編集' }}</span>
       <v-spacer />
       <v-btn size="small" color="primary" variant="tonal" @click="startNew">
@@ -14,69 +14,71 @@
     </div>
 
     <template v-else>
-      <!-- Target File (new only) -->
-      <div v-if="isNew" class="mb-3">
-        <div class="text-caption font-weight-bold mb-1">保存先ファイル</div>
-        <div class="d-flex align-center">
-          <v-text-field
-            v-model="targetFile"
+      <div class="flex-grow-1 overflow-y-auto pr-2" style="min-height: 0; flex: 1 1 auto;">
+        <!-- Target File (new only) -->
+        <div v-if="isNew" class="mb-3">
+          <div class="text-caption font-weight-bold mb-1">保存先ファイル</div>
+          <div class="d-flex align-center">
+            <v-text-field
+              v-model="targetFile"
+              density="compact"
+              variant="outlined"
+              hide-details
+              placeholder="item_combos.yml のパス"
+              class="text-caption flex-grow-1"
+            />
+            <v-btn icon="mdi-folder-open" size="small" variant="text" class="ml-1" @click="browseFile" />
+          </div>
+        </div>
+
+        <!-- Combos List -->
+        <div class="text-caption font-weight-bold mb-1">Combos (アイテムセット一覧)</div>
+        <div v-for="(combo, ci) in form.combos" :key="ci" class="combo-block mb-2 pa-2 rounded border">
+          <div class="d-flex align-center mb-1">
+            <span class="text-caption text-grey">Combo {{ ci + 1 }}</span>
+            <v-spacer />
+            <v-btn size="x-small" icon="mdi-plus" variant="text" @click="addItemToCombo(ci)" title="アイテムを追加" />
+            <v-btn size="x-small" icon="mdi-delete" variant="text" color="error" @click="removeCombo(ci)" title="このComboを削除" />
+          </div>
+          <div v-for="(aegis, ai) in combo.items" :key="ai" class="d-flex align-center mb-1">
+            <v-chip size="small" variant="tonal" color="primary" class="mr-2 text-caption flex-grow-1">
+              <span class="font-weight-bold">{{ getItemDisplayName(aegis) }}</span>
+            </v-chip>
+            <v-btn size="x-small" icon="mdi-close" variant="text" color="error" @click="removeItemFromCombo(ci, ai)" />
+          </div>
+          <div v-if="combo.items.length === 0" class="text-caption text-grey">アイテムが追加されていません</div>
+        </div>
+
+        <v-btn size="small" variant="tonal" class="mb-3" @click="addCombo">
+          <v-icon size="small" class="mr-1">mdi-plus</v-icon> Combo セットを追加
+        </v-btn>
+
+        <v-divider class="my-2" />
+
+        <!-- Script -->
+        <div v-for="sf in SCRIPT_FIELDS" :key="sf.key" class="mb-2">
+          <div class="d-flex align-center mb-1">
+            <span class="text-caption font-weight-bold">{{ sf.label }}</span>
+            <v-spacer />
+            <v-btn size="x-small" variant="tonal" @click="openScriptEditor(sf.key)">
+              <v-icon size="small" class="mr-1">mdi-pencil</v-icon> 詳細編集
+            </v-btn>
+          </div>
+          <v-textarea
+            v-model="form[sf.key as keyof typeof form] as string"
             density="compact"
             variant="outlined"
             hide-details
-            placeholder="item_combos.yml のパス"
-            class="text-caption flex-grow-1"
+            rows="4"
+            no-resize
+            class="text-caption font-mono"
+            :placeholder="`${sf.label} を入力...`"
           />
-          <v-btn icon="mdi-folder-open" size="small" variant="text" class="ml-1" @click="browseFile" />
         </div>
-      </div>
-
-      <!-- Combos List -->
-      <div class="text-caption font-weight-bold mb-1">Combos (アイテムセット一覧)</div>
-      <div v-for="(combo, ci) in form.combos" :key="ci" class="combo-block mb-2 pa-2 rounded border">
-        <div class="d-flex align-center mb-1">
-          <span class="text-caption text-grey">Combo {{ ci + 1 }}</span>
-          <v-spacer />
-          <v-btn size="x-small" icon="mdi-plus" variant="text" @click="addItemToCombo(ci)" title="アイテムを追加" />
-          <v-btn size="x-small" icon="mdi-delete" variant="text" color="error" @click="removeCombo(ci)" title="このComboを削除" />
-        </div>
-        <div v-for="(aegis, ai) in combo.items" :key="ai" class="d-flex align-center mb-1">
-          <v-chip size="small" variant="tonal" color="primary" class="mr-2 text-caption flex-grow-1">
-            <span class="font-weight-bold">{{ getItemDisplayName(aegis) }}</span>
-          </v-chip>
-          <v-btn size="x-small" icon="mdi-close" variant="text" color="error" @click="removeItemFromCombo(ci, ai)" />
-        </div>
-        <div v-if="combo.items.length === 0" class="text-caption text-grey">アイテムが追加されていません</div>
-      </div>
-
-      <v-btn size="small" variant="tonal" class="mb-3" @click="addCombo">
-        <v-icon size="small" class="mr-1">mdi-plus</v-icon> Combo セットを追加
-      </v-btn>
-
-      <v-divider class="my-2" />
-
-      <!-- Script -->
-      <div v-for="sf in SCRIPT_FIELDS" :key="sf.key" class="mb-2">
-        <div class="d-flex align-center mb-1">
-          <span class="text-caption font-weight-bold">{{ sf.label }}</span>
-          <v-spacer />
-          <v-btn size="x-small" variant="tonal" @click="openScriptEditor(sf.key)">
-            <v-icon size="small" class="mr-1">mdi-pencil</v-icon> 詳細編集
-          </v-btn>
-        </div>
-        <v-textarea
-          v-model="form[sf.key as keyof typeof form] as string"
-          density="compact"
-          variant="outlined"
-          hide-details
-          rows="4"
-          no-resize
-          class="text-caption font-mono"
-          :placeholder="`${sf.label} を入力...`"
-        />
       </div>
 
       <!-- Actions -->
-      <div class="d-flex justify-space-between mt-3">
+      <div class="d-flex justify-space-between mt-3 flex-shrink-0">
         <v-btn v-if="!isNew && combo" color="error" variant="tonal" :loading="deleting" @click="onDeleteCombo">
           <v-icon class="mr-1">mdi-delete</v-icon> 削除
         </v-btn>

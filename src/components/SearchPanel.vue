@@ -1,7 +1,7 @@
 <template>
   <div class="search-panel d-flex flex-column h-100">
     <!-- Search Box -->
-    <div class="pa-2 border-b">
+    <div class="pa-2 border-b flex-shrink-0">
       <v-text-field
         v-model="rawSearch"
         append-inner-icon="mdi-magnify"
@@ -23,6 +23,7 @@
       :items="displayResults"
       item-height="36"
       class="flex-grow-1"
+      style="min-height: 0; height: 0;"
     >
       <template #default="{ item: r }">
         <v-list-item

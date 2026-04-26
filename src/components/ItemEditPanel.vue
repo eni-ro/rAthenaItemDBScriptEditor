@@ -1,200 +1,202 @@
 <template>
-  <div class="item-edit-panel d-flex flex-column h-100 overflow-y-auto pa-3">
+  <div class="item-edit-panel pa-3" style="position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;">
     <div v-if="!item" class="text-grey text-caption d-flex align-center justify-center h-100">
       左の検索パネルからアイテムを選択してください
     </div>
 
     <template v-else>
-      <!-- Basic Info -->
-      <v-row dense>
-        <v-col cols="2">
-          <v-text-field v-model.number="form.id" label="Id" density="compact" variant="outlined" hide-details readonly />
-        </v-col>
-        <v-col cols="4">
-          <v-text-field v-model="form.aegis_name" label="AegisName" density="compact" variant="outlined" hide-details />
-        </v-col>
-        <v-col cols="6">
-          <v-text-field v-model="form.name" label="Name" density="compact" variant="outlined" hide-details />
-        </v-col>
-      </v-row>
+      <div class="flex-grow-1 overflow-y-auto pr-2" style="min-height: 0; flex: 1 1 auto;">
+        <!-- Basic Info -->
+        <v-row dense>
+          <v-col cols="2">
+            <v-text-field v-model.number="form.id" label="Id" density="compact" variant="outlined" hide-details readonly />
+          </v-col>
+          <v-col cols="4">
+            <v-text-field v-model="form.aegis_name" label="AegisName" density="compact" variant="outlined" hide-details />
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="form.name" label="Name" density="compact" variant="outlined" hide-details />
+          </v-col>
+        </v-row>
 
-      <!-- Type / SubType / Gender / Slots / View / AliasName -->
-      <v-row dense class="mt-1">
-        <v-col cols="3">
-          <v-select v-model="form.type" :items="TYPES" label="Type" density="compact" variant="outlined" hide-details @update:model-value="onTypeChange" />
-        </v-col>
-        <v-col cols="3">
-          <v-select
-            v-model="form.subType" :items="subTypeOptions" label="SubType"
-            density="compact" variant="outlined" hide-details clearable
-            :bg-color="form.subType == null ? 'grey-lighten-4' : ''"
-            placeholder="(省略可)"
-          />
-        </v-col>
-        <v-col cols="2">
-          <v-select v-model="form.gender" :items="GENDERS" label="Gender" density="compact" variant="outlined" hide-details
-            :bg-color="form.gender === 'Both' ? 'grey-lighten-4' : ''"
-          />
-        </v-col>
-        <v-col cols="1">
-          <v-text-field v-model.number="form.slots" label="Slots" density="compact" variant="outlined" hide-details
-            :bg-color="!form.slots ? 'grey-lighten-4' : ''" placeholder="0" />
-        </v-col>
-        <v-col cols="1">
-          <v-text-field v-model.number="form.view" label="View" density="compact" variant="outlined" hide-details
-            :bg-color="form.view == null || form.view === 0 ? 'grey-lighten-4' : ''" placeholder="0" />
-        </v-col>
-        <v-col cols="2">
-          <v-text-field v-model="form.aliasName" label="AliasName" density="compact" variant="outlined" hide-details
-            :bg-color="!form.aliasName ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
-        </v-col>
-      </v-row>
+        <!-- Type / SubType / Gender / Slots / View / AliasName -->
+        <v-row dense class="mt-1">
+          <v-col cols="3">
+            <v-select v-model="form.type" :items="TYPES" label="Type" density="compact" variant="outlined" hide-details @update:model-value="onTypeChange" />
+          </v-col>
+          <v-col cols="3">
+            <v-select
+              v-model="form.subType" :items="subTypeOptions" label="SubType"
+              density="compact" variant="outlined" hide-details clearable
+              :bg-color="form.subType == null ? 'grey-lighten-4' : ''"
+              placeholder="(省略可)"
+            />
+          </v-col>
+          <v-col cols="2">
+            <v-select v-model="form.gender" :items="GENDERS" label="Gender" density="compact" variant="outlined" hide-details
+              :bg-color="form.gender === 'Both' ? 'grey-lighten-4' : ''"
+            />
+          </v-col>
+          <v-col cols="1">
+            <v-text-field v-model.number="form.slots" label="Slots" density="compact" variant="outlined" hide-details
+              :bg-color="!form.slots ? 'grey-lighten-4' : ''" placeholder="0" />
+          </v-col>
+          <v-col cols="1">
+            <v-text-field v-model.number="form.view" label="View" density="compact" variant="outlined" hide-details
+              :bg-color="form.view == null || form.view === 0 ? 'grey-lighten-4' : ''" placeholder="0" />
+          </v-col>
+          <v-col cols="2">
+            <v-text-field v-model="form.aliasName" label="AliasName" density="compact" variant="outlined" hide-details
+              :bg-color="!form.aliasName ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+          </v-col>
+        </v-row>
 
-      <!-- Numeric Stats -->
-      <v-row dense class="mt-1">
-        <v-col cols="2"><v-text-field v-model.number="form.buy"         label="Buy"         density="compact" variant="outlined" hide-details :bg-color="form.buy == null ? 'grey-lighten-4' : ''"         placeholder="(省略可)" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.sell"        label="Sell"        density="compact" variant="outlined" hide-details :bg-color="form.sell == null ? 'grey-lighten-4' : ''"        placeholder="(省略可)" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.weight"      label="Weight"      density="compact" variant="outlined" hide-details :bg-color="!form.weight ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.attack"      label="Attack"      density="compact" variant="outlined" hide-details :bg-color="!form.attack ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.magicAttack" label="MagicAttack" density="compact" variant="outlined" hide-details :bg-color="!form.magicAttack ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.defense"     label="Defense"     density="compact" variant="outlined" hide-details :bg-color="!form.defense ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
-      </v-row>
-      <v-row dense class="mt-1">
-        <v-col cols="2"><v-text-field v-model.number="form.range"         label="Range"         density="compact" variant="outlined" hide-details :bg-color="!form.range ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.weaponLevel"   label="WeaponLevel"   density="compact" variant="outlined" hide-details :bg-color="form.weaponLevel == null ? 'grey-lighten-4' : ''" placeholder="(省略可)" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.armorLevel"    label="ArmorLevel"    density="compact" variant="outlined" hide-details :bg-color="form.armorLevel == null ? 'grey-lighten-4' : ''"  placeholder="(省略可)" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.equipLevelMin" label="EquipLevelMin" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMin ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
-        <v-col cols="2"><v-text-field v-model.number="form.equipLevelMax" label="EquipLevelMax" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMax ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
-        <v-col cols="2">
-          <div class="d-flex align-center gap-2 mt-1">
-            <v-checkbox v-model="form.refineable" label="Refineable" density="compact" hide-details />
-            <v-checkbox v-model="form.gradable"   label="Gradable"   density="compact" hide-details />
+        <!-- Numeric Stats -->
+        <v-row dense class="mt-1">
+          <v-col cols="2"><v-text-field v-model.number="form.buy"         label="Buy"         density="compact" variant="outlined" hide-details :bg-color="form.buy == null ? 'grey-lighten-4' : ''"         placeholder="(省略可)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.sell"        label="Sell"        density="compact" variant="outlined" hide-details :bg-color="form.sell == null ? 'grey-lighten-4' : ''"        placeholder="(省略可)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.weight"      label="Weight"      density="compact" variant="outlined" hide-details :bg-color="!form.weight ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.attack"      label="Attack"      density="compact" variant="outlined" hide-details :bg-color="!form.attack ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.magicAttack" label="MagicAttack" density="compact" variant="outlined" hide-details :bg-color="!form.magicAttack ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.defense"     label="Defense"     density="compact" variant="outlined" hide-details :bg-color="!form.defense ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
+        </v-row>
+        <v-row dense class="mt-1">
+          <v-col cols="2"><v-text-field v-model.number="form.range"         label="Range"         density="compact" variant="outlined" hide-details :bg-color="!form.range ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.weaponLevel"   label="WeaponLevel"   density="compact" variant="outlined" hide-details :bg-color="form.weaponLevel == null ? 'grey-lighten-4' : ''" placeholder="(省略可)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.armorLevel"    label="ArmorLevel"    density="compact" variant="outlined" hide-details :bg-color="form.armorLevel == null ? 'grey-lighten-4' : ''"  placeholder="(省略可)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.equipLevelMin" label="EquipLevelMin" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMin ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.equipLevelMax" label="EquipLevelMax" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMax ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
+          <v-col cols="2">
+            <div class="d-flex align-center gap-2 mt-1">
+              <v-checkbox v-model="form.refineable" label="Refineable" density="compact" hide-details />
+              <v-checkbox v-model="form.gradable"   label="Gradable"   density="compact" hide-details />
+            </div>
+          </v-col>
+        </v-row>
+
+        <v-divider class="my-2" />
+
+        <!-- Jobs / Classes / Locations -->
+        <v-row dense>
+          <!-- Jobs -->
+          <v-col cols="4">
+            <div class="text-caption font-weight-bold mb-1">Jobs</div>
+            <v-select
+              :model-value="form.jobs"
+              @update:model-value="onJobsChange"
+              :items="JOB_LIST" label="Jobs" density="compact" variant="outlined" hide-details
+              multiple chips closable-chips class="text-caption"
+            />
+          </v-col>
+
+          <!-- Classes -->
+          <v-col cols="4">
+            <div class="text-caption font-weight-bold mb-1">Classes</div>
+            <v-select
+              :model-value="form.classes"
+              @update:model-value="onClassesChange"
+              :items="CLASS_LIST" label="Classes" density="compact" variant="outlined" hide-details
+              multiple chips closable-chips class="text-caption"
+            />
+          </v-col>
+
+          <!-- Locations -->
+          <v-col cols="4">
+            <div class="text-caption font-weight-bold mb-1">Locations</div>
+            <v-select
+              :model-value="form.locations"
+              @update:model-value="onLocationsChange"
+              :items="LOCATION_LIST" label="Locations" density="compact" variant="outlined" hide-details
+              multiple chips closable-chips class="text-caption"
+            />
+          </v-col>
+        </v-row>
+
+        <v-divider class="my-2" />
+
+        <!-- Flags -->
+        <div class="text-caption font-weight-bold mb-1">Flags</div>
+        <v-row dense>
+          <v-col v-for="f in FLAG_LIST" :key="f" cols="2">
+            <v-checkbox v-model="form.flags[f]" :label="f" density="compact" hide-details />
+          </v-col>
+        </v-row>
+
+        <v-divider class="my-2" />
+
+        <!-- Delay / Stack / NoUse / Trade (グループ表示) -->
+        <v-row dense>
+          <!-- Delay -->
+          <v-col cols="3">
+            <v-card variant="outlined" class="pa-2">
+              <div class="text-caption font-weight-bold mb-1">Delay</div>
+              <v-text-field v-model.number="form.delay.Duration" label="Duration (sec)" density="compact" variant="outlined" hide-details class="mb-1"
+                :bg-color="!form.delay.Duration ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+              <v-text-field v-model="form.delay.Status" label="Status" density="compact" variant="outlined" hide-details
+                :bg-color="!form.delay.Status ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+            </v-card>
+          </v-col>
+
+          <!-- Stack -->
+          <v-col cols="3">
+            <v-card variant="outlined" class="pa-2">
+              <div class="text-caption font-weight-bold mb-1">Stack</div>
+              <v-text-field v-model.number="form.stack.Amount" label="Amount" density="compact" variant="outlined" hide-details class="mb-1"
+                :bg-color="!form.stack.Amount ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+              <div class="d-flex flex-wrap gap-1">
+                <v-checkbox v-for="k in ['Inventory','Cart','Storage','GuildStorage']" :key="k"
+                  v-model="(form.stack as any)[k]" :label="k" density="compact" hide-details />
+              </div>
+            </v-card>
+          </v-col>
+
+          <!-- NoUse -->
+          <v-col cols="3">
+            <v-card variant="outlined" class="pa-2">
+              <div class="text-caption font-weight-bold mb-1">NoUse</div>
+              <v-text-field v-model.number="form.noUse.Override" label="Override" density="compact" variant="outlined" hide-details class="mb-1"
+                :bg-color="!form.noUse.Override || form.noUse.Override === 100 ? 'grey-lighten-4' : ''" placeholder="100 (default)" />
+              <v-checkbox v-model="form.noUse.Sitting" label="Sitting" density="compact" hide-details />
+            </v-card>
+          </v-col>
+
+          <!-- Trade -->
+          <v-col cols="3">
+            <v-card variant="outlined" class="pa-2">
+              <div class="text-caption font-weight-bold mb-1">Trade</div>
+              <v-text-field v-model.number="form.trade.Override" label="Override" density="compact" variant="outlined" hide-details class="mb-1"
+                :bg-color="!form.trade.Override || form.trade.Override === 100 ? 'grey-lighten-4' : ''" placeholder="100 (default)" />
+              <div class="d-flex flex-wrap gap-1">
+                <v-checkbox v-for="k in TRADE_BOOLS" :key="k"
+                  v-model="(form.trade as any)[k]" :label="k" density="compact" hide-details />
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-divider class="my-2" />
+
+        <!-- Script fields -->
+        <div v-for="sf in SCRIPT_FIELDS" :key="sf.key" class="mb-2">
+          <div class="d-flex align-center mb-1">
+            <span class="text-caption font-weight-bold">{{ sf.label }}</span>
+            <v-spacer />
+            <v-btn size="x-small" variant="tonal" @click="openScriptEditor(sf.key)">
+              <v-icon size="small" class="mr-1">mdi-pencil</v-icon> 詳細編集
+            </v-btn>
           </div>
-        </v-col>
-      </v-row>
-
-      <v-divider class="my-2" />
-
-      <!-- Jobs / Classes / Locations -->
-      <v-row dense>
-        <!-- Jobs -->
-        <v-col cols="4">
-          <div class="text-caption font-weight-bold mb-1">Jobs</div>
-          <v-select
-            :model-value="form.jobs"
-            @update:model-value="onJobsChange"
-            :items="JOB_LIST" label="Jobs" density="compact" variant="outlined" hide-details
-            multiple chips closable-chips class="text-caption"
+          <v-textarea
+            v-model="form[sf.key as keyof typeof form] as string"
+            density="compact" variant="outlined" hide-details rows="3" no-resize
+            class="text-caption font-mono"
+            :bg-color="!(form[sf.key as keyof typeof form]) ? 'grey-lighten-4' : ''"
+            :placeholder="`${sf.label} を入力...`"
           />
-        </v-col>
-
-        <!-- Classes -->
-        <v-col cols="4">
-          <div class="text-caption font-weight-bold mb-1">Classes</div>
-          <v-select
-            :model-value="form.classes"
-            @update:model-value="onClassesChange"
-            :items="CLASS_LIST" label="Classes" density="compact" variant="outlined" hide-details
-            multiple chips closable-chips class="text-caption"
-          />
-        </v-col>
-
-        <!-- Locations -->
-        <v-col cols="4">
-          <div class="text-caption font-weight-bold mb-1">Locations</div>
-          <v-select
-            :model-value="form.locations"
-            @update:model-value="onLocationsChange"
-            :items="LOCATION_LIST" label="Locations" density="compact" variant="outlined" hide-details
-            multiple chips closable-chips class="text-caption"
-          />
-        </v-col>
-      </v-row>
-
-      <v-divider class="my-2" />
-
-      <!-- Flags -->
-      <div class="text-caption font-weight-bold mb-1">Flags</div>
-      <v-row dense>
-        <v-col v-for="f in FLAG_LIST" :key="f" cols="2">
-          <v-checkbox v-model="form.flags[f]" :label="f" density="compact" hide-details />
-        </v-col>
-      </v-row>
-
-      <v-divider class="my-2" />
-
-      <!-- Delay / Stack / NoUse / Trade (グループ表示) -->
-      <v-row dense>
-        <!-- Delay -->
-        <v-col cols="3">
-          <v-card variant="outlined" class="pa-2">
-            <div class="text-caption font-weight-bold mb-1">Delay</div>
-            <v-text-field v-model.number="form.delay.Duration" label="Duration (sec)" density="compact" variant="outlined" hide-details class="mb-1"
-              :bg-color="!form.delay.Duration ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
-            <v-text-field v-model="form.delay.Status" label="Status" density="compact" variant="outlined" hide-details
-              :bg-color="!form.delay.Status ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
-          </v-card>
-        </v-col>
-
-        <!-- Stack -->
-        <v-col cols="3">
-          <v-card variant="outlined" class="pa-2">
-            <div class="text-caption font-weight-bold mb-1">Stack</div>
-            <v-text-field v-model.number="form.stack.Amount" label="Amount" density="compact" variant="outlined" hide-details class="mb-1"
-              :bg-color="!form.stack.Amount ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
-            <div class="d-flex flex-wrap gap-1">
-              <v-checkbox v-for="k in ['Inventory','Cart','Storage','GuildStorage']" :key="k"
-                v-model="(form.stack as any)[k]" :label="k" density="compact" hide-details />
-            </div>
-          </v-card>
-        </v-col>
-
-        <!-- NoUse -->
-        <v-col cols="3">
-          <v-card variant="outlined" class="pa-2">
-            <div class="text-caption font-weight-bold mb-1">NoUse</div>
-            <v-text-field v-model.number="form.noUse.Override" label="Override" density="compact" variant="outlined" hide-details class="mb-1"
-              :bg-color="!form.noUse.Override || form.noUse.Override === 100 ? 'grey-lighten-4' : ''" placeholder="100 (default)" />
-            <v-checkbox v-model="form.noUse.Sitting" label="Sitting" density="compact" hide-details />
-          </v-card>
-        </v-col>
-
-        <!-- Trade -->
-        <v-col cols="3">
-          <v-card variant="outlined" class="pa-2">
-            <div class="text-caption font-weight-bold mb-1">Trade</div>
-            <v-text-field v-model.number="form.trade.Override" label="Override" density="compact" variant="outlined" hide-details class="mb-1"
-              :bg-color="!form.trade.Override || form.trade.Override === 100 ? 'grey-lighten-4' : ''" placeholder="100 (default)" />
-            <div class="d-flex flex-wrap gap-1">
-              <v-checkbox v-for="k in TRADE_BOOLS" :key="k"
-                v-model="(form.trade as any)[k]" :label="k" density="compact" hide-details />
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <v-divider class="my-2" />
-
-      <!-- Script fields -->
-      <div v-for="sf in SCRIPT_FIELDS" :key="sf.key" class="mb-2">
-        <div class="d-flex align-center mb-1">
-          <span class="text-caption font-weight-bold">{{ sf.label }}</span>
-          <v-spacer />
-          <v-btn size="x-small" variant="tonal" @click="openScriptEditor(sf.key)">
-            <v-icon size="small" class="mr-1">mdi-pencil</v-icon> 詳細編集
-          </v-btn>
         </div>
-        <v-textarea
-          v-model="form[sf.key as keyof typeof form] as string"
-          density="compact" variant="outlined" hide-details rows="3" no-resize
-          class="text-caption font-mono"
-          :bg-color="!(form[sf.key as keyof typeof form]) ? 'grey-lighten-4' : ''"
-          :placeholder="`${sf.label} を入力...`"
-        />
       </div>
 
       <!-- Save Button -->
-      <div class="d-flex justify-end mt-3">
+      <div class="d-flex justify-end mt-3 flex-shrink-0">
         <v-chip v-if="isDirty" color="warning" size="small" class="mr-2">未保存の変更あり</v-chip>
         <v-btn color="success" variant="flat" :loading="saving" @click="save">
           <v-icon class="mr-1">mdi-content-save</v-icon> Save

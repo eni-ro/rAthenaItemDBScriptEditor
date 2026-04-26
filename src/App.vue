@@ -51,7 +51,7 @@
 
           <!-- Right: Tabs (Items / Combos) -->
           <div class="pane-content d-flex flex-column">
-            <v-tabs v-model="mainTab" bg-color="grey-darken-3" density="compact">
+            <v-tabs v-model="mainTab" bg-color="grey-darken-3" density="compact" class="flex-shrink-0">
               <v-tab value="items">
                 <v-icon size="small" class="mr-1">mdi-sword</v-icon>
                 Items
@@ -62,14 +62,10 @@
               </v-tab>
             </v-tabs>
 
-            <v-window v-model="mainTab" class="flex-grow-1" style="overflow:hidden" :transition="false" :reverse-transition="false">
-              <v-window-item value="items" class="fill-height">
-                <ItemEditPanel />
-              </v-window-item>
-              <v-window-item value="combos" class="fill-height">
-                <ComboEditPanel />
-              </v-window-item>
-            </v-window>
+            <div class="flex-grow-1 position-relative overflow-hidden" style="position: relative;">
+              <ItemEditPanel v-show="mainTab === 'items'" />
+              <ComboEditPanel v-show="mainTab === 'combos'" />
+            </div>
           </div>
         </div>
       </v-container>
@@ -234,20 +230,27 @@ html, body, #app {
   display: grid;
   grid-template-columns: v-bind('leftWidth + "%"') auto 1fr;
   width: 100%;
-  height: 100%;
+  flex-grow: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
 .pane-search {
   min-width: 0;
+  min-height: 0;
   height: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .pane-content {
   min-width: 0;
+  min-height: 0;
   height: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .pane-divider {
@@ -273,7 +276,31 @@ html, body, #app {
   pointer-events: none;
 }
 
-:deep(.v-window), :deep(.v-window__container) {
+.v-main {
+  /* Vuetify handles layout padding */
+}
+
+.v-container.fill-height {
   height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
 }
 </style>
