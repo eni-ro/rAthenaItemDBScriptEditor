@@ -145,27 +145,46 @@ const form = reactive<FormData>({ combos: [], script: '' });
 let addingToComboIdx = -1;
 
 let _suppressDirty = false;
+// キャンセルによるリバート時に watch の再トリガーを防ぐフラグ
+let _ignoreNextComboChange = false;
 
 watch(combo, (newVal, oldVal) => {
-  if (newVal) {
-    if (isDirty.value && oldVal) {
-      confirmDialog.confirm = () => {
-        isNew.value = false;
-        form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
-        form.script = newVal.script;
-        targetFile.value = newVal.filePath;
-        isDirty.value = false;
-      };
-      confirmDialog.cancel = () => { appModel.currentCombo.value = oldVal; };
-      confirmDialog.show = true;
-    } else {
-      _suppressDirty = true;
+  if (!newVal) return;
+
+  // キャンセルによるリバートの場合はダイアログを出さずフォームを戻す
+  if (_ignoreNextComboChange) {
+    _ignoreNextComboChange = false;
+    _suppressDirty = true;
+    isNew.value = false;
+    form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
+    form.script = newVal.script;
+    targetFile.value = newVal.filePath;
+    setTimeout(() => { isDirty.value = false; _suppressDirty = false; }, 50);
+    return;
+  }
+
+  if (isDirty.value && oldVal) {
+    confirmDialog.confirm = () => {
       isNew.value = false;
       form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
       form.script = newVal.script;
       targetFile.value = newVal.filePath;
-      setTimeout(() => { isDirty.value = false; _suppressDirty = false; }, 50);
-    }
+      isDirty.value = false;
+    };
+    confirmDialog.cancel = () => {
+      // watch を再トリガーするが、フラグで止める
+      _ignoreNextComboChange = true;
+      // currentCombo を直接元の値に戻す（SearchPanel のハイライトも復元）
+      appModel.currentCombo.value = oldVal;
+    };
+    confirmDialog.show = true;
+  } else {
+    _suppressDirty = true;
+    isNew.value = false;
+    form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
+    form.script = newVal.script;
+    targetFile.value = newVal.filePath;
+    setTimeout(() => { isDirty.value = false; _suppressDirty = false; }, 50);
   }
 }, { deep: false });
 
