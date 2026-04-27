@@ -6,34 +6,22 @@ use std::io::Write;
 // ─── ファイル読み書き (エンコーディング対応) ─────────────────────────────────
 
 fn decode_bytes(bytes: &[u8], encoding: &str) -> String {
-    match encoding.to_lowercase().replace('-', "_").as_str() {
-        "shift_jis" | "sjis" | "cp932" | "windows_31j" | "ms932" => {
-            let (cow, _, _) = encoding_rs::SHIFT_JIS.decode(bytes);
-            cow.into_owned()
-        }
-        "euc_jp" | "eucjp" => {
-            let (cow, _, _) = encoding_rs::EUC_JP.decode(bytes);
-            cow.into_owned()
-        }
-        _ => {
-            // UTF-8 (with BOM strip)
-            let bytes = if bytes.starts_with(&[0xEF, 0xBB, 0xBF]) { &bytes[3..] } else { bytes };
-            String::from_utf8_lossy(bytes).into_owned()
-        }
+    if let Some(enc) = encoding_rs::Encoding::for_label(encoding.as_bytes()) {
+        let (cow, _, _) = enc.decode(bytes);
+        cow.into_owned()
+    } else {
+        // Fallback to UTF-8 (with BOM strip)
+        let bytes = if bytes.starts_with(&[0xEF, 0xBB, 0xBF]) { &bytes[3..] } else { bytes };
+        String::from_utf8_lossy(bytes).into_owned()
     }
 }
 
 fn encode_string(s: &str, encoding: &str) -> Vec<u8> {
-    match encoding.to_lowercase().replace('-', "_").as_str() {
-        "shift_jis" | "sjis" | "cp932" | "windows_31j" | "ms932" => {
-            let (cow, _, _) = encoding_rs::SHIFT_JIS.encode(s);
-            cow.into_owned()
-        }
-        "euc_jp" | "eucjp" => {
-            let (cow, _, _) = encoding_rs::EUC_JP.encode(s);
-            cow.into_owned()
-        }
-        _ => s.as_bytes().to_vec(),
+    if let Some(enc) = encoding_rs::Encoding::for_label(encoding.as_bytes()) {
+        let (cow, _, _) = enc.encode(s);
+        cow.into_owned()
+    } else {
+        s.as_bytes().to_vec()
     }
 }
 

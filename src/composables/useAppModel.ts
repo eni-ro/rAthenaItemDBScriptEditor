@@ -12,6 +12,8 @@ const useAppModel = () => {
 
   const currentItem = ref<ItemDbEntry | null>(null);
   const currentCombo = ref<ComboDbEntry | null>(null);
+  const items = shallowRef<ItemDbEntry[]>([]);
+  const combos = shallowRef<ComboDbEntry[]>([]);
   const mainTab = ref<'items' | 'combos'>('items');
   const dbYmlPath = ref<string>('');
 
@@ -21,15 +23,21 @@ const useAppModel = () => {
     categories.value = scriptReader.scripts;
     consts.value = scriptReader.consts;
     await dbReader.load(dbPath);
+    items.value = [...dbReader.items];
+    combos.value = [...dbReader.combos];
     isLoaded.value = true;
   }
 
-  function getItems() { return dbReader.items; }
+  function getItems() { return items.value; }
   function getSkills() { return dbReader.skills; }
   function getMobs() { return dbReader.mobs; }
-  function getCombos() { return dbReader.combos; }
+  function getCombos() { return combos.value; }
   function getItemNames() { return dbReader.itemNames; }
+  function getItemFiles() { return dbReader.itemFiles; }
+  function getComboFiles() { return dbReader.comboFiles; }
   function getEncoding() { return dbReader.encoding; }
+  function getRustEncoding() { return dbReader.rustEncoding; }
+  function getPythonEncoding() { return dbReader.pythonEncoding; }
 
   function getDisplayName(item: ItemDbEntry): string {
     return dbReader.getDisplayName(item);
@@ -60,21 +68,52 @@ const useAppModel = () => {
   function getConstList(name: string) { return scriptReader.getConstList(name); }
   function makeCode(script: ScriptItemConf, args: string[]) { return scriptReader.makeCode(script, args); }
 
-  function updateComboInMemory(combo: ComboDbEntry) {
-    const idx = dbReader.combos.findIndex(c => c.filePath === combo.filePath && c.index === combo.index);
-    if (idx >= 0) dbReader.combos[idx] = combo;
-    else dbReader.combos.push(combo);
+  function updateItemInMemory(item: ItemDbEntry, oldAegisName: string) {
+    const idx = items.value.findIndex(i => i.filePath === item.filePath && i.aegis_name === oldAegisName);
+    if (idx >= 0) {
+      const newItems = [...items.value];
+      newItems[idx] = { ...item };
+      items.value = newItems;
+      dbReader.items = newItems; // sync with reader
+    }
   }
 
-  function addComboToMemory(combo: ComboDbEntry) { dbReader.combos.push(combo); }
+  function addItemToMemory(item: ItemDbEntry) {
+    const newItems = [...items.value, { ...item }];
+    items.value = newItems;
+    dbReader.items = newItems;
+  }
+
+  function deleteItemFromMemory(filePath: string, aegis_name: string) {
+    const newItems = items.value.filter(i => !(i.filePath === filePath && i.aegis_name === aegis_name));
+    items.value = newItems;
+    dbReader.items = newItems;
+  }
+
+  function updateComboInMemory(combo: ComboDbEntry) {
+    const idx = combos.value.findIndex(c => c.filePath === combo.filePath && c.index === combo.index);
+    const newCombos = [...combos.value];
+    if (idx >= 0) newCombos[idx] = { ...combo };
+    else newCombos.push({ ...combo });
+    combos.value = newCombos;
+    dbReader.combos = newCombos;
+  }
+
+  function addComboToMemory(combo: ComboDbEntry) {
+    const newCombos = [...combos.value, { ...combo }];
+    combos.value = newCombos;
+    dbReader.combos = newCombos;
+  }
 
   function deleteComboFromMemory(filePath: string, index: number) {
-    const idx = dbReader.combos.findIndex(c => c.filePath === filePath && c.index === index);
+    const idx = combos.value.findIndex(c => c.filePath === filePath && c.index === index);
     if (idx >= 0) {
-      dbReader.combos.splice(idx, 1);
-      dbReader.combos.forEach(c => {
+      const newCombos = combos.value.filter((_, i) => i !== idx);
+      newCombos.forEach(c => {
         if (c.filePath === filePath && c.index > index) c.index -= 1;
       });
+      combos.value = newCombos;
+      dbReader.combos = newCombos;
     }
   }
 
@@ -82,8 +121,9 @@ const useAppModel = () => {
     isLoaded, categories, consts,
     currentItem, currentCombo, mainTab, dbYmlPath,
     loadData, getItems, getSkills, getMobs, getCombos,
-    getItemNames, getEncoding, getDisplayName, getItemSearchName,
+    getItemNames, getItemFiles, getComboFiles, getEncoding, getRustEncoding, getPythonEncoding, getDisplayName, getItemSearchName,
     loadItem, loadCombo, getConstList, makeCode,
+    updateItemInMemory, addItemToMemory, deleteItemFromMemory,
     updateComboInMemory, addComboToMemory, deleteComboFromMemory,
   };
 };

@@ -44,13 +44,19 @@ def backup_file(path: str):
     shutil.copy2(path, bak)
 
 
+
+
+
 def load_yaml(yaml: YAML, path: str, encoding: str = "utf-8"):
+    yaml.encoding = encoding
     with open(path, "r", encoding=encoding, errors="replace") as f:
         return yaml.load(f)
 
 
 def save_yaml(yaml: YAML, path: str, data, encoding: str = "utf-8"):
-    with open(path, "w", encoding=encoding) as f:
+    yaml.encoding = encoding
+    # Use newline="\n" to keep Unix-style line endings often used in rAthena
+    with open(path, "w", encoding=encoding, newline="\n") as f:
         yaml.dump(data, f)
 
 
@@ -98,6 +104,13 @@ def update_item(file_path: str, aegis_name: str, item_data: dict, encoding: str 
     if target is None:
         return {"success": False, "error": f"Item '{aegis_name}' not found in {file_path}"}
 
+    apply_item_data(target, item_data)
+
+    save_yaml(yaml, file_path, doc, encoding)
+    return {"success": True}
+
+
+def apply_item_data(target: CommentedMap, item_data: dict):
     # ─── 単純フィールド ────────────────────────────────────────────────────
     simple_fields = [
         "Id", "AegisName", "Name", "Type", "SubType",
@@ -237,9 +250,44 @@ def update_item(file_path: str, aegis_name: str, item_data: dict, encoding: str 
     for k, v in reordered.items():
         target[k] = v
 
+def add_item(file_path: str, item_data: dict, encoding: str = "utf-8") -> dict:
+    backup_file(file_path)
+    yaml = make_yaml()
+    doc = load_yaml(yaml, file_path, encoding)
+
+    if not doc or "Body" not in doc:
+        return {"success": False, "error": "Invalid YAML: Body not found"}
+
+    target = CommentedMap()
+    apply_item_data(target, item_data)
+    
+    doc["Body"].append(target)
+    new_index = len(doc["Body"]) - 1
+
+    save_yaml(yaml, file_path, doc, encoding)
+    return {"success": True, "index": new_index}
+
+def delete_item(file_path: str, aegis_name: str, encoding: str = "utf-8") -> dict:
+    backup_file(file_path)
+    yaml = make_yaml()
+    doc = load_yaml(yaml, file_path, encoding)
+
+    if not doc or "Body" not in doc:
+        return {"success": False, "error": "Invalid YAML: Body not found"}
+
+    target_idx = None
+    for i, item in enumerate(doc["Body"]):
+        if str(item.get("AegisName", "")) == str(aegis_name):
+            target_idx = i
+            break
+
+    if target_idx is None:
+        return {"success": False, "error": f"Item '{aegis_name}' not found in {file_path}"}
+
+    del doc["Body"][target_idx]
+
     save_yaml(yaml, file_path, doc, encoding)
     return {"success": True}
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # コンボ更新
@@ -361,10 +409,15 @@ def update_db_yml(file_path: str, db_config: dict) -> dict:
 
 def main():
     try:
-        raw = sys.stdin.read()
-        request = json.loads(raw)
+        # On Windows, stdin might be opened with CP932. 
+        # Read as binary and decode as UTF-8 to be safe.
+        raw_bytes = sys.stdin.buffer.read()
+        if not raw_bytes:
+            return
+        request = json.loads(raw_bytes.decode("utf-8"))
     except Exception as e:
-        print(json.dumps({"success": False, "error": f"Failed to parse input: {e}"}))
+        res = {"success": False, "error": f"Failed to parse input: {e}"}
+        sys.stdout.buffer.write(json.dumps(res).encode("utf-8"))
         sys.exit(1)
 
     action = request.get("action")
@@ -376,6 +429,18 @@ def main():
                 request["file"],
                 request["aegis_name"],
                 request["data"],
+                encoding,
+            )
+        elif action == "add_item":
+            result = add_item(
+                request["file"],
+                request["data"],
+                encoding,
+            )
+        elif action == "delete_item":
+            result = delete_item(
+                request["file"],
+                request["aegis_name"],
                 encoding,
             )
         elif action == "update_combo":
@@ -408,7 +473,8 @@ def main():
         import traceback
         result = {"success": False, "error": str(e), "traceback": traceback.format_exc()}
 
-    print(json.dumps(result, ensure_ascii=False))
+    # Use binary stdout to avoid encoding issues on Windows console
+    sys.stdout.buffer.write(json.dumps(result, ensure_ascii=False).encode("utf-8"))
 
 
 if __name__ == "__main__":

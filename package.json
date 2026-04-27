@@ -10,7 +10,7 @@
     "tauri": "tauri",
     "package:zip": "node scripts/package-release.js",
     "release:tag": "node scripts/tag-release.js",
-    "build:processor": "cd scripts && uv run pyinstaller --onefile --name db_processor --distpath ../src-tauri/binaries db_processor.py && copy src-tauri\\binaries\\db_processor.exe src-tauri\\binaries\\db_processor-x86_64-pc-windows-msvc.exe"
+    "build:processor": "scripts\\build_processor.bat"
   },
   "dependencies": {
     "@guolao/vue-monaco-editor": "^1.6.0",

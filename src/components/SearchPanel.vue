@@ -5,7 +5,7 @@
       <v-text-field
         v-model="rawSearch"
         append-inner-icon="mdi-magnify"
-        label="Search (AegisName / Name / 検索名)"
+        label="Search (AegisName / Name / SearchName)"
         density="compact"
         hide-details
         variant="outlined"
@@ -13,7 +13,7 @@
         class="text-caption"
       />
       <div class="text-caption text-grey mt-1 px-1">
-        {{ results.length }} 件
+        {{ results.length }} items
       </div>
     </div>
 
@@ -76,7 +76,7 @@ interface SearchResult {
   _search: string;
 }
 
-// 事前にアイテム一覧を構築（起動後固定）
+// Build item list beforehand (fixed after startup)
 const allItemResults = computed<SearchResult[]>(() => {
   return appModel.getItems().map(item => ({
     key: `item-${item.aegis_name}`,
@@ -92,7 +92,7 @@ const allComboResults = computed<SearchResult[]>(() => {
   const allItems = appModel.getItems();
   const itemNames = appModel.getItemNames();
 
-  // AegisNameからアイテムへのマップを作成して検索を高速化
+  // Create a map from AegisName to item for faster search
   const aegisMap = new Map<string, ItemDbEntry>();
   for (const itm of allItems) {
     aegisMap.set(itm.aegis_name, itm);
@@ -103,7 +103,7 @@ const allComboResults = computed<SearchResult[]>(() => {
       .map(c => c.items.map(a => appModel.getItemSearchName(a)).join('+'))
       .join(' / ');
     
-    // コンボ内のアイテム名やAegisNameも含めて検索対象にする
+    // Include item names and AegisNames in combos in search targets
     const searchTerms: string[] = [];
     for (const c of combo.combos) {
       for (const aegis of c.items) {

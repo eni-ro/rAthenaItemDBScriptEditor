@@ -12,7 +12,7 @@
           <v-text-field
             v-model="search"
             append-inner-icon="mdi-magnify"
-            label="Search by AegisName / Name / 検索名"
+            label="Search by AegisName / Name / SearchName"
             single-line
             hide-details
             density="compact"
@@ -48,7 +48,7 @@ const search = ref('');
 
 const headers = [
   { title: 'AegisName', key: 'aegis_name', sortable: true },
-  { title: 'Name / 検索名', key: 'displayName', sortable: true },
+  { title: 'Name / SearchName', key: 'displayName', sortable: true },
 ];
 
 const filteredItems = computed(() => {

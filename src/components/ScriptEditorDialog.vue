@@ -5,7 +5,7 @@
       <!-- ─── Header ─────────────────────────────────────────────── -->
       <div class="editor-header">
         <span class="editor-title">Script Editor</span>
-        <v-btn color="success" variant="flat" size="small" class="mr-2" @click="onConfirm">確定</v-btn>
+        <v-btn color="success" variant="flat" size="small" class="mr-2" @click="onConfirm">Confirm</v-btn>
         <v-btn variant="text" icon="mdi-close" size="small" @click="onCancel" />
       </div>
 
@@ -30,8 +30,8 @@
               class="editor-search-input"
             />
             <div class="editor-tree-controls">
-              <button @click="expandAll">全展開</button>
-              <button @click="collapseAll">全折畳</button>
+              <button @click="expandAll">Expand All</button>
+              <button @click="collapseAll">Collapse All</button>
             </div>
           </div>
 
@@ -79,7 +79,7 @@
                 </div>
               </div>
             </template>
-            <div v-else class="editor-empty-text">スクリプトを選択してください</div>
+            <div v-else class="editor-empty-text">Please select a script</div>
           </div>
 
           <!-- Vertical Resizer 2 -->
@@ -102,7 +102,7 @@
         >
           <button
             @click.stop="triggerInject"
-            title="スクリプトをMonacoEditorに挿入"
+            title="Insert script into editor"
             style="width:30px; height:30px; border-radius:50%; background:#0078d4; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; pointer-events:auto;"
           >›</button>
         </div>

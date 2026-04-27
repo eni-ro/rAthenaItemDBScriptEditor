@@ -22,13 +22,13 @@
         <v-row class="fill-height ma-0" justify="center" align="center" v-if="!isLoaded">
           <div v-if="loadError" class="text-center px-4">
             <v-icon color="error" size="48">mdi-alert-circle</v-icon>
-            <h2 class="text-h6 text-error mt-4">初期データの読み込みに失敗しました</h2>
+            <h2 class="text-h6 text-error mt-4">Failed to load initial data</h2>
             <div class="text-body-1 mt-2 text-pre-wrap">{{ loadError }}</div>
             <div class="text-caption mt-4">
-              実行ファイルと同じフォルダに「db.yml」などが配置されているか確認してください。<br/>
-              開発環境では「src-tauri/target/debug/」に配置が必要です。
+              Please ensure that "db.yml" and other files are located in the same folder as the executable.<br/>
+              In the development environment, they need to be placed in "src-tauri/target/debug/".
             </div>
-            <v-btn color="primary" @click="retryLoad" class="mt-4">再試行</v-btn>
+            <v-btn color="primary" @click="retryLoad" class="mt-4">Retry</v-btn>
           </div>
           <v-progress-circular v-else indeterminate color="primary" />
         </v-row>

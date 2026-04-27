@@ -45,7 +45,7 @@ const dialog = ref(false);
 const search = ref('');
 const debouncedSearch = ref('');
 
-// 検索のデバウンス
+// Search debounce
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 watch(search, (val) => {
   if (debounceTimer) clearTimeout(debounceTimer);
@@ -63,7 +63,7 @@ const listItems = ref<{ value: string, desc: string }[]>([]);
 
 let currentCallback: ((val: string) => void) | null = null;
 
-// 検索対象の文字列を事前に構築
+// Pre-build search target strings
 const allItems = computed(() => {
   return listItems.value.map(item => ({
     ...item,

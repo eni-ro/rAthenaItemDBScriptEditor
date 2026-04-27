@@ -1,15 +1,41 @@
 <template>
   <div class="item-edit-panel pa-3" style="position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;">
-    <div v-if="!item" class="text-grey text-caption d-flex align-center justify-center h-100">
-      左の検索パネルからアイテムを選択してください
+    <!-- New Item Button -->
+    <div class="d-flex align-center mb-3 flex-shrink-0">
+      <span class="text-subtitle-2 font-weight-bold">{{ isNew ? 'Create New Item' : 'Edit Item' }}</span>
+      <v-spacer />
+      <v-btn size="small" color="primary" variant="tonal" @click="startNew">
+        <v-icon size="small" class="mr-1">mdi-plus</v-icon> New
+      </v-btn>
+    </div>
+
+    <div v-if="!item && !isNew" class="text-grey text-caption d-flex align-center justify-center flex-grow-1">
+      Please select an item from the search panel on the left or click "New".
     </div>
 
     <template v-else>
       <div class="flex-grow-1 overflow-y-auto pr-2" style="min-height: 0; flex: 1 1 auto;">
+        <!-- Target File (new only) -->
+        <div v-if="isNew" class="mb-3">
+          <div class="text-caption font-weight-bold mb-1">Target File</div>
+          <div class="d-flex align-center">
+            <v-combobox
+              v-model="targetFile"
+              :items="appModel.getItemFiles()"
+              density="compact"
+              variant="outlined"
+              hide-details
+              placeholder="path to item_db.yml"
+              class="text-caption flex-grow-1"
+            />
+            <v-btn icon="mdi-folder-open" size="small" variant="text" class="ml-1" @click="browseFile" />
+          </div>
+        </div>
+
         <!-- Basic Info -->
         <v-row dense>
           <v-col cols="2">
-            <v-text-field v-model.number="form.id" label="Id" density="compact" variant="outlined" hide-details readonly />
+            <v-text-field v-model.number="form.id" label="Id" density="compact" variant="outlined" hide-details />
           </v-col>
           <v-col cols="4">
             <v-text-field v-model="form.aegis_name" label="AegisName" density="compact" variant="outlined" hide-details />
@@ -29,7 +55,7 @@
               v-model="form.subType" :items="subTypeOptions" label="SubType"
               density="compact" variant="outlined" hide-details clearable
               :bg-color="form.subType == null ? 'grey-lighten-4' : ''"
-              placeholder="(省略可)"
+              placeholder="(Optional)"
             />
           </v-col>
           <v-col cols="2">
@@ -47,14 +73,14 @@
           </v-col>
           <v-col cols="2">
             <v-text-field v-model="form.aliasName" label="AliasName" density="compact" variant="outlined" hide-details
-              :bg-color="!form.aliasName ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+              :bg-color="!form.aliasName ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
           </v-col>
         </v-row>
 
         <!-- Numeric Stats -->
         <v-row dense class="mt-1">
-          <v-col cols="2"><v-text-field v-model.number="form.buy"         label="Buy"         density="compact" variant="outlined" hide-details :bg-color="form.buy == null ? 'grey-lighten-4' : ''"         placeholder="(省略可)" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.sell"        label="Sell"        density="compact" variant="outlined" hide-details :bg-color="form.sell == null ? 'grey-lighten-4' : ''"        placeholder="(省略可)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.buy"         label="Buy"         density="compact" variant="outlined" hide-details :bg-color="form.buy == null ? 'grey-lighten-4' : ''"         placeholder="(Optional)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.sell"        label="Sell"        density="compact" variant="outlined" hide-details :bg-color="form.sell == null ? 'grey-lighten-4' : ''"        placeholder="(Optional)" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.weight"      label="Weight"      density="compact" variant="outlined" hide-details :bg-color="!form.weight ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.attack"      label="Attack"      density="compact" variant="outlined" hide-details :bg-color="!form.attack ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.magicAttack" label="MagicAttack" density="compact" variant="outlined" hide-details :bg-color="!form.magicAttack ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
@@ -62,8 +88,8 @@
         </v-row>
         <v-row dense class="mt-1">
           <v-col cols="2"><v-text-field v-model.number="form.range"         label="Range"         density="compact" variant="outlined" hide-details :bg-color="!form.range ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.weaponLevel"   label="WeaponLevel"   density="compact" variant="outlined" hide-details :bg-color="form.weaponLevel == null ? 'grey-lighten-4' : ''" placeholder="(省略可)" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.armorLevel"    label="ArmorLevel"    density="compact" variant="outlined" hide-details :bg-color="form.armorLevel == null ? 'grey-lighten-4' : ''"  placeholder="(省略可)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.weaponLevel"   label="WeaponLevel"   density="compact" variant="outlined" hide-details :bg-color="form.weaponLevel == null ? 'grey-lighten-4' : ''" placeholder="(Optional)" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.armorLevel"    label="ArmorLevel"    density="compact" variant="outlined" hide-details :bg-color="form.armorLevel == null ? 'grey-lighten-4' : ''"  placeholder="(Optional)" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.equipLevelMin" label="EquipLevelMin" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMin ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.equipLevelMax" label="EquipLevelMax" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMax ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
           <v-col cols="2">
@@ -124,16 +150,16 @@
 
         <v-divider class="my-2" />
 
-        <!-- Delay / Stack / NoUse / Trade (グループ表示) -->
+        <!-- Delay / Stack / NoUse / Trade (Group Display) -->
         <v-row dense>
           <!-- Delay -->
           <v-col cols="3">
             <v-card variant="outlined" class="pa-2">
               <div class="text-caption font-weight-bold mb-1">Delay</div>
               <v-text-field v-model.number="form.delay.Duration" label="Duration (sec)" density="compact" variant="outlined" hide-details class="mb-1"
-                :bg-color="!form.delay.Duration ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+                :bg-color="!form.delay.Duration ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
               <v-text-field v-model="form.delay.Status" label="Status" density="compact" variant="outlined" hide-details
-                :bg-color="!form.delay.Status ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+                :bg-color="!form.delay.Status ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
             </v-card>
           </v-col>
 
@@ -142,7 +168,7 @@
             <v-card variant="outlined" class="pa-2">
               <div class="text-caption font-weight-bold mb-1">Stack</div>
               <v-text-field v-model.number="form.stack.Amount" label="Amount" density="compact" variant="outlined" hide-details class="mb-1"
-                :bg-color="!form.stack.Amount ? 'grey-lighten-4' : ''" placeholder="(省略可)" />
+                :bg-color="!form.stack.Amount ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
               <div class="d-flex flex-wrap gap-1">
                 <v-checkbox v-for="k in ['Inventory','Cart','Storage','GuildStorage']" :key="k"
                   v-model="(form.stack as any)[k]" :label="k" density="compact" hide-details />
@@ -182,7 +208,7 @@
             <span class="text-caption font-weight-bold">{{ sf.label }}</span>
             <v-spacer />
             <v-btn size="x-small" variant="tonal" @click="openScriptEditor(sf.key)">
-              <v-icon size="small" class="mr-1">mdi-pencil</v-icon> 詳細編集
+              <v-icon size="small" class="mr-1">mdi-pencil</v-icon> Edit Script
             </v-btn>
           </div>
           <v-textarea
@@ -190,14 +216,18 @@
             density="compact" variant="outlined" hide-details rows="3" no-resize
             class="text-caption font-mono"
             :bg-color="!(form[sf.key as keyof typeof form]) ? 'grey-lighten-4' : ''"
-            :placeholder="`${sf.label} を入力...`"
+            :placeholder="`Enter ${sf.label}...`"
           />
         </div>
       </div>
 
       <!-- Save Button -->
-      <div class="d-flex justify-end mt-3 flex-shrink-0">
-        <v-chip v-if="isDirty" color="warning" size="small" class="mr-2">未保存の変更あり</v-chip>
+      <div class="d-flex justify-space-between mt-3 flex-shrink-0">
+        <v-btn v-if="!isNew && item" color="error" variant="tonal" :loading="deleting" @click="onDeleteItem">
+          <v-icon class="mr-1">mdi-delete</v-icon> Delete
+        </v-btn>
+        <v-spacer />
+        <v-chip v-if="isDirty" color="warning" size="small" class="mr-2">Unsaved changes</v-chip>
         <v-btn color="success" variant="flat" :loading="saving" @click="save">
           <v-icon class="mr-1">mdi-content-save</v-icon> Save
         </v-btn>
@@ -207,15 +237,15 @@
     <ScriptEditorDialog ref="scriptEditorDialog" />
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">{{ snackbar.text }}</v-snackbar>
 
-    <!-- 変更破棄確認ダイアログ -->
+    <!-- Discard Changes Confirmation Dialog -->
     <v-dialog v-model="confirmDialog.show" max-width="400">
       <v-card>
-        <v-card-title>変更を破棄しますか？</v-card-title>
-        <v-card-text>現在のアイテムに未保存の変更があります。破棄して別のアイテムに移動しますか？</v-card-text>
+        <v-card-title>Discard changes?</v-card-title>
+        <v-card-text>Current item has unsaved changes. Discard and move to another item?</v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="confirmDialog.show = false; confirmDialog.cancel?.()">キャンセル</v-btn>
-          <v-btn color="error" variant="flat" @click="confirmDialog.show = false; confirmDialog.confirm?.()">破棄する</v-btn>
+          <v-btn @click="confirmDialog.show = false; confirmDialog.cancel?.()">Cancel</v-btn>
+          <v-btn color="error" variant="flat" @click="confirmDialog.show = false; confirmDialog.confirm?.()">Discard</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -226,7 +256,8 @@
 import { ref, computed, watch, reactive } from 'vue';
 import { useGlobals } from '../composables/useAppModel';
 import ScriptEditorDialog from './ScriptEditorDialog.vue';
-import { saveItemToYaml } from '../lib/DbProcessor';
+import { saveItemToYaml, addItemToYaml, deleteItemFromYaml } from '../lib/DbProcessor';
+import { open as openFileDialog, ask } from '@tauri-apps/plugin-dialog';
 import type { ItemDbEntry, ItemFlags, ItemDelay, ItemStack, ItemNoUse, ItemTrade } from '../lib/DbReader';
 
 const appModel = useGlobals();
@@ -234,6 +265,10 @@ const scriptEditorDialog = ref<any>(null);
 const saving = ref(false);
 const snackbar = ref({ show: false, text: '', color: 'success' });
 const isDirty = ref(false);
+const isNew = ref(false);
+const targetFile = ref('');
+const deleting = ref(false);
+const originalAegisName = ref('');
 const confirmDialog = reactive<{
   show: boolean;
   confirm?: () => void;
@@ -288,12 +323,16 @@ let _suppressDirty = false;
 
 function loadForm(val: ItemDbEntry) {
   _suppressDirty = true;
+  originalAegisName.value = val.aegis_name;
   Object.assign(form, {
     id: val.id, aegis_name: val.aegis_name, name: val.name, filePath: val.filePath,
     type: val.type || 'Etc', subType: val.subType, buy: val.buy, sell: val.sell,
     weight: val.weight, attack: val.attack, magicAttack: val.magicAttack,
     defense: val.defense, range: val.range, slots: val.slots,
-    jobs: val.jobs ? [...val.jobs] : [], classes: val.classes ? [...val.classes] : [], gender: val.gender || 'Both', locations: val.locations ? [...val.locations] : [],
+    jobs: val.jobs ? [...val.jobs].sort((a, b) => JOB_LIST.indexOf(a) - JOB_LIST.indexOf(b)) : [],
+    classes: val.classes ? [...val.classes].sort((a, b) => CLASS_LIST.indexOf(a) - CLASS_LIST.indexOf(b)) : [],
+    gender: val.gender || 'Both',
+    locations: val.locations ? [...val.locations].sort((a, b) => LOCATION_LIST.indexOf(a) - LOCATION_LIST.indexOf(b)) : [],
     weaponLevel: val.weaponLevel, armorLevel: val.armorLevel,
     equipLevelMin: val.equipLevelMin, equipLevelMax: val.equipLevelMax,
     refineable: val.refineable || false, gradable: val.gradable || false, view: val.view, aliasName: val.aliasName,
@@ -310,35 +349,42 @@ function loadForm(val: ItemDbEntry) {
   }, 50);
 }
 
-// アイテム切り替え時のdirty確認
-// _ignoreNextItemChange: キャンセル時に loadItem → watch の再トリガーを防ぐフラグ
+// Check for dirty state when switching items
+// _ignoreNextItemChange: Flag to prevent re-triggering watch when reverting due to cancellation
 let _ignoreNextItemChange = false;
 
 watch(item, (newVal, oldVal) => {
   if (!newVal) return;
 
-  // キャンセルによる revert の場合はダイアログを出さずフォームを戻す
+  // When reverting due to cancellation, revert the form without showing the dialog
   if (_ignoreNextItemChange) {
     _ignoreNextItemChange = false;
+    _suppressDirty = true;
+    isNew.value = false;
     loadForm(newVal);
     return;
   }
 
   if (isDirty.value && oldVal) {
-    confirmDialog.confirm = () => { loadForm(newVal); };
+    confirmDialog.confirm = () => { 
+      isNew.value = false;
+      loadForm(newVal); 
+    };
     confirmDialog.cancel = () => {
-      // watch を再トリガーするが、フラグで止める
+      // Re-trigger watch but stop it with the flag
       _ignoreNextItemChange = true;
-      // currentItem を直接元の値に戻す（SearchPanel のハイライトも復元）
+      // Directly revert currentItem to its original value (also restores SearchPanel highlight)
       appModel.currentItem.value = oldVal;
     };
     confirmDialog.show = true;
   } else {
+    _suppressDirty = true;
+    isNew.value = false;
     loadForm(newVal);
   }
 }, { deep: false });
 
-// フォームの変更を監視してdirtyフラグを立てる
+// Monitor form changes and set dirty flag
 watch(() => JSON.stringify(form), () => {
   if (!_suppressDirty) isDirty.value = true;
 }, { deep: true });
@@ -352,23 +398,27 @@ const subTypeOptions = computed(() => {
 
 function onTypeChange() { form.subType = undefined; }
 
-// ─── Jobs: Allと他の排他 ─────────────────────────────────────────────
+// ─── Jobs: Exclusive selection for "All" ─────────────────────────────
 function onJobsChange(val: string[]) {
   if (!val) { form.jobs = []; return; }
   const lastAdded = val.filter(v => !(form.jobs || []).includes(v));
-  if (lastAdded.includes('All')) form.jobs = ['All'];
-  else form.jobs = val.filter(v => v !== 'All');
+  let result: string[];
+  if (lastAdded.includes('All')) result = ['All'];
+  else result = val.filter(v => v !== 'All');
+  form.jobs = result.sort((a, b) => JOB_LIST.indexOf(a) - JOB_LIST.indexOf(b));
 }
 
-// ─── Classes: Allと他の排他 ──────────────────────────────────────────
+// ─── Classes: Exclusive selection for "All" ──────────────────────────
 function onClassesChange(val: string[]) {
   if (!val) { form.classes = []; return; }
   const lastAdded = val.filter(v => !(form.classes || []).includes(v));
-  if (lastAdded.includes('All')) form.classes = ['All'];
-  else form.classes = val.filter(v => v !== 'All');
+  let result: string[];
+  if (lastAdded.includes('All')) result = ['All'];
+  else result = val.filter(v => v !== 'All');
+  form.classes = result.sort((a, b) => CLASS_LIST.indexOf(a) - CLASS_LIST.indexOf(b));
 }
 
-// ─── Locations: Both_Hand / Both_Accessory 排他 ───────────────────────
+// ─── Locations: Exclusive selection for "Both_Hand" / "Both_Accessory" ───
 function onLocationsChange(val: string[]) {
   if (!val) { form.locations = []; return; }
   const lastAdded = val.filter(v => !(form.locations || []).includes(v));
@@ -387,7 +437,7 @@ function onLocationsChange(val: string[]) {
     result = result.filter(v => v !== 'Both_Accessory');
   }
 
-  form.locations = result;
+  form.locations = result.sort((a, b) => LOCATION_LIST.indexOf(a) - LOCATION_LIST.indexOf(b));
 }
 
 // ─── Script Editor ───────────────────────────────────────────────────
@@ -401,13 +451,60 @@ async function openScriptEditor(field: string) {
   }
 }
 
+// ─── Start New Item ──────────────────────────────────────────────────
+function startNew() {
+  isNew.value = true;
+  appModel.currentItem.value = null;
+  originalAegisName.value = '';
+  _suppressDirty = true;
+  Object.assign(form, makeEmptyForm());
+  const files = appModel.getItemFiles();
+  targetFile.value = files.length > 0 ? files[0] : '';
+  setTimeout(() => { isDirty.value = false; _suppressDirty = false; }, 50);
+}
+
+async function browseFile() {
+  try {
+    const result = await openFileDialog({
+      filters: [{ name: 'YAML files', extensions: ['yml', 'yaml'] }],
+      multiple: false,
+    });
+    if (result) targetFile.value = typeof result === 'string' ? result : (result as any).path || '';
+  } catch (e) {}
+}
+
+async function onDeleteItem() {
+  if (!item.value) return;
+  const confirmed = await ask('Are you sure you want to delete this item?', { 
+    title: 'rAthena Item DB Editor',
+    kind: 'warning',
+  });
+  if (!confirmed) return;
+  deleting.value = true;
+  try {
+    const result = await deleteItemFromYaml(item.value.filePath, item.value.aegis_name, appModel.getPythonEncoding());
+    if (result.success) {
+      appModel.deleteItemFromMemory(item.value.filePath, item.value.aegis_name);
+      appModel.currentItem.value = null;
+      snackbar.value = { show: true, text: 'Deleted successfully', color: 'success' };
+    } else {
+      snackbar.value = { show: true, text: `Delete failed: ${result.error}`, color: 'error' };
+    }
+  } catch (e: any) {
+    snackbar.value = { show: true, text: `Error: ${e.message}`, color: 'error' };
+  } finally {
+    deleting.value = false;
+  }
+}
+
 // ─── Save ────────────────────────────────────────────────────────────
 async function save() {
-  if (!item.value) return;
+  if (!isNew.value && !item.value) return;
   saving.value = true;
   try {
     const toSave: ItemDbEntry = {
       ...form,
+      filePath: isNew.value ? targetFile.value : item.value!.filePath,
       jobs: form.jobs,
       classes: form.classes,
       locations: form.locations,
@@ -418,17 +515,35 @@ async function save() {
       trade: TRADE_BOOLS.some(k => form.trade[k]) ? (form.trade as ItemTrade) : undefined,
     };
 
-    const result = await saveItemToYaml(toSave, appModel.getEncoding());
-    if (result.success) {
-      const dbItem = appModel.getItems().find(i => i.aegis_name === toSave.aegis_name);
-      if (dbItem) Object.assign(dbItem, toSave);
-      isDirty.value = false;
-      snackbar.value = { show: true, text: '保存しました', color: 'success' };
+    let result;
+    if (isNew.value) {
+      if (!targetFile.value) {
+        snackbar.value = { show: true, text: 'Please specify a target file', color: 'error' };
+        saving.value = false;
+        return;
+      }
+      result = await addItemToYaml(toSave, appModel.getPythonEncoding());
+      if (result.success) {
+        appModel.addItemToMemory(toSave);
+        appModel.loadItem(toSave.aegis_name);
+        isNew.value = false;
+      }
     } else {
-      snackbar.value = { show: true, text: `保存失敗: ${result.error}`, color: 'error' };
+      result = await saveItemToYaml(toSave, appModel.getPythonEncoding(), originalAegisName.value);
+      if (result.success) {
+        appModel.updateItemInMemory(toSave, originalAegisName.value);
+        originalAegisName.value = toSave.aegis_name;
+      }
+    }
+
+    if (result.success) {
+      isDirty.value = false;
+      snackbar.value = { show: true, text: 'Saved', color: 'success' };
+    } else {
+      snackbar.value = { show: true, text: `Failed to save: ${result.error}`, color: 'error' };
     }
   } catch (e: any) {
-    snackbar.value = { show: true, text: `エラー: ${e.message}`, color: 'error' };
+    snackbar.value = { show: true, text: `Error: ${e.message}`, color: 'error' };
   } finally {
     saving.value = false;
   }

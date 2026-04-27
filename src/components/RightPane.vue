@@ -79,7 +79,7 @@
 import { ref, watch, onMounted, onUnmounted, shallowRef, nextTick } from "vue";
 import { useGlobals } from "../composables/useAppModel";
 import ItemSelectDialog from "./ItemSelectDialog.vue";
-import { YamlInjector } from "../lib/YamlInjector";
+import { saveItemToYaml } from "../lib/DbProcessor";
 import { readTextFile } from "@tauri-apps/plugin-fs";
 
 import { VueMonacoEditor } from "@guolao/vue-monaco-editor";
@@ -153,7 +153,7 @@ onMounted(async () => {
     const raw = await readTextFile(prefix + "auto_complete.txt");
     autocompleteKeywords = raw
       .split("\n")
-      .map((l) => l.trim())
+      .map((l: string) => l.trim())
       .filter(Boolean);
   } catch (e) {
     console.warn("Failed to load auto_complete", e);
@@ -227,22 +227,22 @@ const saveItem = async () => {
   if (!current) return;
 
   try {
-    const injector = new YamlInjector(current.filePath);
-    const success = await injector.injectScript(current.aegis_name, [
-      scriptCode.value,
-      equipCode.value,
-      unequipCode.value,
-    ]);
+    const toSave = {
+      ...current,
+      script: scriptCode.value,
+      equipScript: equipCode.value,
+      unEquipScript: unequipCode.value,
+    };
 
-    if (success) {
-      // Update our internal memory model so it doesn't get out of sync if re-loaded
+    const result = await saveItemToYaml(toSave, appModel.getEncoding());
+
+    if (result.success) {
+      // Update our internal memory model
       const dbItem = appModel
         .getItems()
         .find((i) => i.aegis_name === current.aegis_name);
       if (dbItem) {
-        dbItem.script = scriptCode.value;
-        dbItem.equipScript = equipCode.value;
-        dbItem.unEquipScript = unequipCode.value;
+        Object.assign(dbItem, toSave);
       }
 
       snackbar.value = {
@@ -253,7 +253,7 @@ const saveItem = async () => {
     } else {
       snackbar.value = {
         show: true,
-        text: "Failed to find item block in YAML",
+        text: `Save Failed: ${result.error}`,
         color: "error",
       };
     }

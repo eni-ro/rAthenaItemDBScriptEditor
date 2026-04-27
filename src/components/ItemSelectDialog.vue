@@ -51,7 +51,7 @@ const search = ref("");
 const debouncedSearch = ref("");
 const appModel = useGlobals();
 
-// 検索のデバウンス
+// Search debounce
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 watch(search, (val) => {
   if (debounceTimer) clearTimeout(debounceTimer);
@@ -67,7 +67,7 @@ const headers = [
 
 let onSelectCallback: ((aegis_name: string) => void) | null = null;
 
-// 検索対象の文字列を事前に構築
+// Pre-build search target strings
 const allItems = computed(() => {
   const items = appModel.getItems();
   const itemNames = appModel.getItemNames();

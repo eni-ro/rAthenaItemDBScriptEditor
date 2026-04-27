@@ -6,7 +6,7 @@ export interface DbEntry {
   name: string;
 }
 
-// ─── Jobs / Classes / Locations のマップ型 ───────────────────────────
+// ─── Map types for Jobs / Classes / Locations ───────────────────────
 export type BoolMap = Record<string, boolean>;
 
 // ─── Flags ───────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ export interface ItemTrade {
   NoAuction?: boolean;
 }
 
-// ─── アイテムDBエントリ ───────────────────────────────────────────────
+// ─── Item DB Entry ───────────────────────────────────────────────────
 export interface ItemDbEntry extends DbEntry {
   id: number;
   filePath: string;
@@ -92,7 +92,7 @@ export interface ItemDbEntry extends DbEntry {
   unEquipScript?: string;
 }
 
-// ─── コンボDBエントリ ─────────────────────────────────────────────────
+// ─── Combo DB Entry ──────────────────────────────────────────────────
 export interface ComboEntry {
   items: string[];
 }
@@ -104,7 +104,7 @@ export interface ComboDbEntry {
   script: string;
 }
 
-// ─── ItemName エントリ ────────────────────────────────────────────────
+// ─── ItemName Entry ──────────────────────────────────────────────────
 export interface ItemNameEntry {
   id: number;
   name: string;
@@ -212,15 +212,18 @@ function removeByteSequence(source: Uint8Array, seq: number[]): Uint8Array {
   return new Uint8Array(result);
 }
 
-/** エンコーディングを指定してYAMLファイルを読み込む */
+
+
+/** Read YAML file with specified encoding */
 async function readYaml(filePath: string, encoding: string): Promise<string> {
   const bytesArray = await invoke<number[]>('read_file_bytes', { path: filePath });
   let bytes = new Uint8Array(bytesArray);
   
-  // UTF-8のゼロ幅スペース(E2 80 8B)をバイト列から除去
+  // Remove UTF-8 Zero Width Space (E2 80 8B) from byte sequence
   bytes = removeByteSequence(bytes, [0xE2, 0x80, 0x8B]);
   
-  const decoder = new TextDecoder(encoding.toLowerCase() === 'utf8' ? 'utf-8' : encoding);
+  // Use raw encoding label directly as requested
+  const decoder = new TextDecoder(encoding);
   return decoder.decode(bytes);
 }
 
@@ -230,13 +233,19 @@ export class DbReader {
   public mobs: DbEntry[] = [];
   public combos: ComboDbEntry[] = [];
   public itemNames: Map<number, string> = new Map();
+  public itemFiles: string[] = [];
+  public comboFiles: string[] = [];
   public encoding: string = 'utf-8';
+  public rustEncoding: string = 'utf-8';
+  public pythonEncoding: string = 'utf-8';
 
   async load(dbPath: string) {
-    // db.yml は常に UTF-8
+    // db.yml is always UTF-8
     const dbRaw: string = await invoke('read_file_raw', { path: dbPath });
     const dbConf = jsYaml.load(dbRaw, { json: true }) as {
-      Encoding?: string;
+      TypeScriptEncoding?: string;
+      PythonEncoding?: string;
+      RustEncoding?: string;
       Item?: string[];
       ItemCombos?: string[];
       ItemName?: string[];
@@ -244,8 +253,13 @@ export class DbReader {
       Mob?: string[];
     };
 
-    // エンコーディング設定を取得（デフォルト: utf-8）
-    this.encoding = dbConf.Encoding || 'utf-8';
+    // Get encoding settings. 
+    this.encoding = dbConf.TypeScriptEncoding || (dbConf as any).Encoding || 'utf-8';
+    this.rustEncoding = dbConf.RustEncoding || (dbConf as any).Encoding || 'utf-8';
+    this.pythonEncoding = dbConf.PythonEncoding || (dbConf as any).Encoding || 'utf-8';
+
+    this.itemFiles = dbConf.Item || [];
+    this.comboFiles = dbConf.ItemCombos || [];
 
     // ─── Item ────────────────────────────────────────────────────
     if (dbConf.Item) {
@@ -297,7 +311,7 @@ export class DbReader {
     }
 
     // ─── ItemName ────────────────────────────────────────────────
-    // ItemName は専用エンコーディングで読む（例: shift-jis）
+    // ItemName is read with specified encoding (e.g., shift-jis)
     if (dbConf.ItemName) {
       for (const filePath of dbConf.ItemName) {
         try {

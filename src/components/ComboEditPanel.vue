@@ -2,29 +2,30 @@
   <div class="combo-edit-panel pa-3" style="position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;">
     <!-- New Combo Button -->
     <div class="d-flex align-center mb-3 flex-shrink-0">
-      <span class="text-subtitle-2 font-weight-bold">{{ isNew ? '新規コンボ作成' : 'コンボ編集' }}</span>
+      <span class="text-subtitle-2 font-weight-bold">{{ isNew ? 'Create New Combo' : 'Edit Combo' }}</span>
       <v-spacer />
       <v-btn size="small" color="primary" variant="tonal" @click="startNew">
-        <v-icon size="small" class="mr-1">mdi-plus</v-icon> 新規作成
+        <v-icon size="small" class="mr-1">mdi-plus</v-icon> New
       </v-btn>
     </div>
 
     <div v-if="!combo && !isNew" class="text-grey text-caption d-flex align-center justify-center flex-grow-1">
-      左の検索パネルからコンボを選択するか、「新規作成」をクリックしてください
+      Please select a combo from the search panel on the left or click "New".
     </div>
 
     <template v-else>
       <div class="flex-grow-1 overflow-y-auto pr-2" style="min-height: 0; flex: 1 1 auto;">
         <!-- Target File (new only) -->
         <div v-if="isNew" class="mb-3">
-          <div class="text-caption font-weight-bold mb-1">保存先ファイル</div>
+          <div class="text-caption font-weight-bold mb-1">Target File</div>
           <div class="d-flex align-center">
-            <v-text-field
+            <v-combobox
               v-model="targetFile"
+              :items="appModel.getComboFiles()"
               density="compact"
               variant="outlined"
               hide-details
-              placeholder="item_combos.yml のパス"
+              placeholder="path to item_combos.yml"
               class="text-caption flex-grow-1"
             />
             <v-btn icon="mdi-folder-open" size="small" variant="text" class="ml-1" @click="browseFile" />
@@ -32,13 +33,13 @@
         </div>
 
         <!-- Combos List -->
-        <div class="text-caption font-weight-bold mb-1">Combos (アイテムセット一覧)</div>
+        <div class="text-caption font-weight-bold mb-1">Combos (Item Set List)</div>
         <div v-for="(combo, ci) in form.combos" :key="ci" class="combo-block mb-2 pa-2 rounded border">
           <div class="d-flex align-center mb-1">
             <span class="text-caption text-grey">Combo {{ ci + 1 }}</span>
             <v-spacer />
-            <v-btn size="x-small" icon="mdi-plus" variant="text" @click="addItemToCombo(ci)" title="アイテムを追加" />
-            <v-btn size="x-small" icon="mdi-delete" variant="text" color="error" @click="removeCombo(ci)" title="このComboを削除" />
+            <v-btn size="x-small" icon="mdi-plus" variant="text" @click="addItemToCombo(ci)" title="Add Item" />
+            <v-btn size="x-small" icon="mdi-delete" variant="text" color="error" @click="removeCombo(ci)" title="Delete this Combo" />
           </div>
           <div v-for="(aegis, ai) in combo.items" :key="ai" class="d-flex align-center mb-1">
             <v-chip size="small" variant="tonal" color="primary" class="mr-2 text-caption flex-grow-1">
@@ -46,11 +47,11 @@
             </v-chip>
             <v-btn size="x-small" icon="mdi-close" variant="text" color="error" @click="removeItemFromCombo(ci, ai)" />
           </div>
-          <div v-if="combo.items.length === 0" class="text-caption text-grey">アイテムが追加されていません</div>
+          <div v-if="combo.items.length === 0" class="text-caption text-grey">No items added</div>
         </div>
 
         <v-btn size="small" variant="tonal" class="mb-3" @click="addCombo">
-          <v-icon size="small" class="mr-1">mdi-plus</v-icon> Combo セットを追加
+          <v-icon size="small" class="mr-1">mdi-plus</v-icon> Add Combo Set
         </v-btn>
 
         <v-divider class="my-2" />
@@ -61,7 +62,7 @@
             <span class="text-caption font-weight-bold">{{ sf.label }}</span>
             <v-spacer />
             <v-btn size="x-small" variant="tonal" @click="openScriptEditor(sf.key)">
-              <v-icon size="small" class="mr-1">mdi-pencil</v-icon> 詳細編集
+              <v-icon size="small" class="mr-1">mdi-pencil</v-icon> Edit Script
             </v-btn>
           </div>
           <v-textarea
@@ -72,7 +73,7 @@
             rows="4"
             no-resize
             class="text-caption font-mono"
-            :placeholder="`${sf.label} を入力...`"
+            :placeholder="`Enter ${sf.label}...`"
           />
         </div>
       </div>
@@ -80,10 +81,10 @@
       <!-- Actions -->
       <div class="d-flex justify-space-between mt-3 flex-shrink-0">
         <v-btn v-if="!isNew && combo" color="error" variant="tonal" :loading="deleting" @click="onDeleteCombo">
-          <v-icon class="mr-1">mdi-delete</v-icon> 削除
+          <v-icon class="mr-1">mdi-delete</v-icon> Delete
         </v-btn>
         <v-spacer />
-        <v-chip v-if="isDirty" color="warning" size="small" class="mr-2">未保存の変更あり</v-chip>
+        <v-chip v-if="isDirty" color="warning" size="small" class="mr-2">Unsaved changes</v-chip>
         <v-btn color="success" variant="flat" :loading="saving" @click="save">
           <v-icon class="mr-1">mdi-content-save</v-icon> Save
         </v-btn>
@@ -95,15 +96,15 @@
     <ScriptEditorDialog ref="scriptEditorDialog" />
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">{{ snackbar.text }}</v-snackbar>
 
-    <!-- 変更破棄確認 -->
+    <!-- Discard Changes Confirmation -->
     <v-dialog v-model="confirmDialog.show" max-width="400">
       <v-card>
-        <v-card-title>変更を破棄しますか？</v-card-title>
-        <v-card-text>現在のコンボに未保存の変更があります。破棄して移動しますか？</v-card-text>
+        <v-card-title>Discard changes?</v-card-title>
+        <v-card-text>Current combo has unsaved changes. Discard and move?</v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="confirmDialog.show = false; confirmDialog.cancel?.();">キャンセル</v-btn>
-          <v-btn color="error" variant="flat" @click="confirmDialog.show = false; confirmDialog.confirm?.();">破棄する</v-btn>
+          <v-btn @click="confirmDialog.show = false; confirmDialog.cancel?.();">Cancel</v-btn>
+          <v-btn color="error" variant="flat" @click="confirmDialog.show = false; confirmDialog.confirm?.();">Discard</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -116,7 +117,7 @@ import { useGlobals } from '../composables/useAppModel';
 import ScriptEditorDialog from './ScriptEditorDialog.vue';
 import ComboItemSelectDialog from './ComboItemSelectDialog.vue';
 import { updateComboInYaml, addComboToYaml, deleteComboFromYaml } from '../lib/DbProcessor';
-import { open as openFileDialog } from '@tauri-apps/plugin-dialog';
+import { open as openFileDialog, ask } from '@tauri-apps/plugin-dialog';
 import type { ComboDbEntry } from '../lib/DbReader';
 
 const appModel = useGlobals();
@@ -143,17 +144,17 @@ interface FormData {
 
 const form = reactive<FormData>({ combos: [], script: '' });
 
-// 追加先のcomboインデックス(どのComboにアイテム追加するか)
+// Target combo index (which combo to add the item to)
 let addingToComboIdx = -1;
 
 let _suppressDirty = false;
-// キャンセルによるリバート時に watch の再トリガーを防ぐフラグ
+// Flag to prevent re-triggering watch during revert due to cancellation
 let _ignoreNextComboChange = false;
 
 watch(combo, (newVal, oldVal) => {
   if (!newVal) return;
 
-  // キャンセルによるリバートの場合はダイアログを出さずフォームを戻す
+  // When reverting due to cancellation, revert the form without showing the dialog
   if (_ignoreNextComboChange) {
     _ignoreNextComboChange = false;
     _suppressDirty = true;
@@ -174,9 +175,9 @@ watch(combo, (newVal, oldVal) => {
       isDirty.value = false;
     };
     confirmDialog.cancel = () => {
-      // watch を再トリガーするが、フラグで止める
+      // Re-trigger watch but stop it with the flag
       _ignoreNextComboChange = true;
-      // currentCombo を直接元の値に戻す（SearchPanel のハイライトも復元）
+      // Directly revert currentCombo to its original value (also restores SearchPanel highlight)
       appModel.currentCombo.value = oldVal;
     };
     confirmDialog.show = true;
@@ -199,9 +200,9 @@ function startNew() {
   appModel.currentCombo.value = null;
   form.combos = [{ items: [] }];
   form.script = '';
-  // デフォルトの保存先は最初のItemCombosファイル
-  const combos = appModel.getCombos();
-  targetFile.value = combos.length > 0 ? combos[0].filePath : '';
+  // Default target is the first ItemCombos file
+  const files = appModel.getComboFiles();
+  targetFile.value = files.length > 0 ? files[0] : '';
 }
 
 function getItemDisplayName(aegis: string): string {
@@ -212,8 +213,14 @@ function addCombo() {
   form.combos.push({ items: [] });
 }
 
-function removeCombo(ci: number) {
-  form.combos.splice(ci, 1);
+async function removeCombo(ci: number) {
+  const confirmed = await ask('Are you sure you want to remove this combo set?', {
+    title: 'rAthena Item DB Editor',
+    kind: 'warning',
+  });
+  if (confirmed) {
+    form.combos.splice(ci, 1);
+  }
 }
 
 function removeItemFromCombo(ci: number, ai: number) {
@@ -258,10 +265,10 @@ async function save() {
     let result;
     if (isNew.value) {
       if (!targetFile.value) {
-        snackbar.value = { show: true, text: '保存先ファイルを指定してください', color: 'error' };
+        snackbar.value = { show: true, text: 'Please specify a target file', color: 'error' };
         return;
       }
-      result = await addComboToYaml(targetFile.value, combosData, form.script, appModel.getEncoding());
+      result = await addComboToYaml(targetFile.value, combosData, form.script, appModel.getPythonEncoding());
       if (result.success && result.index != null) {
         const newCombo: ComboDbEntry = {
           index: result.index,
@@ -274,7 +281,7 @@ async function save() {
         isNew.value = false;
       }
     } else if (combo.value) {
-      result = await updateComboInYaml(combo.value.filePath, combo.value.index, combosData, form.script, appModel.getEncoding());
+      result = await updateComboInYaml(combo.value.filePath, combo.value.index, combosData, form.script, appModel.getPythonEncoding());
       if (result.success) {
         const updated: ComboDbEntry = {
           ...combo.value,
@@ -288,7 +295,7 @@ async function save() {
 
     if (result?.success) {
       isDirty.value = false;
-      snackbar.value = { show: true, text: '保存しました', color: 'success' };
+      snackbar.value = { show: true, text: 'Saved', color: 'success' };
     } else {
       snackbar.value = { show: true, text: `Save failed: ${result?.error}`, color: 'error' };
     }
@@ -301,10 +308,14 @@ async function save() {
 
 async function onDeleteCombo() {
   if (!combo.value) return;
-  if (!confirm('このコンボを削除しますか？')) return;
+  const confirmed = await ask('Are you sure you want to delete this combo?', {
+    title: 'rAthena Item DB Editor',
+    kind: 'warning',
+  });
+  if (!confirmed) return;
   deleting.value = true;
   try {
-    const result = await deleteComboFromYaml(combo.value.filePath, combo.value.index, appModel.getEncoding());
+    const result = await deleteComboFromYaml(combo.value.filePath, combo.value.index, appModel.getPythonEncoding());
     if (result.success) {
       appModel.deleteComboFromMemory(combo.value.filePath, combo.value.index);
       appModel.currentCombo.value = null;
