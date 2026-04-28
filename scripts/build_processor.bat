@@ -2,7 +2,7 @@
 REM build_processor.bat
 cd /d "%~dp0"
 echo Building db_processor.exe...
-uv run pyinstaller --noconfirm db_processor.spec
+uv run --with pyinstaller --with ruamel.yaml pyinstaller --noconfirm db_processor.spec
 if %ERRORLEVEL% neq 0 (
     echo PyInstaller build failed.
     exit /b %ERRORLEVEL%
