@@ -32,6 +32,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Build db_processor
+        run: npm run build:processor
+
       - name: Build Tauri app
         run: npm run tauri build
 

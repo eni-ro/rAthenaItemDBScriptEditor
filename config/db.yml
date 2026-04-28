@@ -1,4 +1,6 @@
----
+TypeScriptEncoding: utf-8
+PythonEncoding: utf-8
+RustEncoding: utf-8
 Item:
   - E:\ROEmu\rAthena\db\re\item_db_usable.yml
   - E:\ROEmu\rAthena\db\re\item_db_equip.yml
@@ -10,4 +12,3 @@ Mob:
 Skill:
   - E:\ROEmu\rAthena\db\re\skill_db.yml
   - E:\ROEmu\rAthena\db\import\skill_db.yml
-...

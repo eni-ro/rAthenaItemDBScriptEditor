@@ -52,6 +52,14 @@ if (fs.existsSync(exePath)) {
   process.exit(1);
 }
 
+// 1.5. Add DB Processor (Sidecar)
+const processorPath = path.join(process.cwd(), 'src-tauri', 'binaries', 'db_processor.exe');
+if (fs.existsSync(processorPath)) {
+  archive.file(processorPath, { name: `${innerFolder}db_processor.exe` });
+} else {
+  console.warn(`Warning: db_processor.exe not found at ${processorPath}. It will be missing from the release.`);
+}
+
 // 2. Add Config files (Flatly into the inner folder)
 const configDir = path.join(process.cwd(), 'config');
 if (fs.existsSync(configDir)) {
