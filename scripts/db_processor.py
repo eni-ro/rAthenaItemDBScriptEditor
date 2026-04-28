@@ -7,6 +7,7 @@ import sys
 import json
 import shutil
 import os
+import contextlib
 from pathlib import Path
 
 try:
@@ -39,9 +40,28 @@ def make_yaml():
     return yaml
 
 
-def backup_file(path: str):
+@contextlib.contextmanager
+def backup_context(path: str):
     bak = path + ".bak"
-    shutil.copy2(path, bak)
+    has_backup = False
+    if os.path.exists(path):
+        shutil.copy2(path, bak)
+        has_backup = True
+    try:
+        yield
+        # 成功時はバックアップを削除
+        if has_backup and os.path.exists(bak):
+            os.remove(bak)
+    except Exception:
+        # 失敗時はバックアップから復元
+        if has_backup and os.path.exists(bak):
+            if os.path.exists(path):
+                os.remove(path)
+            os.rename(bak, path)
+        elif not has_backup and os.path.exists(path):
+            # 新規作成に失敗した場合は作成途中のファイルを削除
+            os.remove(path)
+        raise
 
 
 
@@ -88,26 +108,26 @@ def to_literal(s: str) -> LiteralScalarString:
 
 
 def update_item(file_path: str, aegis_name: str, item_data: dict, encoding: str = "utf-8") -> dict:
-    backup_file(file_path)
-    yaml = make_yaml()
-    doc = load_yaml(yaml, file_path, encoding)
+    with backup_context(file_path):
+        yaml = make_yaml()
+        doc = load_yaml(yaml, file_path, encoding)
 
-    if not doc or "Body" not in doc:
-        return {"success": False, "error": "Invalid YAML: Body not found"}
+        if not doc or "Body" not in doc:
+            return {"success": False, "error": "Invalid YAML: Body not found"}
 
-    target = None
-    for item in doc["Body"]:
-        if str(item.get("AegisName", "")) == str(aegis_name):
-            target = item
-            break
+        target = None
+        for item in doc["Body"]:
+            if str(item.get("AegisName", "")) == str(aegis_name):
+                target = item
+                break
 
-    if target is None:
-        return {"success": False, "error": f"Item '{aegis_name}' not found in {file_path}"}
+        if target is None:
+            return {"success": False, "error": f"Item '{aegis_name}' not found in {file_path}"}
 
-    apply_item_data(target, item_data)
+        apply_item_data(target, item_data)
 
-    save_yaml(yaml, file_path, doc, encoding)
-    return {"success": True}
+        save_yaml(yaml, file_path, doc, encoding)
+        return {"success": True}
 
 
 def apply_item_data(target: CommentedMap, item_data: dict):
@@ -251,131 +271,131 @@ def apply_item_data(target: CommentedMap, item_data: dict):
         target[k] = v
 
 def add_item(file_path: str, item_data: dict, encoding: str = "utf-8") -> dict:
-    backup_file(file_path)
-    yaml = make_yaml()
-    doc = load_yaml(yaml, file_path, encoding)
+    with backup_context(file_path):
+        yaml = make_yaml()
+        doc = load_yaml(yaml, file_path, encoding)
 
-    if not doc or "Body" not in doc:
-        return {"success": False, "error": "Invalid YAML: Body not found"}
+        if not doc or "Body" not in doc:
+            return {"success": False, "error": "Invalid YAML: Body not found"}
 
-    target = CommentedMap()
-    apply_item_data(target, item_data)
-    
-    doc["Body"].append(target)
-    new_index = len(doc["Body"]) - 1
+        target = CommentedMap()
+        apply_item_data(target, item_data)
+        
+        doc["Body"].append(target)
+        new_index = len(doc["Body"]) - 1
 
-    save_yaml(yaml, file_path, doc, encoding)
-    return {"success": True, "index": new_index}
+        save_yaml(yaml, file_path, doc, encoding)
+        return {"success": True, "index": new_index}
 
 def delete_item(file_path: str, aegis_name: str, encoding: str = "utf-8") -> dict:
-    backup_file(file_path)
-    yaml = make_yaml()
-    doc = load_yaml(yaml, file_path, encoding)
+    with backup_context(file_path):
+        yaml = make_yaml()
+        doc = load_yaml(yaml, file_path, encoding)
 
-    if not doc or "Body" not in doc:
-        return {"success": False, "error": "Invalid YAML: Body not found"}
+        if not doc or "Body" not in doc:
+            return {"success": False, "error": "Invalid YAML: Body not found"}
 
-    target_idx = None
-    for i, item in enumerate(doc["Body"]):
-        if str(item.get("AegisName", "")) == str(aegis_name):
-            target_idx = i
-            break
+        target_idx = None
+        for i, item in enumerate(doc["Body"]):
+            if str(item.get("AegisName", "")) == str(aegis_name):
+                target_idx = i
+                break
 
-    if target_idx is None:
-        return {"success": False, "error": f"Item '{aegis_name}' not found in {file_path}"}
+        if target_idx is None:
+            return {"success": False, "error": f"Item '{aegis_name}' not found in {file_path}"}
 
-    del doc["Body"][target_idx]
+        del doc["Body"][target_idx]
 
-    save_yaml(yaml, file_path, doc, encoding)
-    return {"success": True}
+        save_yaml(yaml, file_path, doc, encoding)
+        return {"success": True}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # コンボ更新
 # ─────────────────────────────────────────────────────────────────────────────
 
 def update_combo(file_path: str, combo_index: int, combo_data: dict, encoding: str = "utf-8") -> dict:
-    backup_file(file_path)
-    yaml = make_yaml()
-    doc = load_yaml(yaml, file_path, encoding)
+    with backup_context(file_path):
+        yaml = make_yaml()
+        doc = load_yaml(yaml, file_path, encoding)
 
-    if not doc or "Body" not in doc:
-        return {"success": False, "error": "Invalid YAML: Body not found"}
+        if not doc or "Body" not in doc:
+            return {"success": False, "error": "Invalid YAML: Body not found"}
 
-    body = doc.get("Body", [])
-    if combo_index < 0 or combo_index >= len(body):
-        return {"success": False, "error": f"Combo index {combo_index} not found"}
+        body = doc.get("Body", [])
+        if combo_index < 0 or combo_index >= len(body):
+            return {"success": False, "error": f"Combo index {combo_index} not found"}
 
-    entry = body[combo_index]
+        entry = body[combo_index]
 
-    if "combos" in combo_data:
+        if "combos" in combo_data:
+            combos_seq = CommentedSeq()
+            for combo_items in combo_data["combos"]:
+                combo_map = CommentedMap()
+                items_seq = CommentedSeq()
+                for aegis in combo_items:
+                    items_seq.append(aegis)
+                combo_map["Combo"] = items_seq
+                combos_seq.append(combo_map)
+            entry["Combos"] = combos_seq
+
+        if "script" in combo_data:
+            val = combo_data["script"]
+            if not val or not val.strip():
+                if "Script" in entry:
+                    del entry["Script"]
+            else:
+                entry["Script"] = to_literal(val)
+
+        save_yaml(yaml, file_path, doc, encoding)
+        return {"success": True}
+
+
+def add_combo(file_path: str, combo_data: dict, encoding: str = "utf-8") -> dict:
+    with backup_context(file_path):
+        yaml = make_yaml()
+        doc = load_yaml(yaml, file_path, encoding)
+
+        if not doc or "Body" not in doc:
+            return {"success": False, "error": "Invalid YAML: Body not found"}
+
         combos_seq = CommentedSeq()
-        for combo_items in combo_data["combos"]:
+        for combo_items in combo_data.get("combos", []):
             combo_map = CommentedMap()
             items_seq = CommentedSeq()
             for aegis in combo_items:
                 items_seq.append(aegis)
             combo_map["Combo"] = items_seq
             combos_seq.append(combo_map)
-        entry["Combos"] = combos_seq
 
-    if "script" in combo_data:
-        val = combo_data["script"]
-        if not val or not val.strip():
-            if "Script" in entry:
-                del entry["Script"]
-        else:
-            entry["Script"] = to_literal(val)
+        new_entry = CommentedMap()
+        new_entry["Combos"] = combos_seq
 
-    save_yaml(yaml, file_path, doc, encoding)
-    return {"success": True}
+        script = combo_data.get("script", "")
+        if script and script.strip():
+            new_entry["Script"] = to_literal(script)
 
+        doc["Body"].append(new_entry)
+        new_index = len(doc["Body"]) - 1
 
-def add_combo(file_path: str, combo_data: dict, encoding: str = "utf-8") -> dict:
-    backup_file(file_path)
-    yaml = make_yaml()
-    doc = load_yaml(yaml, file_path, encoding)
-
-    if not doc or "Body" not in doc:
-        return {"success": False, "error": "Invalid YAML: Body not found"}
-
-    combos_seq = CommentedSeq()
-    for combo_items in combo_data.get("combos", []):
-        combo_map = CommentedMap()
-        items_seq = CommentedSeq()
-        for aegis in combo_items:
-            items_seq.append(aegis)
-        combo_map["Combo"] = items_seq
-        combos_seq.append(combo_map)
-
-    new_entry = CommentedMap()
-    new_entry["Combos"] = combos_seq
-
-    script = combo_data.get("script", "")
-    if script and script.strip():
-        new_entry["Script"] = to_literal(script)
-
-    doc["Body"].append(new_entry)
-    new_index = len(doc["Body"]) - 1
-
-    save_yaml(yaml, file_path, doc, encoding)
-    return {"success": True, "index": new_index}
+        save_yaml(yaml, file_path, doc, encoding)
+        return {"success": True, "index": new_index}
 
 
 def delete_combo(file_path: str, combo_index: int, encoding: str = "utf-8") -> dict:
-    backup_file(file_path)
-    yaml = make_yaml()
-    doc = load_yaml(yaml, file_path, encoding)
+    with backup_context(file_path):
+        yaml = make_yaml()
+        doc = load_yaml(yaml, file_path, encoding)
 
-    if not doc or "Body" not in doc:
-        return {"success": False, "error": "Invalid YAML: Body not found"}
+        if not doc or "Body" not in doc:
+            return {"success": False, "error": "Invalid YAML: Body not found"}
 
-    body = doc["Body"]
-    if combo_index < 0 or combo_index >= len(body):
-        return {"success": False, "error": f"Combo index {combo_index} out of range"}
+        body = doc["Body"]
+        if combo_index < 0 or combo_index >= len(body):
+            return {"success": False, "error": f"Combo index {combo_index} out of range"}
 
-    del body[combo_index]
-    save_yaml(yaml, file_path, doc, encoding)
-    return {"success": True}
+        del body[combo_index]
+        save_yaml(yaml, file_path, doc, encoding)
+        return {"success": True}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -384,23 +404,23 @@ def delete_combo(file_path: str, combo_index: int, encoding: str = "utf-8") -> d
 
 def update_db_yml(file_path: str, db_config: dict) -> dict:
     """db.yml は常に UTF-8"""
-    backup_file(file_path)
-    yaml = make_yaml()
+    with backup_context(file_path):
+        yaml = make_yaml()
 
-    if os.path.exists(file_path):
-        doc = load_yaml(yaml, file_path, "utf-8")
-    else:
-        doc = {}
+        if os.path.exists(file_path):
+            doc = load_yaml(yaml, file_path, "utf-8")
+        else:
+            doc = {}
 
-    if doc is None:
-        doc = {}
+        if doc is None:
+            doc = {}
 
-    for key, val in db_config.items():
-        if val is not None:
-            doc[key] = val
+        for key, val in db_config.items():
+            if val is not None:
+                doc[key] = val
 
-    save_yaml(yaml, file_path, doc, "utf-8")
-    return {"success": True}
+        save_yaml(yaml, file_path, doc, "utf-8")
+        return {"success": True}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
