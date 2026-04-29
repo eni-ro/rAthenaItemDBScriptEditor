@@ -557,6 +557,40 @@ async function save() {
       trade: TRADE_BOOLS.some(k => form.trade[k]) ? (form.trade as ItemTrade) : undefined,
     };
 
+    // Validation: Check for duplicate ID or AegisName in the same file
+    const itemsList = appModel.getItems();
+    const duplicateIdItem = itemsList.find(i => 
+      i.id === toSave.id && 
+      i.filePath === toSave.filePath && 
+      (isNew.value || i.aegis_name !== originalAegisName.value)
+    );
+
+    if (duplicateIdItem) {
+      snackbar.value = { 
+        show: true, 
+        text: `Error: ID ${toSave.id} already exists in this file (AegisName: ${duplicateIdItem.aegis_name})`, 
+        color: 'error' 
+      };
+      saving.value = false;
+      return;
+    }
+
+    const duplicateAegisItem = itemsList.find(i => 
+      i.aegis_name === toSave.aegis_name && 
+      i.filePath === toSave.filePath && 
+      (isNew.value || i.aegis_name !== originalAegisName.value)
+    );
+
+    if (duplicateAegisItem) {
+      snackbar.value = { 
+        show: true, 
+        text: `Error: AegisName "${toSave.aegis_name}" already exists in this file (ID: ${duplicateAegisItem.id})`, 
+        color: 'error' 
+      };
+      saving.value = false;
+      return;
+    }
+
     let result;
     if (isNew.value) {
       if (!targetFile.value) {

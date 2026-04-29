@@ -5,7 +5,6 @@
       <!-- ─── Header ─────────────────────────────────────────────── -->
       <div class="editor-header">
         <span class="editor-title">Script Editor</span>
-        <v-btn color="success" variant="flat" size="small" class="mr-2" @click="onConfirm">Confirm</v-btn>
         <v-btn variant="text" icon="mdi-close" size="small" @click="onCancel" />
       </div>
 
@@ -118,6 +117,12 @@
             style="flex:1; height:100%;"
           />
         </div>
+      </div>
+
+      <!-- ─── Footer ─────────────────────────────────────────────── -->
+      <div class="editor-footer">
+        <v-btn color="grey-darken-3" variant="flat" size="small" class="mr-2" @click="onCancel">Cancel</v-btn>
+        <v-btn color="success" variant="flat" size="small" @click="onConfirm">Confirm (Ctrl+Enter)</v-btn>
       </div>
     </div>
 
@@ -319,16 +324,39 @@ function open(initialScript: string): Promise<string | null> {
 }
 
 const onConfirm = () => {
-  dialog.value = false;
-  resolveCallback?.(editingScript.value);
+  const cb = resolveCallback;
   resolveCallback = null;
+  dialog.value = false;
+  cb?.(editingScript.value);
 };
 
 const onCancel = () => {
-  dialog.value = false;
-  resolveCallback?.(null);
+  const cb = resolveCallback;
   resolveCallback = null;
+  dialog.value = false;
+  cb?.(null);
 };
+
+const handleGlobalKeyDown = (e: KeyboardEvent) => {
+  if (!dialog.value) return;
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    onConfirm();
+    e.preventDefault();
+    e.stopPropagation();
+  }
+};
+
+watch(dialog, (val) => {
+  if (val) {
+    window.addEventListener('keydown', handleGlobalKeyDown, true);
+  } else {
+    window.removeEventListener('keydown', handleGlobalKeyDown, true);
+    // If closed by other means (like Esc), ensure callback is resolved
+    if (resolveCallback) {
+      onCancel();
+    }
+  }
+});
 
 defineExpose({ open });
 
@@ -359,6 +387,15 @@ onMounted(async () => {
   font-size: 14pt;
   font-weight: 600;
   margin-right: auto;
+}
+.editor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: #333;
+  padding: 10px 16px;
+  flex-shrink: 0;
+  border-top: 1px solid #555;
 }
 
 .editor-search-box {
