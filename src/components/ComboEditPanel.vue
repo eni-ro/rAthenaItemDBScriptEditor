@@ -152,21 +152,14 @@ let _suppressDirty = false;
 let _ignoreNextComboChange = false;
 
 watch(combo, (newVal, oldVal) => {
-  if (!newVal) return;
-
-  // When reverting due to cancellation, revert the form without showing the dialog
+  // When reverting due to cancellation, we don't want to reload the form because it contains the unsaved changes.
   if (_ignoreNextComboChange) {
     _ignoreNextComboChange = false;
-    _suppressDirty = true;
-    isNew.value = false;
-    form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
-    form.script = newVal.script;
-    targetFile.value = newVal.filePath;
-    setTimeout(() => { isDirty.value = false; _suppressDirty = false; }, 50);
     return;
   }
+  if (!newVal) return;
 
-  if (isDirty.value && oldVal) {
+  if (isDirty.value && (oldVal || isNew.value)) {
     confirmDialog.confirm = () => {
       isNew.value = false;
       form.combos = newVal.combos.map(c => ({ items: [...c.items] }));
@@ -195,14 +188,23 @@ watch(() => JSON.stringify(form), () => {
   if (!_suppressDirty) isDirty.value = true;
 }, { deep: true });
 
-function startNew() {
+async function startNew() {
+  if (isDirty.value) {
+    const confirmed = await ask('Current combo has unsaved changes. Discard and create a new combo?', {
+      title: 'rAthena Item DB Editor',
+      kind: 'warning',
+    });
+    if (!confirmed) return;
+  }
   isNew.value = true;
   appModel.currentCombo.value = null;
+  _suppressDirty = true;
   form.combos = [{ items: [] }];
   form.script = '';
   // Default target is the first ItemCombos file
   const files = appModel.getComboFiles();
   targetFile.value = files.length > 0 ? files[0] : '';
+  setTimeout(() => { isDirty.value = false; _suppressDirty = false; }, 50);
 }
 
 function getItemDisplayName(aegis: string): string {

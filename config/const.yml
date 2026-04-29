@@ -329,6 +329,8 @@
       - Job_Gunslinger
     - - Ninja
       - Job_Ninja
+    - - Druid
+      - Job_Druid
     - - Summoner
       - Job_Summoner
 - Name: Job_Base
@@ -391,6 +393,8 @@
       - Job_Kagerou
     - - Oboro
       - Job_Oboro
+    - - Druid
+      - Job_Druid
     - - Summoner
       - Job_Summoner
 
@@ -418,6 +422,8 @@
       - EAJ_GUNSLINGER
     - - Ninja
       - EAJ_NINJA
+    - - Druid
+      - EAJ_DRUID
     - - Summoner
       - EAJ_SUMMONER
 
@@ -477,6 +483,8 @@
       - EAJ_NINJA
     - - Kagerou/Oboro
       - EAJ_KAGEROUOBORO
+    - - Karnos
+      - EAJ_KARNOS
     - - Summoner
       - EAJ_SUMMONER
 
@@ -564,6 +572,10 @@
       - EAJ_NINJA
     - - Kagerou/Oboro
       - EAJ_KAGEROUOBORO
+    - - Druid
+      - EAJ_DRUID
+    - - Karnos
+      - EAJ_KARNOS
     - - Summoner
       - EAJ_SUMMONER
 - Name: EAJL4
@@ -650,6 +662,10 @@
       - EAJ_NINJA
     - - Kagerou/Oboro
       - EAJ_KAGEROUOBORO
+    - - Druid
+      - EAJ_DRUID
+    - - Karnos
+      - EAJ_KARNOS
     - - Summoner
       - EAJ_SUMMONER
     - - Hyper Novice

@@ -2,13 +2,16 @@ TypeScriptEncoding: utf-8
 PythonEncoding: utf-8
 RustEncoding: utf-8
 Item:
-  - E:\ROEmu\rAthena\db\re\item_db_usable.yml
-  - E:\ROEmu\rAthena\db\re\item_db_equip.yml
-  - E:\ROEmu\rAthena\db\re\item_db_etc.yml
   - E:\ROEmu\rAthena\db\import\item_db.yml
+  - E:\ROEmu\rAthena\db\re\item_db_equip.yml
+  - E:\ROEmu\rAthena\db\re\item_db_usable.yml
+  - E:\ROEmu\rAthena\db\re\item_db_etc.yml
+ItemCombos:
+  - E:\ROEmu\rAthenaRef\db\import\item_combos.yml
+  - E:\ROEmu\rAthenaRef\db\re\item_combos.yml
 Mob:
-  - E:\ROEmu\rAthena\db\re\mob_db.yml
   - E:\ROEmu\rAthena\db\import\mob_db.yml
+  - E:\ROEmu\rAthena\db\re\mob_db.yml
 Skill:
-  - E:\ROEmu\rAthena\db\re\skill_db.yml
   - E:\ROEmu\rAthena\db\import\skill_db.yml
+  - E:\ROEmu\rAthena\db\re\skill_db.yml

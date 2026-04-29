@@ -128,12 +128,15 @@ interface DbConfig {
   TypeScriptEncoding: string;
   PythonEncoding: string;
   RustEncoding: string;
+  Encoding?: string;
   Item: string[];
   ItemCombos: string[];
   ItemName: string[];
   Mob: string[];
   Skill: string[];
 }
+
+type DbPathKey = 'Item' | 'ItemCombos' | 'ItemName' | 'Mob' | 'Skill';
 
 const ENCODING_GROUPS = [
   { label: 'UTF-8 (Standard)', ts: 'utf-8', py: 'utf-8', rust: 'utf-8' },
@@ -145,7 +148,7 @@ const ENCODING_GROUPS = [
   { label: 'Other...', ts: '', py: '', rust: '' },
 ];
 
-const sections: { key: keyof DbConfig; label: string; optional: boolean }[] = [
+const sections: { key: DbPathKey; label: string; optional: boolean }[] = [
   { key: 'Item', label: 'Item DB', optional: false },
   { key: 'ItemCombos', label: 'Item Combos DB', optional: false },
   { key: 'ItemName', label: 'Item Name DB (Search Name)', optional: true },
@@ -173,11 +176,12 @@ let dbYmlPath = '';
 
 function open(currentConfig: Partial<DbConfig>, ymlPath: string) {
   dbYmlPath = ymlPath;
-  const baseEnc = currentConfig.TypeScriptEncoding || (currentConfig as any).Encoding || 'utf-8';
+  const baseEnc = currentConfig.TypeScriptEncoding || currentConfig.PythonEncoding || currentConfig.RustEncoding || currentConfig.Encoding || 'utf-8';
+  
   Object.assign(localConfig, {
-    TypeScriptEncoding: currentConfig.TypeScriptEncoding || baseEnc,
-    PythonEncoding: currentConfig.PythonEncoding || (currentConfig as any).Encoding || baseEnc,
-    RustEncoding: currentConfig.RustEncoding || (currentConfig as any).Encoding || baseEnc,
+    TypeScriptEncoding: (currentConfig.TypeScriptEncoding || currentConfig.Encoding || baseEnc).toLowerCase(),
+    PythonEncoding: (currentConfig.PythonEncoding || currentConfig.Encoding || baseEnc).toLowerCase(),
+    RustEncoding: (currentConfig.RustEncoding || currentConfig.Encoding || baseEnc).toLowerCase(),
     Item: [...(currentConfig.Item || [])],
     ItemCombos: [...(currentConfig.ItemCombos || [])],
     ItemName: [...(currentConfig.ItemName || [])],
@@ -188,9 +192,9 @@ function open(currentConfig: Partial<DbConfig>, ymlPath: string) {
   // Determine current group
   const group = ENCODING_GROUPS.find(g => 
     g.label !== 'Other...' &&
-    g.ts === localConfig.TypeScriptEncoding &&
-    g.py === localConfig.PythonEncoding &&
-    g.rust === localConfig.RustEncoding
+    g.ts.toLowerCase() === localConfig.TypeScriptEncoding &&
+    g.py.toLowerCase() === localConfig.PythonEncoding &&
+    g.rust.toLowerCase() === localConfig.RustEncoding
   );
   selectedGroup.value = group || ENCODING_GROUPS.find(g => g.label === 'Other...')!;
 
@@ -205,25 +209,22 @@ function onGroupChange(group: typeof ENCODING_GROUPS[0]) {
   }
 }
 
-function addPath(key: keyof DbConfig) {
-  if (key.includes('Encoding')) return;
-  (localConfig[key] as string[]).push('');
+function addPath(key: DbPathKey) {
+  localConfig[key].push('');
 }
 
-function removePath(key: keyof DbConfig, idx: number) {
-  if (key.includes('Encoding')) return;
-  (localConfig[key] as string[]).splice(idx, 1);
+function removePath(key: DbPathKey, idx: number) {
+  localConfig[key].splice(idx, 1);
 }
 
-async function browsePath(key: keyof DbConfig, idx: number) {
-  if (key.includes('Encoding')) return;
+async function browsePath(key: DbPathKey, idx: number) {
   try {
     const result = await openFileDialog({
       filters: [{ name: 'YAML files', extensions: ['yml', 'yaml'] }],
       multiple: false,
     });
     if (result) {
-      (localConfig[key] as string[])[idx] = typeof result === 'string' ? result : (result as any).path || '';
+      localConfig[key][idx] = typeof result === 'string' ? result : (result as any).path || '';
     }
   } catch (e) {
     console.warn('Failed to open file dialog', e);

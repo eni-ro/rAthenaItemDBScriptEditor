@@ -15,4 +15,16 @@ echo Copying to Tauri binaries...
 copy /y dist\db_processor.exe "%BIN_DIR%\db_processor.exe"
 copy /y dist\db_processor.exe "%BIN_DIR%\db_processor-x86_64-pc-windows-msvc.exe"
 
+set TARGET_DEBUG=..\src-tauri\target\debug
+if exist "%TARGET_DEBUG%" (
+    echo Copying to target\debug...
+    copy /y dist\db_processor.exe "%TARGET_DEBUG%\db_processor.exe"
+)
+
+set TARGET_RELEASE=..\src-tauri\target\release
+if exist "%TARGET_RELEASE%" (
+    echo Copying to target\release...
+    copy /y dist\db_processor.exe "%TARGET_RELEASE%\db_processor.exe"
+)
+
 echo Done.

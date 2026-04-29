@@ -131,7 +131,6 @@ def update_item(file_path: str, aegis_name: str, item_data: dict, encoding: str 
 
 
 def apply_item_data(target: CommentedMap, item_data: dict):
-    # ─── 単純フィールド ────────────────────────────────────────────────────
     simple_fields = [
         "Id", "AegisName", "Name", "Type", "SubType",
         "Buy", "Sell", "Weight", "Attack", "MagicAttack",
@@ -140,22 +139,12 @@ def apply_item_data(target: CommentedMap, item_data: dict):
         "Refineable", "Gradable", "View", "AliasName",
     ]
 
-    # デフォルト省略値（これらはnullまたはfalsyなら削除）
-    OMIT_IF_DEFAULT = {
-        "Weight": 0, "Attack": 0, "MagicAttack": 0, "Defense": 0,
-        "Range": 0, "Slots": 0, "EquipLevelMin": 0, "EquipLevelMax": 0,
-        "Refineable": False, "Gradable": False, "View": 0,
-        "Gender": "Both", "Type": "Etc",
-    }
-
     for field in simple_fields:
         if field in item_data:
             val = item_data[field]
-            default_val = OMIT_IF_DEFAULT.get(field)
-            should_omit = (val is None or val == "" or
-                           (default_val is not None and val == default_val and field not in ("Id", "AegisName", "Name", "Type")))
-            if field in ("Id", "AegisName", "Name", "Type"):
-                should_omit = (val is None or val == "")
+            # ID, AegisName, Name, Type は必須フィールドとして扱い、空なら削除しない(バリデーション等は呼び出し側)
+            # それ以外のフィールドは None または "" の場合に YAML から削除する
+            should_omit = (val is None or val == "")
             if should_omit:
                 if field in target and field not in ("Id", "AegisName", "Name", "Type"):
                     del target[field]

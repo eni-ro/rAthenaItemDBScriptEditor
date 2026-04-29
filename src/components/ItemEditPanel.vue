@@ -65,7 +65,7 @@
           </v-col>
           <v-col cols="1">
             <v-text-field v-model.number="form.slots" label="Slots" density="compact" variant="outlined" hide-details
-              :bg-color="!form.slots ? 'grey-lighten-4' : ''" placeholder="0" />
+              :bg-color="form.slots == null ? 'grey-lighten-4' : ''" placeholder="0" />
           </v-col>
           <v-col cols="1">
             <v-text-field v-model.number="form.view" label="View" density="compact" variant="outlined" hide-details
@@ -81,17 +81,17 @@
         <v-row dense class="mt-1">
           <v-col cols="2"><v-text-field v-model.number="form.buy"         label="Buy"         density="compact" variant="outlined" hide-details :bg-color="form.buy == null ? 'grey-lighten-4' : ''"         placeholder="(Optional)" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.sell"        label="Sell"        density="compact" variant="outlined" hide-details :bg-color="form.sell == null ? 'grey-lighten-4' : ''"        placeholder="(Optional)" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.weight"      label="Weight"      density="compact" variant="outlined" hide-details :bg-color="!form.weight ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.attack"      label="Attack"      density="compact" variant="outlined" hide-details :bg-color="!form.attack ? 'grey-lighten-4' : ''"            placeholder="0" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.magicAttack" label="MagicAttack" density="compact" variant="outlined" hide-details :bg-color="!form.magicAttack ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.defense"     label="Defense"     density="compact" variant="outlined" hide-details :bg-color="!form.defense ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.weight"      label="Weight"      density="compact" variant="outlined" hide-details :bg-color="form.weight == null ? 'grey-lighten-4' : ''"      placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.attack"      label="Attack"      density="compact" variant="outlined" hide-details :bg-color="form.attack == null ? 'grey-lighten-4' : ''"      placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.magicAttack" label="MagicAttack" density="compact" variant="outlined" hide-details :bg-color="form.magicAttack == null ? 'grey-lighten-4' : ''" placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.defense"     label="Defense"     density="compact" variant="outlined" hide-details :bg-color="form.defense == null ? 'grey-lighten-4' : ''"     placeholder="0" /></v-col>
         </v-row>
         <v-row dense class="mt-1">
-          <v-col cols="2"><v-text-field v-model.number="form.range"         label="Range"         density="compact" variant="outlined" hide-details :bg-color="!form.range ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.range"         label="Range"         density="compact" variant="outlined" hide-details :bg-color="form.range == null ? 'grey-lighten-4' : ''"           placeholder="0" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.weaponLevel"   label="WeaponLevel"   density="compact" variant="outlined" hide-details :bg-color="form.weaponLevel == null ? 'grey-lighten-4' : ''" placeholder="(Optional)" /></v-col>
           <v-col cols="2"><v-text-field v-model.number="form.armorLevel"    label="ArmorLevel"    density="compact" variant="outlined" hide-details :bg-color="form.armorLevel == null ? 'grey-lighten-4' : ''"  placeholder="(Optional)" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.equipLevelMin" label="EquipLevelMin" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMin ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
-          <v-col cols="2"><v-text-field v-model.number="form.equipLevelMax" label="EquipLevelMax" density="compact" variant="outlined" hide-details :bg-color="!form.equipLevelMax ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.equipLevelMin" label="EquipLevelMin" density="compact" variant="outlined" hide-details :bg-color="form.equipLevelMin == null ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
+          <v-col cols="2"><v-text-field v-model.number="form.equipLevelMax" label="EquipLevelMax" density="compact" variant="outlined" hide-details :bg-color="form.equipLevelMax == null ? 'grey-lighten-4' : ''"       placeholder="0" /></v-col>
           <v-col cols="2">
             <div class="d-flex align-center gap-2 mt-1">
               <v-checkbox v-model="form.refineable" label="Refineable" density="compact" hide-details />
@@ -157,7 +157,7 @@
             <v-card variant="outlined" class="pa-2">
               <div class="text-caption font-weight-bold mb-1">Delay</div>
               <v-text-field v-model.number="form.delay.Duration" label="Duration (sec)" density="compact" variant="outlined" hide-details class="mb-1"
-                :bg-color="!form.delay.Duration ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
+                :bg-color="form.delay.Duration == null ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
               <v-text-field v-model="form.delay.Status" label="Status" density="compact" variant="outlined" hide-details
                 :bg-color="!form.delay.Status ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
             </v-card>
@@ -168,7 +168,7 @@
             <v-card variant="outlined" class="pa-2">
               <div class="text-caption font-weight-bold mb-1">Stack</div>
               <v-text-field v-model.number="form.stack.Amount" label="Amount" density="compact" variant="outlined" hide-details class="mb-1"
-                :bg-color="!form.stack.Amount ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
+                :bg-color="form.stack.Amount == null ? 'grey-lighten-4' : ''" placeholder="(Optional)" />
               <div class="d-flex flex-wrap gap-1">
                 <v-checkbox v-for="k in ['Inventory','Cart','Storage','GuildStorage']" :key="k"
                   v-model="(form.stack as any)[k]" :label="k" density="compact" hide-details />
@@ -281,7 +281,7 @@ const WEAPON_SUBTYPES = ['Fist','Dagger','1hSword','2hSword','1hSpear','2hSpear'
 const AMMO_SUBTYPES = ['Arrow','Dagger','Bullet','Shell','Grenade','Shuriken','Kunai','CannonBall','ThrowWeapon'];
 const CARD_SUBTYPES = ['Normal','Enchant'];
 const GENDERS = ['Both','Male','Female'];
-const JOB_LIST = ['All','Novice','Swordman','Knight','Crusader','Merchant','Blacksmith','Alchemist','Thief','Assassin','Rogue','Mage','Wizard','Sage','Acolyte','Priest','Monk','Archer','Hunter','BardDancer','SuperNovice','Gunslinger','Ninja','KagerouOboro','Rebellion','Taekwon','StarGladiator','SoulLinker','Summoner'];
+const JOB_LIST = ['All','Novice','Swordman','Knight','Crusader','Merchant','Blacksmith','Alchemist','Thief','Assassin','Rogue','Mage','Wizard','Sage','Acolyte','Priest','Monk','Archer','Hunter','BardDancer','SuperNovice','Taekwon','StarGladiator','SoulLinker','Gunslinger','Rebellion','Ninja','KagerouOboro','Druid','Karnos','Summoner','Spirit_Handler'];
 const CLASS_LIST = ['All','Normal','Upper','All_Upper','Third','Third_Upper','All_Third','Fourth','Baby','Third_Baby','All_Baby'];
 const LOCATION_LIST = ['Head_Top','Head_Mid','Head_Low','Armor','Right_Hand','Left_Hand','Both_Hand','Garment','Shoes','Both_Accessory','Right_Accessory','Left_Accessory','Costume_Head_Top','Costume_Head_Mid','Costume_Head_Low','Shadow_Armor','Costume_Garment','Shadow_Weapon','Shadow_Shield','Shadow_Shoes','Shadow_Right_Accessory','Shadow_Left_Accessory','Ammo'];
 const FLAG_LIST = ['BuyingStore','DeadBranch','Container','UniqueId','BindOnEquip','DropAnnounce','NoConsume','DropEffect'] as const;
@@ -309,12 +309,12 @@ interface FormData extends Omit<ItemDbEntry, 'flags' | 'delay' | 'stack' | 'noUs
 const makeEmptyForm = (): FormData => ({
   id: 0, aegis_name: '', name: '', filePath: '',
   type: 'Etc', subType: undefined, buy: undefined, sell: undefined,
-  weight: 0, attack: 0, magicAttack: 0, defense: 0, range: 0, slots: 0,
+  weight: undefined, attack: undefined, magicAttack: undefined, defense: undefined, range: undefined, slots: undefined,
   jobs: [], classes: [], gender: 'Both', locations: [],
   weaponLevel: undefined, armorLevel: undefined,
-  equipLevelMin: 0, equipLevelMax: 0,
-  refineable: false, gradable: false, view: undefined, aliasName: undefined,
-  flags: {}, delay: {}, stack: {}, noUse: { Override: 100 }, trade: { Override: 100 },
+  equipLevelMin: undefined, equipLevelMax: undefined,
+  refineable: undefined, gradable: undefined, view: undefined, aliasName: undefined,
+  flags: {}, delay: {}, stack: {}, noUse: {}, trade: {},
   script: '', equipScript: '', unEquipScript: '',
 });
 
@@ -335,12 +335,12 @@ function loadForm(val: ItemDbEntry) {
     locations: val.locations ? [...val.locations].sort((a, b) => LOCATION_LIST.indexOf(a) - LOCATION_LIST.indexOf(b)) : [],
     weaponLevel: val.weaponLevel, armorLevel: val.armorLevel,
     equipLevelMin: val.equipLevelMin, equipLevelMax: val.equipLevelMax,
-    refineable: val.refineable || false, gradable: val.gradable || false, view: val.view, aliasName: val.aliasName,
+    refineable: val.refineable, gradable: val.gradable, view: val.view, aliasName: val.aliasName,
     flags: { ...val.flags },
     delay: { ...val.delay },
     stack: { ...val.stack },
-    noUse: { Override: 100, ...val.noUse },
-    trade: { Override: 100, ...val.trade },
+    noUse: { ...val.noUse },
+    trade: { ...val.trade },
     script: val.script || '', equipScript: val.equipScript || '', unEquipScript: val.unEquipScript || '',
   });
   setTimeout(() => {
@@ -354,18 +354,14 @@ function loadForm(val: ItemDbEntry) {
 let _ignoreNextItemChange = false;
 
 watch(item, (newVal, oldVal) => {
-  if (!newVal) return;
-
-  // When reverting due to cancellation, revert the form without showing the dialog
+  // When reverting due to cancellation, we don't want to reload the form because it contains the unsaved changes.
   if (_ignoreNextItemChange) {
     _ignoreNextItemChange = false;
-    _suppressDirty = true;
-    isNew.value = false;
-    loadForm(newVal);
     return;
   }
+  if (!newVal) return;
 
-  if (isDirty.value && oldVal) {
+  if (isDirty.value && (oldVal || isNew.value)) {
     confirmDialog.confirm = () => { 
       isNew.value = false;
       loadForm(newVal); 
@@ -452,7 +448,14 @@ async function openScriptEditor(field: string) {
 }
 
 // ─── Start New Item ──────────────────────────────────────────────────
-function startNew() {
+async function startNew() {
+  if (isDirty.value) {
+    const confirmed = await ask('Current item has unsaved changes. Discard and create a new item?', {
+      title: 'rAthena Item DB Editor',
+      kind: 'warning',
+    });
+    if (!confirmed) return;
+  }
   isNew.value = true;
   appModel.currentItem.value = null;
   originalAegisName.value = '';
