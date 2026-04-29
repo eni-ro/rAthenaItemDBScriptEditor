@@ -22,6 +22,12 @@ Body:
 ```
 
 ## History
+* v0.11
+  * Added Copy and Delete context menu for search results
+  * Improved Script Editor UI with Confirm/Cancel buttons and keyboard shortcut (Ctrl+Enter)
+  * Validation to prevent duplicate Item IDs and AegisNames
+  * Fixed various bugs (Unsaved changes persistence, Slot '0' persistence, etc.)
+
 * v0.10
   * Support for editing various item fields (ID, Type, Trade settings, etc.) in addition to scripts
   * Added support for viewing and editing Item Combos
