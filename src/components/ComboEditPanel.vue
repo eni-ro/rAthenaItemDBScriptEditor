@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, reactive } from 'vue';
+import { ref, computed, watch, reactive, onMounted, onUnmounted } from 'vue';
 import { useGlobals } from '../composables/useAppModel';
 import ScriptEditorDialog from './ScriptEditorDialog.vue';
 import ComboItemSelectDialog from './ComboItemSelectDialog.vue';
@@ -259,6 +259,46 @@ async function openScriptEditor(field: string) {
   const result = await dialog.open(current);
   if (result !== null) (form as any)[field] = result;
 }
+
+async function onCopyComboEvent() {
+  const current = appModel.currentCombo.value;
+  if (!current) return;
+
+  if (isDirty.value) {
+    const confirmed = await ask('Current combo has unsaved changes. Discard and copy combo?', {
+      title: 'rAthena Item DB Editor',
+      kind: 'warning',
+    });
+    if (!confirmed) return;
+  }
+  
+  const copyData = JSON.parse(JSON.stringify(current));
+  appModel.currentCombo.value = null;
+  
+  isNew.value = true;
+  _suppressDirty = true;
+  
+  form.combos = copyData.combos.map((c: any) => ({ items: [...c.items] }));
+  form.script = copyData.script;
+  
+  const files = appModel.getComboFiles();
+  targetFile.value = copyData.filePath || (files.length > 0 ? files[0] : '');
+  
+  setTimeout(() => {
+    isDirty.value = true;
+    _suppressDirty = false;
+  }, 50);
+}
+
+onMounted(() => {
+  document.addEventListener("app:request-delete-combo", onDeleteCombo as EventListener);
+  document.addEventListener("app:request-copy-combo", onCopyComboEvent as EventListener);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("app:request-delete-combo", onDeleteCombo as EventListener);
+  document.removeEventListener("app:request-copy-combo", onCopyComboEvent as EventListener);
+});
 
 async function save() {
   const combosData = form.combos.map(c => c.items);

@@ -253,7 +253,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, reactive } from 'vue';
+import { ref, computed, watch, reactive, onMounted, onUnmounted } from 'vue';
 import { useGlobals } from '../composables/useAppModel';
 import ScriptEditorDialog from './ScriptEditorDialog.vue';
 import { saveItemToYaml, addItemToYaml, deleteItemFromYaml } from '../lib/DbProcessor';
@@ -475,6 +475,45 @@ async function browseFile() {
     if (result) targetFile.value = typeof result === 'string' ? result : (result as any).path || '';
   } catch (e) {}
 }
+
+async function onCopyItemEvent() {
+  const current = appModel.currentItem.value;
+  if (!current) return;
+
+  if (isDirty.value) {
+    const confirmed = await ask('Current item has unsaved changes. Discard and copy item?', {
+      title: 'rAthena Item DB Editor',
+      kind: 'warning',
+    });
+    if (!confirmed) return;
+  }
+  
+  const copyData = JSON.parse(JSON.stringify(current));
+  
+  // Revert selection so that it's no longer tracking the copied item
+  appModel.currentItem.value = null;
+  
+  isNew.value = true;
+  loadForm(copyData);
+  originalAegisName.value = ''; // clear original to avoid overwriting
+  const files = appModel.getItemFiles();
+  targetFile.value = copyData.filePath || (files.length > 0 ? files[0] : '');
+  
+  setTimeout(() => {
+    isDirty.value = true; // Mark dirty so user knows it's unsaved copy
+    _suppressDirty = false;
+  }, 50);
+}
+
+onMounted(() => {
+  document.addEventListener("app:request-delete-item", onDeleteItem as EventListener);
+  document.addEventListener("app:request-copy-item", onCopyItemEvent as EventListener);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("app:request-delete-item", onDeleteItem as EventListener);
+  document.removeEventListener("app:request-copy-item", onCopyItemEvent as EventListener);
+});
 
 async function onDeleteItem() {
   if (!item.value) return;
