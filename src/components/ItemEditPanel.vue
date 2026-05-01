@@ -213,7 +213,7 @@
           </div>
           <v-textarea
             v-model="form[sf.key as keyof typeof form] as string"
-            density="compact" variant="outlined" hide-details rows="3" no-resize
+            density="compact" variant="outlined" hide-details rows="1" auto-grow max-rows="10"
             class="text-caption font-mono"
             :bg-color="!(form[sf.key as keyof typeof form]) ? 'grey-lighten-4' : ''"
             :placeholder="`Enter ${sf.label}...`"
@@ -508,12 +508,24 @@ async function onCopyItemEvent() {
 onMounted(() => {
   document.addEventListener("app:request-delete-item", onDeleteItem as EventListener);
   document.addEventListener("app:request-copy-item", onCopyItemEvent as EventListener);
+  window.addEventListener('keydown', handleKeyDown);
 });
 
 onUnmounted(() => {
   document.removeEventListener("app:request-delete-item", onDeleteItem as EventListener);
   document.removeEventListener("app:request-copy-item", onCopyItemEvent as EventListener);
+  window.removeEventListener('keydown', handleKeyDown);
 });
+
+function handleKeyDown(e: KeyboardEvent) {
+  if (e.ctrlKey && e.key.toLowerCase() === 's') {
+    if (appModel.mainTab.value !== 'items') return;
+    e.preventDefault();
+    if (!saving.value && (item.value || isNew.value)) {
+      save();
+    }
+  }
+}
 
 async function onDeleteItem() {
   if (!item.value) return;

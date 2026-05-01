@@ -122,6 +122,13 @@ function extractBoolMap(map: any): string[] {
     .map(([k]) => k);
 }
 
+function trimScript(s: any): string | undefined {
+  if (s == null) return undefined;
+  const str = s.toString();
+  // Remove leading and trailing empty lines (including those with only whitespace)
+  return str.replace(/^(\s*[\r\n])+/g, '').replace(/([\r\n]\s*)+$/g, '');
+}
+
 function parseItemEntry(item: any, filePath: string): ItemDbEntry {
   return {
     id: Number(item.Id) || 0,
@@ -187,9 +194,9 @@ function parseItemEntry(item: any, filePath: string): ItemDbEntry {
       NoMail: item.Trade.NoMail === true ? true : undefined,
       NoAuction: item.Trade.NoAuction === true ? true : undefined,
     } : undefined,
-    script: item.Script || undefined,
-    equipScript: item.EquipScript || undefined,
-    unEquipScript: item.UnEquipScript || undefined,
+    script: trimScript(item.Script),
+    equipScript: trimScript(item.EquipScript),
+    unEquipScript: trimScript(item.UnEquipScript),
   };
 }
 
@@ -299,7 +306,7 @@ export class DbReader {
                   combos: entry.Combos.map((c: any) => ({
                     items: Array.isArray(c.Combo) ? c.Combo.map((x: any) => x.toString()) : [],
                   })),
-                  script: entry.Script || '',
+                  script: trimScript(entry.Script) || '',
                 });
               }
             });

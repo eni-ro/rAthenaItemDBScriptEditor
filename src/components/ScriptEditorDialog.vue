@@ -327,7 +327,13 @@ const onConfirm = () => {
   const cb = resolveCallback;
   resolveCallback = null;
   dialog.value = false;
-  cb?.(editingScript.value);
+  
+  // Remove leading and trailing empty lines (including those with only whitespace)
+  const trimmed = editingScript.value
+    .replace(/^(\s*[\r\n])+/g, '')
+    .replace(/([\r\n]\s*)+$/g, '');
+    
+  cb?.(trimmed);
 };
 
 const onCancel = () => {

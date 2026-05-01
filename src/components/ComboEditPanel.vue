@@ -70,8 +70,9 @@
             density="compact"
             variant="outlined"
             hide-details
-            rows="4"
-            no-resize
+            rows="1"
+            auto-grow
+            max-rows="10"
             class="text-caption font-mono"
             :placeholder="`Enter ${sf.label}...`"
           />
@@ -293,12 +294,24 @@ async function onCopyComboEvent() {
 onMounted(() => {
   document.addEventListener("app:request-delete-combo", onDeleteCombo as EventListener);
   document.addEventListener("app:request-copy-combo", onCopyComboEvent as EventListener);
+  window.addEventListener('keydown', handleKeyDown);
 });
 
 onUnmounted(() => {
   document.removeEventListener("app:request-delete-combo", onDeleteCombo as EventListener);
   document.removeEventListener("app:request-copy-combo", onCopyComboEvent as EventListener);
+  window.removeEventListener('keydown', handleKeyDown);
 });
+
+function handleKeyDown(e: KeyboardEvent) {
+  if (e.ctrlKey && e.key.toLowerCase() === 's') {
+    if (appModel.mainTab.value !== 'combos') return;
+    e.preventDefault();
+    if (!saving.value && (combo.value || isNew.value)) {
+      save();
+    }
+  }
+}
 
 async function save() {
   const combosData = form.combos.map(c => c.items);
