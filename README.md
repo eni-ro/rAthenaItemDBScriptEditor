@@ -1,7 +1,7 @@
 # rAthena ItemDB Script Editor
 This editor is a scripting support tool.  
 
-## Useage
+## Usage
 1. Run `itemdb-script-editor.exe`
 2. Configure your ItemDB/MobDB file paths in the **Settings** (gear icon)
    - These settings are stored in `db.yml`.
@@ -9,8 +9,8 @@ This editor is a scripting support tool.
 4. Edit script
 5. Select `Save` button to overwrite your ItemDB file
 
-### Item Search by Custom Names (ItemName)
-The `ItemName` setting allows you to specify a YAML file to include custom display names (e.g., Japanese names) in the search index. This is a custom format unique to this editor and is not an official rAthena file.
+### Item/Skill Search by Custom Names (ItemName/SkillName)
+The `ItemName` and `SkillName` setting allows you to specify a YAML file to include custom display names (e.g., Japanese names) in the search index. This is a custom format unique to this editor and is not an official rAthena file.
 
 **Format (`sample.yml`):**
 ```yaml
@@ -21,7 +21,22 @@ Body:
     Name: Alternative name of Orange Potion
 ```
 
+### Advanced Features
+- **Script Search Tips**: In the Script Editor, selecting text (like an AegisName) will search for matching Item/Skill/Mob names and show them in a tooltip.
+- **DivinePride Integration**: 
+  - Enter your API key in **Settings**.
+  - Use the "Fetch" icon next to the Item ID to pull data.
+  - A dedicated reference window will open with detailed info.
+  - "Fuzzy Parsing" in settings can extract levels from description text.
+
 ## History
+* v0.12
+  * Added Search Tips (tooltips on selection), Autocomplete, and improved variable tokenization for rAthena scripts
+  * Added DivinePride integration with advanced data mapping, fuzzy parsing for levels, and dedicated reference window
+  * Added `Ctrl+S` save shortcut, auto-growing script fields
+  * Integrated Skill Name database
+  * Added toggleable ID/Name comments for Combo YAML files
+
 * v0.11
   * Added Copy and Delete context menu for search results
   * Improved Script Editor UI with Confirm/Cancel buttons and keyboard shortcut (Ctrl+Enter)
