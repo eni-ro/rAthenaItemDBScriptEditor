@@ -7,4 +7,5 @@ requires-python = ">=3.13"
 dependencies = [
     "pyinstaller>=6.20.0",
     "ruamel-yaml>=0.19.1",
+    "requests>=2.31.0",
 ]

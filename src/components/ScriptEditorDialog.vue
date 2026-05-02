@@ -126,6 +126,14 @@
       </div>
     </div>
 
+    <div
+      v-if="tipVisible"
+      class="selection-tip"
+      :style="{ left: tipX + 'px', top: tipY + 'px' }"
+    >
+      <div class="tip-content">{{ tipContent }}</div>
+    </div>
+
     <ParamSelectDialog ref="paramDialog" />
   </v-dialog>
 </template>
@@ -159,6 +167,12 @@ const leftWidth = ref(360);     // px
 const topFlex = ref(5);         // flex values (relative)
 const midFlex = ref(3);
 const botFlex = ref(2);
+
+// ─── Selection Tip state ─────────────────────────────────────────────
+const tipVisible = ref(false);
+const tipContent = ref('');
+const tipX = ref(0);
+const tipY = ref(0);
 
 // ─── Horizontal resize ───────────────────────────────────────────────
 let isHResizing = false;
@@ -241,6 +255,60 @@ const handleMount = (editor: any, monaco: any) => {
       },
     });
   }
+
+  editor.onDidChangeCursorSelection((e: any) => {
+    const selection = e.selection;
+    if (selection.isEmpty()) {
+      tipVisible.value = false;
+      return;
+    }
+
+    const model = editor.getModel();
+    if (!model) return;
+    const text = model.getValueInRange(selection).trim();
+    if (!text || text.length > 100) {
+      tipVisible.value = false;
+      return;
+    }
+
+    // Search
+    let match: string | null = null;
+    const item = appModel.getItems().find(i => i.aegis_name === text);
+    if (item) {
+      match = `[Item] ${appModel.getDisplayName(item)}`;
+    } else {
+      const skill = appModel.getSkills().find(s => s.aegis_name === text);
+      if (skill) {
+        match = `[Skill] ${skill.name}`;
+      } else {
+        const mob = appModel.getMobs().find(m => m.aegis_name === text);
+        if (mob) {
+          match = `[Mob] ${mob.name}`;
+        }
+      }
+    }
+
+    if (match) {
+      tipContent.value = match;
+      tipVisible.value = true;
+      
+      // Calculate position
+      const pos = selection.getEndPosition();
+      // Use internal but widely available method to get pixel position
+      const pixelPos = editor.getScrolledVisiblePosition(pos);
+      if (pixelPos) {
+        const editorRect = editor.getDomNode().getBoundingClientRect();
+        tipX.value = editorRect.left + pixelPos.left;
+        tipY.value = editorRect.top + pixelPos.top + pixelPos.height + 5;
+      }
+    } else {
+      tipVisible.value = false;
+    }
+  });
+
+  editor.onDidScrollChange(() => {
+    tipVisible.value = false;
+  });
 };
 
 // ─── Script inject ──────────────────────────────────────────────────
@@ -520,5 +588,32 @@ onMounted(async () => {
   margin: 0;
   font-family: inherit;
   line-height: 1.5;
+}
+
+.selection-tip {
+  position: fixed;
+  z-index: 10000;
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 10.5pt;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+  animation: tip-fade-in 0.2s ease-out;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.tip-content {
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+@keyframes tip-fade-in {
+  from { opacity: 0; transform: translateY(0px); }
+  to { opacity: 1; transform: translateY(5px); }
 }
 </style>

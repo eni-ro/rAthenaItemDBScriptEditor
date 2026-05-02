@@ -317,13 +317,25 @@ async function save() {
   const combosData = form.combos.map(c => c.items);
   saving.value = true;
   try {
+    const itemInfo: Record<string, string> = {};
+    if (appModel.getShowComboComments()) {
+      form.combos.forEach(c => {
+        c.items.forEach(aegis => {
+          const item = appModel.getItems().find(i => i.aegis_name === aegis);
+          if (item) {
+            itemInfo[aegis] = `${item.id}: ${item.name}`;
+          }
+        });
+      });
+    }
+
     let result;
     if (isNew.value) {
       if (!targetFile.value) {
         snackbar.value = { show: true, text: 'Please specify a target file', color: 'error' };
         return;
       }
-      result = await addComboToYaml(targetFile.value, combosData, form.script, appModel.getPythonEncoding());
+      result = await addComboToYaml(targetFile.value, combosData, form.script, appModel.getPythonEncoding(), itemInfo);
       if (result.success && result.index != null) {
         const newCombo: ComboDbEntry = {
           index: result.index,
@@ -336,7 +348,7 @@ async function save() {
         isNew.value = false;
       }
     } else if (combo.value) {
-      result = await updateComboInYaml(combo.value.filePath, combo.value.index, combosData, form.script, appModel.getPythonEncoding());
+      result = await updateComboInYaml(combo.value.filePath, combo.value.index, combosData, form.script, appModel.getPythonEncoding(), itemInfo);
       if (result.success) {
         const updated: ComboDbEntry = {
           ...combo.value,

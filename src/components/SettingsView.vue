@@ -104,6 +104,84 @@
             No paths configured
           </div>
         </div>
+
+        <!-- DivinePride Settings -->
+        <div class="mb-5">
+          <div class="text-subtitle-2 font-weight-bold mb-1">DivinePride API Settings</div>
+          <v-divider class="mb-2" />
+          <v-text-field
+            v-model="localConfig.DivinePrideKey"
+            label="API Key"
+            density="compact"
+            variant="outlined"
+            hide-details
+            placeholder="Enter your DivinePride API Key"
+            class="mb-2"
+          />
+          <div class="text-caption text-grey">
+            Required for fetching item data from <a href="https://www.divine-pride.net/" target="_blank" class="text-primary">DivinePride</a>.
+          </div>
+          <v-checkbox
+            v-model="localConfig.EnableFuzzyDivinePride"
+            label="Enable Fuzzy Auto-complete (DivinePride description parsing)"
+            density="compact"
+            hide-details
+            class="mt-1"
+          />
+          <div class="text-caption text-grey ml-7">
+            Automatically fill Weapon/Armor Level and default Range by parsing the description or based on item type.
+          </div>
+
+          <div class="mt-3 ml-7">
+            <div class="text-caption font-weight-bold mb-1">Range Data Source</div>
+            <v-radio-group v-model="localConfig.DivinePrideRangeSource" density="compact" hide-details direction="horizontal">
+              <v-radio label="API Response" value="api" />
+              <v-radio label="SubType Defaults (Fuzzy)" value="fuzzy" />
+            </v-radio-group>
+            <div class="text-caption text-grey mt-1">
+              Choose whether to use the range from DivinePride API or set defaults based on weapon type.
+            </div>
+          </div>
+        </div>
+
+        <!-- Combo Settings -->
+        <div class="mb-5">
+          <div class="text-subtitle-2 font-weight-bold mb-1">Item Combo Settings</div>
+          <v-divider class="mb-2" />
+          <v-checkbox
+            v-model="localConfig.ShowComboComments"
+            label="Append ID and Name comments to AegisName in YAML"
+            density="compact"
+            hide-details
+            class="mt-n1"
+          />
+          <div class="text-caption text-grey mt-1">
+            When saving a combo, automatically adds comments like <code># 501: Red_Potion</code> next to item names.
+          </div>
+        </div>
+
+        <!-- Sorting Settings -->
+        <div class="mb-5">
+          <div class="text-subtitle-2 font-weight-bold mb-1">Item Insertion & Sorting Settings</div>
+          <v-divider class="mb-2" />
+          <v-checkbox
+            v-model="localConfig.SortOnInsert"
+            label="Sort items by ID on insertion (New Items)"
+            density="compact"
+            hide-details
+            class="mt-n1"
+          />
+          <v-checkbox
+            v-model="localConfig.SortOnUpdate"
+            label="Re-sort item by ID on update (Overwrite)"
+            density="compact"
+            hide-details
+            class="mt-n1"
+          />
+          <div class="text-caption text-grey mt-1">
+            Determines whether items are moved to their correct position based on ID when saving.
+          </div>
+        </div>
       </v-card-text>
 
       <v-card-actions class="pa-4">
@@ -123,6 +201,9 @@
 import { ref, reactive } from 'vue';
 import { open as openFileDialog } from '@tauri-apps/plugin-dialog';
 import { updateDbYml } from '../lib/DbProcessor';
+import { useGlobals } from '../composables/useAppModel';
+
+const appModel = useGlobals();
 
 interface DbConfig {
   TypeScriptEncoding: string;
@@ -134,6 +215,12 @@ interface DbConfig {
   ItemName: string[];
   Mob: string[];
   Skill: string[];
+  DivinePrideKey?: string;
+  SortOnInsert?: boolean;
+  SortOnUpdate?: boolean;
+  EnableFuzzyDivinePride?: boolean;
+  DivinePrideRangeSource?: 'api' | 'fuzzy';
+  ShowComboComments?: boolean;
 }
 
 type DbPathKey = 'Item' | 'ItemCombos' | 'ItemName' | 'Mob' | 'Skill';
@@ -170,6 +257,12 @@ const localConfig = reactive<DbConfig>({
   ItemName: [],
   Mob: [],
   Skill: [],
+  DivinePrideKey: '',
+  SortOnInsert: true,
+  SortOnUpdate: false,
+  EnableFuzzyDivinePride: false,
+  DivinePrideRangeSource: 'api',
+  ShowComboComments: true,
 });
 
 let dbYmlPath = '';
@@ -187,6 +280,12 @@ function open(currentConfig: Partial<DbConfig>, ymlPath: string) {
     ItemName: [...(currentConfig.ItemName || [])],
     Mob: [...(currentConfig.Mob || [])],
     Skill: [...(currentConfig.Skill || [])],
+    DivinePrideKey: currentConfig.DivinePrideKey || '',
+    SortOnInsert: currentConfig.SortOnInsert !== false,
+    SortOnUpdate: currentConfig.SortOnUpdate === true,
+    EnableFuzzyDivinePride: currentConfig.EnableFuzzyDivinePride === true,
+    DivinePrideRangeSource: currentConfig.DivinePrideRangeSource || 'api',
+    ShowComboComments: currentConfig.ShowComboComments !== false,
   });
 
   // Determine current group
@@ -242,13 +341,20 @@ async function save() {
       TypeScriptEncoding: localConfig.TypeScriptEncoding,
       PythonEncoding: localConfig.PythonEncoding,
       RustEncoding: localConfig.RustEncoding,
+      DivinePrideKey: localConfig.DivinePrideKey,
+      SortOnInsert: localConfig.SortOnInsert,
+      SortOnUpdate: localConfig.SortOnUpdate,
+      EnableFuzzyDivinePride: localConfig.EnableFuzzyDivinePride,
+      DivinePrideRangeSource: localConfig.DivinePrideRangeSource,
+      ShowComboComments: localConfig.ShowComboComments,
     };
     for (const s of sections) {
       config[s.key] = (localConfig[s.key] as string[]).filter(p => p.trim());
     }
     const result = await updateDbYml(dbYmlPath, config);
     if (result.success) {
-      snackbar.value = { show: true, text: 'Settings saved. Changes will take effect after restart.', color: 'success' };
+      appModel.refreshSettings();
+      snackbar.value = { show: true, text: 'Settings saved and applied.', color: 'success' };
       dialog.value = false;
     } else {
       snackbar.value = { show: true, text: `Failed to save: ${result.error}`, color: 'error' };

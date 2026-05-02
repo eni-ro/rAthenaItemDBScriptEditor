@@ -8,7 +8,13 @@ import json
 import shutil
 import os
 import contextlib
+import re
 from pathlib import Path
+
+try:
+    import requests as req
+except ImportError:
+    req = None
 
 try:
     from ruamel.yaml import YAML
@@ -107,7 +113,7 @@ def to_literal(s: str) -> LiteralScalarString:
     return LiteralScalarString(s)
 
 
-def update_item(file_path: str, aegis_name: str, item_data: dict, encoding: str = "utf-8") -> dict:
+def update_item(file_path: str, aegis_name: str, item_data: dict, encoding: str = "utf-8", sort_on_update: bool = False) -> dict:
     with backup_context(file_path):
         yaml = make_yaml()
         doc = load_yaml(yaml, file_path, encoding)
@@ -116,15 +122,30 @@ def update_item(file_path: str, aegis_name: str, item_data: dict, encoding: str 
             return {"success": False, "error": "Invalid YAML: Body not found"}
 
         target = None
-        for item in doc["Body"]:
+        target_idx = None
+        for i, item in enumerate(doc["Body"]):
             if str(item.get("AegisName", "")) == str(aegis_name):
                 target = item
+                target_idx = i
                 break
 
         if target is None:
             return {"success": False, "error": f"Item '{aegis_name}' not found in {file_path}"}
 
         apply_item_data(target, item_data)
+
+        if sort_on_update:
+            new_id = target.get("Id")
+            if isinstance(new_id, (int, float)):
+                # 一旦削除して正しい位置に挿入し直す
+                doc["Body"].pop(target_idx)
+                insert_idx = len(doc["Body"])
+                for i, item in enumerate(doc["Body"]):
+                    item_id = item.get("Id")
+                    if isinstance(item_id, (int, float)) and item_id > new_id:
+                        insert_idx = i
+                        break
+                doc["Body"].insert(insert_idx, target)
 
         save_yaml(yaml, file_path, doc, encoding)
         return {"success": True}
@@ -251,15 +272,16 @@ def apply_item_data(target: CommentedMap, item_data: dict):
             else:
                 target[sf] = to_literal(val)
 
-    # ─── キー順序を正規化 ──────────────────────────────────────────────
-    reordered = reorder_item_keys(target)
-    # target の内容を reordered に置き換え
-    for k in list(target.keys()):
-        del target[k]
-    for k, v in reordered.items():
-        target[k] = v
+    # ─── キー順序を正規化 (コメントを維持するため move_to_end を使用) ──────
+    existing_keys = [k for k in ITEM_KEY_ORDER if k in target]
+    other_keys = [k for k in target if k not in ITEM_KEY_ORDER]
+    
+    for k in existing_keys:
+        target.move_to_end(k)
+    for k in other_keys:
+        target.move_to_end(k)
 
-def add_item(file_path: str, item_data: dict, encoding: str = "utf-8") -> dict:
+def add_item(file_path: str, item_data: dict, encoding: str = "utf-8", sort_on_insert: bool = True) -> dict:
     with backup_context(file_path):
         yaml = make_yaml()
         doc = load_yaml(yaml, file_path, encoding)
@@ -267,11 +289,25 @@ def add_item(file_path: str, item_data: dict, encoding: str = "utf-8") -> dict:
         if not doc or "Body" not in doc:
             return {"success": False, "error": "Invalid YAML: Body not found"}
 
+        if doc["Body"] is None:
+            doc["Body"] = CommentedSeq()
+
         target = CommentedMap()
         apply_item_data(target, item_data)
         
-        doc["Body"].append(target)
-        new_index = len(doc["Body"]) - 1
+        new_id = item_data.get("Id")
+        
+        # Find insertion point to maintain ID order
+        insert_idx = len(doc["Body"])
+        if sort_on_insert and isinstance(new_id, (int, float)):
+            for i, item in enumerate(doc["Body"]):
+                item_id = item.get("Id")
+                if isinstance(item_id, (int, float)) and item_id > new_id:
+                    insert_idx = i
+                    break
+        
+        doc["Body"].insert(insert_idx, target)
+        new_index = insert_idx
 
         save_yaml(yaml, file_path, doc, encoding)
         return {"success": True, "index": new_index}
@@ -302,7 +338,7 @@ def delete_item(file_path: str, aegis_name: str, encoding: str = "utf-8") -> dic
 # コンボ更新
 # ─────────────────────────────────────────────────────────────────────────────
 
-def update_combo(file_path: str, combo_index: int, combo_data: dict, encoding: str = "utf-8") -> dict:
+def update_combo(file_path: str, combo_index: int, combo_data: dict, encoding: str = "utf-8", item_info: dict = None) -> dict:
     with backup_context(file_path):
         yaml = make_yaml()
         doc = load_yaml(yaml, file_path, encoding)
@@ -321,8 +357,10 @@ def update_combo(file_path: str, combo_index: int, combo_data: dict, encoding: s
             for combo_items in combo_data["combos"]:
                 combo_map = CommentedMap()
                 items_seq = CommentedSeq()
-                for aegis in combo_items:
+                for i, aegis in enumerate(combo_items):
                     items_seq.append(aegis)
+                    if item_info and aegis in item_info:
+                        items_seq.yaml_add_eol_comment(item_info[aegis], i)
                 combo_map["Combo"] = items_seq
                 combos_seq.append(combo_map)
             entry["Combos"] = combos_seq
@@ -339,7 +377,7 @@ def update_combo(file_path: str, combo_index: int, combo_data: dict, encoding: s
         return {"success": True}
 
 
-def add_combo(file_path: str, combo_data: dict, encoding: str = "utf-8") -> dict:
+def add_combo(file_path: str, combo_data: dict, encoding: str = "utf-8", item_info: dict = None) -> dict:
     with backup_context(file_path):
         yaml = make_yaml()
         doc = load_yaml(yaml, file_path, encoding)
@@ -351,8 +389,10 @@ def add_combo(file_path: str, combo_data: dict, encoding: str = "utf-8") -> dict
         for combo_items in combo_data.get("combos", []):
             combo_map = CommentedMap()
             items_seq = CommentedSeq()
-            for aegis in combo_items:
+            for i, aegis in enumerate(combo_items):
                 items_seq.append(aegis)
+                if item_info and aegis in item_info:
+                    items_seq.yaml_add_eol_comment(item_info[aegis], i)
             combo_map["Combo"] = items_seq
             combos_seq.append(combo_map)
 
@@ -413,6 +453,46 @@ def update_db_yml(file_path: str, db_config: dict) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# DivinePride 連携
+# ─────────────────────────────────────────────────────────────────────────────
+
+def fetch_divine_pride(item_id: int, api_key: str, server: str = "jro") -> dict:
+    if req is None:
+        return {"success": False, "error": "requests library is not installed"}
+    
+    if not api_key:
+        return {"success": False, "error": "DivinePride API Key is not configured in settings"}
+
+    url = f"https://www.divine-pride.net/api/database/Item/{item_id}?apiKey={api_key}&server={server.lower()}"
+    headers = {"Accept-Language": server.lower()}
+    
+    try:
+        res = req.get(url, headers=headers, timeout=10)
+        if res.status_code != 200:
+            return {"success": False, "error": f"DivinePride API returned status code {res.status_code}"}
+        
+        data = res.json()
+        
+        # jRO Mojibake Recovery
+        if server.lower() == "jro" and data.get('description'):
+            desc = data['description']
+            if "\ufffd" in desc or any(c in desc for c in "\u0396\u0156\u00df\u00fe"):
+                try:
+                    raw_content = res.content.decode('latin-1')
+                    m = re.search(r'"description"\s*:\s*"(.*?)(?<!\\)"', raw_content)
+                    if m:
+                        raw_desc_str = m.group(1)
+                        raw_bytes = raw_desc_str.encode('latin-1').decode('unicode_escape').encode('latin-1')
+                        data['description'] = raw_bytes.decode('cp932')
+                except Exception:
+                    pass
+        
+        return {"success": True, "data": data}
+    except Exception as e:
+        return {"success": False, "error": f"Request failed: {str(e)}"}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # メインエントリポイント
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -439,12 +519,14 @@ def main():
                 request["aegis_name"],
                 request["data"],
                 encoding,
+                request.get("sort_on_update", False)
             )
         elif action == "add_item":
             result = add_item(
                 request["file"],
                 request["data"],
                 encoding,
+                request.get("sort_on_insert", True)
             )
         elif action == "delete_item":
             result = delete_item(
@@ -458,12 +540,14 @@ def main():
                 request["combo_index"],
                 request["data"],
                 encoding,
+                request.get("item_info")
             )
         elif action == "add_combo":
             result = add_combo(
                 request["file"],
                 request["data"],
                 encoding,
+                request.get("item_info")
             )
         elif action == "delete_combo":
             result = delete_combo(
@@ -475,6 +559,12 @@ def main():
             result = update_db_yml(
                 request["file"],
                 request["data"],
+            )
+        elif action == "fetch_divine_pride":
+            result = fetch_divine_pride(
+                request["id"],
+                request["api_key"],
+                request.get("server", "jro")
             )
         else:
             result = {"success": False, "error": f"Unknown action: {action}"}

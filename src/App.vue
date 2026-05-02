@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <DivinePrideWindow v-if="isResultsWindow" />
+    <template v-else>
     <!-- Menu Bar -->
     <v-app-bar color="grey-darken-4" density="compact" elevation="2">
       <v-app-bar-title>
@@ -72,6 +74,7 @@
     </v-main>
 
     <SettingsView ref="settingsView" />
+    </template>
   </v-app>
 </template>
 
@@ -86,6 +89,7 @@ import SearchPanel from './components/SearchPanel.vue';
 import ItemEditPanel from './components/ItemEditPanel.vue';
 import ComboEditPanel from './components/ComboEditPanel.vue';
 import SettingsView from './components/SettingsView.vue';
+import DivinePrideWindow from './components/DivinePrideWindow.vue';
 
 
 const appModel = useGlobals();
@@ -94,6 +98,8 @@ const mainTab = appModel.mainTab;  // ref to use in template
 const containerRef = ref<HTMLElement | null>(null);
 const appWindow = getCurrentWindow();
 const settingsView = ref<any>(null);
+
+const isResultsWindow = ref(new URLSearchParams(window.location.search).get('window') === 'dp-results');
 
 // ─── Horizontal Resizing ─────────────────────────────────────────────
 const leftWidth = ref(25);
@@ -156,6 +162,12 @@ function openSettings() {
         ItemName: conf.ItemName || [],
         Mob: conf.Mob || [],
         Skill: conf.Skill || [],
+        DivinePrideKey: conf.DivinePrideKey,
+        SortOnInsert: conf.SortOnInsert,
+        SortOnUpdate: conf.SortOnUpdate,
+        EnableFuzzyDivinePride: conf.EnableFuzzyDivinePride,
+        DivinePrideRangeSource: conf.DivinePrideRangeSource,
+        ShowComboComments: conf.ShowComboComments,
       }, dbPath);
     } catch (e) {
       settingsView.value?.open({
@@ -167,7 +179,13 @@ function openSettings() {
         ItemCombos: [],
         ItemName: [],
         Mob: [],
-        Skill: []
+        Skill: [],
+        DivinePrideKey: '',
+        SortOnInsert: true,
+        SortOnUpdate: false,
+        EnableFuzzyDivinePride: false,
+        DivinePrideRangeSource: 'api',
+        ShowComboComments: true,
       }, appModel.dbYmlPath.value);
     }
   };

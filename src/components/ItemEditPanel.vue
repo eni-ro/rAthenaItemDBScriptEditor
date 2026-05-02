@@ -34,13 +34,44 @@
 
         <!-- Basic Info -->
         <v-row dense>
-          <v-col cols="2">
-            <v-text-field v-model.number="form.id" label="Id" density="compact" variant="outlined" hide-details />
+          <v-col cols="4">
+            <div class="d-flex align-center">
+              <v-text-field v-model.number="form.id" label="Id" density="compact" variant="outlined" hide-details class="flex-grow-1" />
+              <v-select
+                v-model="dpServer"
+                :items="['jRO', 'kRO', 'iRO', 'twRO', 'thRO', 'idRO', 'bRO']"
+                density="compact"
+                variant="plain"
+                hide-details
+                style="max-width: 70px;"
+                class="ml-1 text-caption"
+              />
+              <v-btn
+                icon="mdi-database-import"
+                size="small"
+                variant="tonal"
+                color="secondary"
+                class="ml-1"
+                :loading="searchingDP"
+                @click="onSearchDivinePride"
+                title="Fetch from DivinePride"
+              />
+              <v-btn
+                v-if="form.id"
+                icon="mdi-open-in-new"
+                size="small"
+                variant="text"
+                color="blue-grey"
+                class="ml-1"
+                title="View on DivinePride"
+                @click="openExternal(form.id)"
+              />
+            </div>
           </v-col>
           <v-col cols="4">
             <v-text-field v-model="form.aegis_name" label="AegisName" density="compact" variant="outlined" hide-details />
           </v-col>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-text-field v-model="form.name" label="Name" density="compact" variant="outlined" hide-details />
           </v-col>
         </v-row>
@@ -256,8 +287,11 @@
 import { ref, computed, watch, reactive, onMounted, onUnmounted } from 'vue';
 import { useGlobals } from '../composables/useAppModel';
 import ScriptEditorDialog from './ScriptEditorDialog.vue';
-import { saveItemToYaml, addItemToYaml, deleteItemFromYaml } from '../lib/DbProcessor';
+import { saveItemToYaml, addItemToYaml, deleteItemFromYaml, fetchDivinePride } from '../lib/DbProcessor';
 import { open as openFileDialog, ask } from '@tauri-apps/plugin-dialog';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { emit } from '@tauri-apps/api/event';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import type { ItemDbEntry, ItemFlags, ItemDelay, ItemStack, ItemNoUse, ItemTrade } from '../lib/DbReader';
 
 const appModel = useGlobals();
@@ -275,8 +309,12 @@ const confirmDialog = reactive<{
   cancel?: () => void;
 }>({ show: false });
 
+// ─── DivinePride ────────────────────────────────────────────────────
+const dpServer = ref('jRO');
+const searchingDP = ref(false);
+
 // ─── Constants ──────────────────────────────────────────────────────
-const TYPES = ['Healing','Usable','Etc','Armor','Weapon','Card','PetEgg','PetArmor','Ammo','DelayConsume','ShadowGear','Cash'];
+const TYPES = ['Healing','Unknown','Usable','Etc','Armor','Weapon','Card','PetEgg','PetArmor','Unknown2','Ammo','DelayConsume','ShadowGear','Cash'];
 const WEAPON_SUBTYPES = ['Fist','Dagger','1hSword','2hSword','1hSpear','2hSpear','1hAxe','2hAxe','Mace','2hMace','Staff','2hStaff','Bow','Knuckle','Musical','Whip','Book','Katar','Revolver','Rifle','Gatling','Shotgun','Grenade','Huuma'];
 const AMMO_SUBTYPES = ['Arrow','Dagger','Bullet','Shell','Grenade','Shuriken','Kunai','CannonBall','ThrowWeapon'];
 const CARD_SUBTYPES = ['Normal','Enchant'];
@@ -436,7 +474,6 @@ function onLocationsChange(val: string[]) {
   form.locations = result.sort((a, b) => LOCATION_LIST.indexOf(a) - LOCATION_LIST.indexOf(b));
 }
 
-// ─── Script Editor ───────────────────────────────────────────────────
 async function openScriptEditor(field: string) {
   const dialog = scriptEditorDialog.value;
   if (!dialog) return;
@@ -445,6 +482,266 @@ async function openScriptEditor(field: string) {
   if (result !== null) {
     (form as any)[field] = result;
   }
+}
+
+// ─── DivinePride Search ──────────────────────────────────────────────
+async function onSearchDivinePride() {
+  if (!form.id) {
+    snackbar.value = { show: true, text: 'Please enter an Item ID', color: 'warning' };
+    return;
+  }
+
+  searchingDP.value = true;
+  try {
+    const apiKey = appModel.getDivinePrideKey();
+
+    if (!apiKey) {
+      snackbar.value = { show: true, text: 'DivinePride API Key is not set in Settings', color: 'error' };
+      searchingDP.value = false;
+      return;
+    }
+
+    const result = await fetchDivinePride(form.id, apiKey, dpServer.value);
+    if (result.success && result.data) {
+      const d = result.data;
+      
+      // Separate Window implementation
+      const winLabel = 'dp-results-window';
+      try {
+        const existingWin = await WebviewWindow.getByLabel(winLabel);
+        if (existingWin) {
+          await existingWin.destroy();
+        }
+        // Small delay to ensure destruction
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const dpWin = new WebviewWindow(winLabel, {
+          url: 'index.html?window=dp-results',
+          title: 'DivinePride Information',
+          width: 800,
+          height: 900,
+        });
+        await dpWin.setFocus();
+      } catch (e) {
+        console.error('Failed to create DivinePride window:', e);
+      }
+      
+      // Wait a bit for the window to be ready if it was just created
+      setTimeout(async () => {
+        await emit('dp-data-updated', { data: d, server: dpServer.value });
+      }, 500);
+
+      // Reflect accurate items to UI
+      if (d.aegisName) form.aegis_name = d.aegisName;
+      if (d.name) form.name = d.name;
+      
+      // 1. Item Type Mapping (DivinePride API IDs)
+      const typeMap: Record<number, string> = {
+        1: 'Weapon',
+        2: 'Armor',
+        3: 'Usable',
+        4: 'Ammo',
+        5: 'Etc',
+        6: 'Card',
+        7: 'Cash',
+        9: 'Armor', // Costume (maps to Armor)
+        10: 'ShadowGear'
+      };
+      const typeId = d.itemTypeId; // Use itemTypeId instead of type
+      if (typeId != null && typeMap[typeId]) {
+        form.type = typeMap[typeId];
+        onTypeChange(); 
+      } else if (typeId === 0) {
+        // Special case for some jRO items or older data
+        if (d.cardPrefix) form.type = 'Card';
+        else form.type = 'Etc';
+        onTypeChange();
+      }
+
+      // 2. SubType Mapping
+      const subId = d.itemSubTypeId;
+      if (form.type === 'Weapon') {
+        const weaponMap: Record<number, string> = {
+          256: 'Dagger', 257: '1hSword', 258: '2hSword', 259: '1hSpear', 260: '2hSpear',
+          261: '1hAxe', 262: '2hAxe', 263: '1hMace', 264: '2hMace', 265: '1hStaff',
+          266: '2hStaff', 267: 'Bow', 268: 'Knuckle', 269: 'Musical', 270: 'Whip',
+          271: 'Book', 272: 'Katar', 273: 'Revolver', 274: 'Rifle', 275: 'Gatling',
+          276: 'Shotgun', 277: 'Grenade', 278: 'Huuma'
+        };
+        form.subType = weaponMap[subId];
+      } else if (form.type === 'Ammo') {
+        const ammoMap: Record<number, string> = {
+          1024: 'Arrow', 1025: 'CannonBall', 1026: 'ThrowWeapon', 1027: 'Bullet'
+        };
+        form.subType = ammoMap[subId];
+      } else if (form.type === 'Card') {
+        // If compositionPos is null, it's a Normal Card. Otherwise, it's an Enchant Card.
+        form.subType = d.compositionPos == null ? 'Normal' : 'Enchant';
+      }
+
+      // 3. Location Mapping (Bitmask)
+      if (d.LOCA != null || d.location != null) {
+        const locMask = d.LOCA != null ? d.LOCA : (typeof d.location === 'number' ? d.location : 0);
+        const locations: string[] = [];
+        const EQP = {
+          HEAD_LOW: 1, HEAD_MID: 512, HEAD_TOP: 256, HAND_R: 2, HAND_L: 32,
+          ARMOR: 16, SHOES: 64, GARMENT: 4, ACC_R: 8, ACC_L: 128,
+          COSTUME_HEAD_TOP: 1024, COSTUME_HEAD_MID: 2048, COSTUME_HEAD_LOW: 4096, COSTUME_GARMENT: 8192,
+          AMMO: 32768, SHADOW_ARMOR: 65536, SHADOW_WEAPON: 131072, SHADOW_SHIELD: 262144,
+          SHADOW_SHOES: 524288, SHADOW_ACC_R: 1048576, SHADOW_ACC_L: 2097152
+        };
+        
+        if ((locMask & EQP.HEAD_TOP)) locations.push('Head_Top');
+        if ((locMask & EQP.HEAD_MID)) locations.push('Head_Mid');
+        if ((locMask & EQP.HEAD_LOW)) locations.push('Head_Low');
+        if ((locMask & EQP.ARMOR)) locations.push('Armor');
+        if ((locMask & EQP.GARMENT)) locations.push('Garment');
+        if ((locMask & EQP.SHOES)) locations.push('Shoes');
+        if ((locMask & EQP.AMMO)) locations.push('Ammo');
+        
+        // Hand handling
+        if ((locMask & EQP.HAND_R) && (locMask & EQP.HAND_L)) locations.push('Both_Hand');
+        else {
+          if ((locMask & EQP.HAND_R)) locations.push('Right_Hand');
+          if ((locMask & EQP.HAND_L)) locations.push('Left_Hand');
+        }
+        
+        // Accessory handling
+        if ((locMask & EQP.ACC_R) && (locMask & EQP.ACC_L)) locations.push('Both_Accessory');
+        else {
+          if ((locMask & EQP.ACC_R)) locations.push('Right_Accessory');
+          if ((locMask & EQP.ACC_L)) locations.push('Left_Accessory');
+        }
+        
+        // Costume
+        if ((locMask & EQP.COSTUME_HEAD_TOP)) locations.push('Costume_Head_Top');
+        if ((locMask & EQP.COSTUME_HEAD_MID)) locations.push('Costume_Head_MID');
+        if ((locMask & EQP.COSTUME_HEAD_LOW)) locations.push('Costume_Head_LOW');
+        if ((locMask & EQP.COSTUME_GARMENT)) locations.push('Costume_Garment');
+        
+        // Shadow
+        if ((locMask & EQP.SHADOW_ARMOR)) locations.push('Shadow_Armor');
+        if ((locMask & EQP.SHADOW_WEAPON)) locations.push('Shadow_Weapon');
+        if ((locMask & EQP.SHADOW_SHIELD)) locations.push('Shadow_Shield');
+        if ((locMask & EQP.SHADOW_SHOES)) locations.push('Shadow_Shoes');
+        if ((locMask & EQP.SHADOW_ACC_R)) locations.push('Shadow_Right_Accessory');
+        if ((locMask & EQP.SHADOW_ACC_L)) locations.push('Shadow_Left_Accessory');
+        
+        onLocationsChange(locations);
+      }
+
+      // 4. Weight (10x DP value)
+      if (d.weight != null) form.weight = Number(d.weight) * 10; 
+      
+      // 5. Slots & Stats
+      // Only set slots for Weapons and Armor (typeId 1, 2, 9, 10)
+      if (typeId === 1 || typeId === 2 || typeId === 9 || typeId === 10) {
+        if (d.slots != null) form.slots = Number(d.slots);
+      }
+      if (d.refinable != null) form.refineable = !!d.refinable;
+
+      // Type-specific mappings
+      if (typeId === 1) { // Weapon
+        if (d.attack != null) form.attack = Number(d.attack);
+        if (d.matk != null) form.magicAttack = Number(d.matk);
+        if (d.requiredLevel != null) form.equipLevelMin = Number(d.requiredLevel);
+        if (d.limitLevel != null) form.equipLevelMax = Number(d.limitLevel);
+      } else if (typeId === 2 || typeId === 9) { // Armor or Costume
+        if (d.defense != null) form.defense = Number(d.defense);
+        if (d.requiredLevel != null) form.equipLevelMin = Number(d.requiredLevel);
+        if (d.limitLevel != null) form.equipLevelMax = Number(d.limitLevel);
+        if (d.classNum != null) form.view = Number(d.classNum);
+      }
+
+      // Range mapping based on setting
+      const rangeSource = appModel.getDivinePrideRangeSource();
+      if (rangeSource === 'api') {
+        if (d.range != null) form.range = Number(d.range);
+      }
+
+      // Enchant Card Check
+      const isEnchantCard = (typeId === 6 && d.compositionPos != null);
+
+      // 6. Buy Price
+      if (!isEnchantCard && d.price != null) form.buy = Number(d.price);
+
+      // 7. Fuzzy Auto-complete
+      if (appModel.getEnableFuzzyDivinePride()) {
+        const desc = d.description || '';
+        
+        // Parse Weapon Level (Weapon only)
+        if (typeId === 1) {
+          // Explicitly skip RO color codes (^RRGGBB) to avoid capturing digits inside the codes
+          const wlMatch = desc.match(/(?:武器レベル|Weapon Level|武器等級)\s*[:：]\s*(?:\^[0-9a-fA-F]{6})*?\s*(\d+)/i);
+          if (wlMatch) {
+            form.weaponLevel = parseInt(wlMatch[1]);
+          }
+        }
+        
+        // Parse Armor Level (Armor only)
+        if (typeId === 2 || typeId === 9) {
+          const alMatch = desc.match(/(?:防具レベル|Armor Level|防具等級)\s*[:：]\s*(?:\^[0-9a-fA-F]{6})*?\s*(\d+)/i);
+          if (alMatch) {
+            form.armorLevel = parseInt(alMatch[1]);
+          }
+        }
+        
+        // Default Range for Weapons (only if Source is 'fuzzy' and current UI is empty or 0)
+        if (rangeSource === 'fuzzy' && typeId === 1 && (!form.range || form.range === 0)) {
+          const rangeMap: Record<string, number> = {
+            'Dagger': 1, '1hSword': 1, '2hSword': 1, '1hSpear': 3, '2hSpear': 3,
+            '1hAxe': 1, '2hAxe': 1, '1hMace': 1, '2hMace': 1, '1hStaff': 1,
+            '2hStaff': 1, 'Bow': 5, 'Knuckle': 1, 'Musical': 1, 'Whip': 2,
+            'Book': 1, 'Katar': 1, 'Revolver': 7, 'Rifle': 9, 'Gatling': 9,
+            'Shotgun': 9, 'Grenade': 9, 'Huuma': 1
+          };
+          if (form.subType && rangeMap[form.subType]) {
+            form.range = rangeMap[form.subType];
+          } else {
+            form.range = 1; // Default for unknown weapons
+          }
+        }
+      }
+
+      // 8. Gender Mapping
+      if (d.gender != null) {
+        if (d.gender === 0) form.gender = 'Female';
+        else if (d.gender === 1) form.gender = 'Male';
+        else form.gender = 'Both';
+      }
+
+      // 9. Trade Mapping (itemMoveInfo)
+      if (!isEnchantCard && d.itemMoveInfo) {
+        const m = d.itemMoveInfo;
+        form.trade = {
+          ...form.trade,
+          NoDrop: m.drop === false,
+          NoTrade: m.trade === false,
+          NoSell: m.sell === false,
+          NoCart: m.cart === false,
+          NoStorage: m.store === false,
+          NoGuildStorage: m.guildStore === false,
+          NoMail: m.mail === false,
+          NoAuction: m.auction === false
+        };
+      }
+
+      snackbar.value = { show: true, text: 'Data fetched and reflected from DivinePride', color: 'success' };
+    } else {
+      snackbar.value = { show: true, text: `DivinePride Error: ${result.error}`, color: 'error' };
+    }
+  } catch (e: any) {
+    snackbar.value = { show: true, text: `Error: ${e.message}`, color: 'error' };
+  } finally {
+    searchingDP.value = false;
+  }
+}
+
+// ─── External Link ──────────────────────────────────────────────────
+async function openExternal(id: number) {
+  try {
+    await openUrl(`https://www.divine-pride.net/database/item/${id}`);
+  } catch (e) {}
 }
 
 // ─── Start New Item ──────────────────────────────────────────────────
@@ -556,6 +853,23 @@ async function save() {
   if (!isNew.value && !item.value) return;
   saving.value = true;
   try {
+    // Basic Validation
+    if (!form.id) {
+      snackbar.value = { show: true, text: 'Error: ID is required', color: 'error' };
+      saving.value = false;
+      return;
+    }
+    if (!form.aegis_name) {
+      snackbar.value = { show: true, text: 'Error: AegisName is required', color: 'error' };
+      saving.value = false;
+      return;
+    }
+    if (!form.name) {
+      snackbar.value = { show: true, text: 'Error: Name is required', color: 'error' };
+      saving.value = false;
+      return;
+    }
+
     const toSave: ItemDbEntry = {
       ...form,
       filePath: isNew.value ? targetFile.value : item.value!.filePath,
@@ -610,25 +924,30 @@ async function save() {
         saving.value = false;
         return;
       }
-      result = await addItemToYaml(toSave, appModel.getPythonEncoding());
+      result = await addItemToYaml(toSave, appModel.getPythonEncoding(), {
+        sort_on_insert: appModel.getSortOnInsert(),
+      });
       if (result.success) {
         appModel.addItemToMemory(toSave);
         appModel.loadItem(toSave.aegis_name);
         isNew.value = false;
+        isDirty.value = false;
+        snackbar.value = { show: true, text: 'Created and saved successfully', color: 'success' };
+      } else {
+        snackbar.value = { show: true, text: `Failed to create: ${result.error}`, color: 'error' };
       }
     } else {
-      result = await saveItemToYaml(toSave, appModel.getPythonEncoding(), originalAegisName.value);
+      result = await saveItemToYaml(toSave, appModel.getPythonEncoding(), originalAegisName.value, {
+        sort_on_update: appModel.getSortOnUpdate(),
+      });
       if (result.success) {
         appModel.updateItemInMemory(toSave, originalAegisName.value);
         originalAegisName.value = toSave.aegis_name;
+        isDirty.value = false;
+        snackbar.value = { show: true, text: 'Saved successfully', color: 'success' };
+      } else {
+        snackbar.value = { show: true, text: `Failed to save: ${result.error}`, color: 'error' };
       }
-    }
-
-    if (result.success) {
-      isDirty.value = false;
-      snackbar.value = { show: true, text: 'Saved', color: 'success' };
-    } else {
-      snackbar.value = { show: true, text: `Failed to save: ${result.error}`, color: 'error' };
     }
   } catch (e: any) {
     snackbar.value = { show: true, text: `Error: ${e.message}`, color: 'error' };

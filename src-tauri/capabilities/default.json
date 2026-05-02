@@ -3,7 +3,7 @@
   "identifier": "default",
   "description": "Capability for the main window",
   "windows": [
-    "main"
+    "*"
   ],
   "permissions": [
     "core:default",
@@ -24,6 +24,18 @@
     "fs:allow-read-dir",
     "fs:allow-read-file",
     "shell:default",
-    "shell:allow-execute"
+    "shell:allow-execute",
+    "core:event:default",
+    "core:window:default",
+    "core:webview:default",
+    "core:webview:allow-create-webview",
+    "core:webview:allow-create-webview-window",
+    "core:app:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://www.divine-pride.net/*" }
+      ]
+    }
   ]
 }

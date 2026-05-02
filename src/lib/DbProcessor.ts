@@ -18,7 +18,12 @@ async function callProcessor(request: object): Promise<DbProcessorResult> {
 }
 
 /** Save item to YAML file */
-export async function saveItemToYaml(item: ItemDbEntry, encoding = 'utf-8', originalAegisName?: string): Promise<DbProcessorResult> {
+export async function saveItemToYaml(
+  item: ItemDbEntry,
+  encoding = 'utf-8',
+  originalAegisName?: string,
+  options?: { sort_on_update?: boolean }
+): Promise<DbProcessorResult> {
   const data: Record<string, any> = {
     Id: item.id,
     AegisName: item.aegis_name,
@@ -58,14 +63,19 @@ export async function saveItemToYaml(item: ItemDbEntry, encoding = 'utf-8', orig
   return callProcessor({
     action: 'update_item',
     file: item.filePath,
-    aegis_name: originalAegisName || item.aegis_name,
+    aegis_name: (originalAegisName !== undefined) ? originalAegisName : item.aegis_name,
     data,
     encoding,
+    sort_on_update: options?.sort_on_update,
   });
 }
 
 /** Add new item to YAML file */
-export async function addItemToYaml(item: ItemDbEntry, encoding = 'utf-8'): Promise<DbProcessorResult> {
+export async function addItemToYaml(
+  item: ItemDbEntry,
+  encoding = 'utf-8',
+  options?: { sort_on_insert?: boolean }
+): Promise<DbProcessorResult> {
   const data: Record<string, any> = {
     Id: item.id,
     AegisName: item.aegis_name,
@@ -107,6 +117,7 @@ export async function addItemToYaml(item: ItemDbEntry, encoding = 'utf-8'): Prom
     file: item.filePath,
     data,
     encoding,
+    sort_on_insert: options?.sort_on_insert,
   });
 }
 
@@ -127,6 +138,7 @@ export async function updateComboInYaml(
   combos: string[][],
   script: string,
   encoding = 'utf-8',
+  itemInfo?: Record<string, string>,
 ): Promise<DbProcessorResult> {
   return callProcessor({
     action: 'update_combo',
@@ -134,6 +146,7 @@ export async function updateComboInYaml(
     combo_index: comboIndex,
     data: { combos, script },
     encoding,
+    item_info: itemInfo,
   });
 }
 
@@ -143,12 +156,14 @@ export async function addComboToYaml(
   combos: string[][],
   script: string,
   encoding = 'utf-8',
+  itemInfo?: Record<string, string>,
 ): Promise<DbProcessorResult> {
   return callProcessor({
     action: 'add_combo',
     file: filePath,
     data: { combos, script },
     encoding,
+    item_info: itemInfo,
   });
 }
 
@@ -186,4 +201,14 @@ export async function updateDbYml(
     file: filePath,
     data: config,
   });
+}
+
+/** Fetch item data from DivinePride */
+export async function fetchDivinePride(id: number, apiKey: string, server = 'jro'): Promise<DbProcessorResult & { data?: any }> {
+  return callProcessor({
+    action: 'fetch_divine_pride',
+    id,
+    api_key: apiKey,
+    server,
+  }) as Promise<DbProcessorResult & { data?: any }>;
 }

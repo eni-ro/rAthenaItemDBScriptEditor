@@ -38,6 +38,12 @@ const useAppModel = () => {
   function getEncoding() { return dbReader.encoding; }
   function getRustEncoding() { return dbReader.rustEncoding; }
   function getPythonEncoding() { return dbReader.pythonEncoding; }
+  function getSortOnInsert() { return dbReader.sortOnInsert; }
+  function getSortOnUpdate() { return dbReader.sortOnUpdate; }
+  function getDivinePrideKey() { return dbReader.divinePrideKey; }
+  function getEnableFuzzyDivinePride() { return dbReader.enableFuzzyDivinePride; }
+  function getDivinePrideRangeSource() { return dbReader.divinePrideRangeSource; }
+  function getShowComboComments() { return dbReader.showComboComments; }
 
   function getDisplayName(item: ItemDbEntry): string {
     return dbReader.getDisplayName(item);
@@ -73,6 +79,12 @@ const useAppModel = () => {
     if (idx >= 0) {
       const newItems = [...items.value];
       newItems[idx] = { ...item };
+      
+      // Re-sort if sortOnUpdate is enabled
+      if (dbReader.sortOnUpdate) {
+        newItems.sort((a, b) => a.id - b.id);
+      }
+      
       items.value = newItems;
       dbReader.items = newItems; // sync with reader
     }
@@ -80,6 +92,12 @@ const useAppModel = () => {
 
   function addItemToMemory(item: ItemDbEntry) {
     const newItems = [...items.value, { ...item }];
+    
+    // Re-sort if sortOnInsert is enabled
+    if (dbReader.sortOnInsert) {
+      newItems.sort((a, b) => a.id - b.id);
+    }
+    
     items.value = newItems;
     dbReader.items = newItems;
   }
@@ -121,10 +139,12 @@ const useAppModel = () => {
     isLoaded, categories, consts,
     currentItem, currentCombo, mainTab, dbYmlPath,
     loadData, getItems, getSkills, getMobs, getCombos,
-    getItemNames, getItemFiles, getComboFiles, getEncoding, getRustEncoding, getPythonEncoding, getDisplayName, getItemSearchName,
+    getItemNames, getItemFiles, getComboFiles, getEncoding, getRustEncoding, getPythonEncoding,
+    getSortOnInsert, getSortOnUpdate, getDivinePrideKey, getEnableFuzzyDivinePride, getDivinePrideRangeSource, getShowComboComments, getDisplayName, getItemSearchName,
     loadItem, loadCombo, getConstList, makeCode,
     updateItemInMemory, addItemToMemory, deleteItemFromMemory,
     updateComboInMemory, addComboToMemory, deleteComboFromMemory,
+    refreshSettings() { dbReader.load(dbYmlPath.value); }
   };
 };
 

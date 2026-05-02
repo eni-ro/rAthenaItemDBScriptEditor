@@ -245,8 +245,23 @@ export class DbReader {
   public encoding: string = 'utf-8';
   public rustEncoding: string = 'utf-8';
   public pythonEncoding: string = 'utf-8';
+  public sortOnInsert: boolean = true;
+  public sortOnUpdate: boolean = false;
+  public divinePrideKey: string = '';
+  public enableFuzzyDivinePride: boolean = false;
+  public divinePrideRangeSource: 'api' | 'fuzzy' = 'api';
+  public showComboComments: boolean = true;
 
   async load(dbPath: string) {
+    // Clear existing data to avoid duplicates if load is called multiple times
+    this.items = [];
+    this.skills = [];
+    this.mobs = [];
+    this.combos = [];
+    this.itemNames.clear();
+    this.itemFiles = [];
+    this.comboFiles = [];
+
     // db.yml is always UTF-8
     const dbRaw: string = await invoke('read_file_raw', { path: dbPath });
     const dbConf = jsYaml.load(dbRaw, { json: true }) as {
@@ -258,7 +273,21 @@ export class DbReader {
       ItemName?: string[];
       Skill?: string[];
       Mob?: string[];
+      SortOnInsert?: boolean;
+      SortOnUpdate?: boolean;
+      DivinePrideKey?: string;
+      EnableFuzzyDivinePride?: boolean;
+      DivinePrideRangeSource?: 'api' | 'fuzzy';
+      ShowComboComments?: boolean;
     };
+
+    // Get sorting settings.
+    this.sortOnInsert = dbConf.SortOnInsert !== false;
+    this.sortOnUpdate = dbConf.SortOnUpdate === true;
+    this.divinePrideKey = dbConf.DivinePrideKey || '';
+    this.enableFuzzyDivinePride = dbConf.EnableFuzzyDivinePride === true;
+    this.divinePrideRangeSource = dbConf.DivinePrideRangeSource || 'api';
+    this.showComboComments = dbConf.ShowComboComments !== false;
 
     // Get encoding settings. 
     this.encoding = dbConf.TypeScriptEncoding || (dbConf as any).Encoding || 'utf-8';

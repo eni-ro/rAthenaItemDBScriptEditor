@@ -100,7 +100,7 @@ interface SearchResult {
 // Build item list beforehand (fixed after startup)
 const allItemResults = computed<SearchResult[]>(() => {
   return appModel.getItems().map(item => ({
-    key: `item-${item.aegis_name}`,
+    key: `item-${item.filePath}-${item.aegis_name}`,
     type: 'item' as const,
     label: appModel.getDisplayName(item),
     _search: (item.aegis_name + item.name + (appModel.getItemNames().get(item.id) || '') + (item.slots != null ? `[${item.slots}]` : '')).toLowerCase(),
