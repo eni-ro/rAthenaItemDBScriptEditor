@@ -54,10 +54,9 @@
           </div>
 
           <!-- Vertical Resizer 1 -->
-          <div
-            style="height:5px; background:#444; cursor:ns-resize; flex-shrink:0;"
-            @mousedown.prevent="startVResize(1)"
-          />
+          <div class="editor-v-splitter" @mousedown.prevent="startVResize(1)">
+            <div class="v-splitter-line"></div>
+          </div>
 
           <!-- Params (middle) -->
           <div class="editor-params-container" :style="{ flex: midFlex }">
@@ -82,10 +81,9 @@
           </div>
 
           <!-- Vertical Resizer 2 -->
-          <div
-            style="height:5px; background:#444; cursor:ns-resize; flex-shrink:0;"
-            @mousedown.prevent="startVResize(2)"
-          />
+          <div class="editor-v-splitter" @mousedown.prevent="startVResize(2)">
+            <div class="v-splitter-line"></div>
+          </div>
 
           <!-- Description (bottom) -->
           <div class="editor-desc-container" :style="{ flex: botFlex }">
@@ -95,15 +93,16 @@
         </div>
 
         <!-- ─── Horizontal Resizer / Inject button ────────────────── -->
-        <div
-          style="width:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#2d2d2d; border-right:1px solid #555; cursor:col-resize; flex-shrink:0;"
-          @mousedown.prevent="startHResize"
-        >
-          <button
-            @click.stop="triggerInject"
-            title="Insert script into editor"
-            style="width:30px; height:30px; border-radius:50%; background:#0078d4; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; pointer-events:auto;"
-          >›</button>
+        <div class="editor-h-splitter" @mousedown.prevent="startHResize">
+          <div class="inject-btn-area" @mousedown.stop>
+            <v-btn
+              icon="mdi-chevron-right"
+              variant="flat"
+              class="inject-btn"
+              title="Insert script into editor"
+              @click.stop="triggerInject"
+            />
+          </div>
         </div>
 
         <!-- ─── Right Pane: Monaco Editor ─────────────────────────── -->
@@ -111,7 +110,7 @@
           <vue-monaco-editor
             v-model:value="editingScript"
             theme="vs-dark"
-            language="rust"
+            language="rscript"
             :options="editorOptions"
             @mount="handleMount"
             style="flex:1; height:100%;"
@@ -235,6 +234,8 @@ const editorOptions = {
   tabSize: 2,
   insertSpaces: true,
   fontSize: 15,
+  // Remove RO script special characters from separators to ensure correct word selection
+  wordSeparators: "`~!%^&*()-=+[{]}\\|;:\",<>/?",
 };
 let editorInstance: any = null;
 let monacoInstance: any = null;
@@ -247,11 +248,107 @@ const handleMount = (editor: any, monaco: any) => {
   nextTick(() => editor.layout());
   if (!providerRegistered) {
     providerRegistered = true;
-    monaco.languages.registerCompletionItemProvider('rust', {
+    const langId = 'rscript';
+
+    // Register a custom language for rAthena Script
+    monaco.languages.register({ id: langId });
+
+    // Set word definition to include special characters like @, $, ., #, '
+    // and basic syntax configuration
+    monaco.languages.setLanguageConfiguration(langId, {
+      wordPattern: /[a-zA-Z_0-9.@$#'#]+/g,
+      comments: {
+        lineComment: '//',
+        blockComment: ['/*', '*/'],
+      },
+      brackets: [
+        ['{', '}'],
+        ['[', ']'],
+        ['(', ')'],
+      ],
+      autoClosingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"' },
+        { open: "'", close: "'" },
+      ],
+    });
+
+    // Simple syntax highlighting (Monarch tokens)
+    monaco.languages.setMonarchTokensProvider(langId, {
+      tokenizer: {
+        root: [
+          // Variables - These MUST come first to take precedence over delimiters like '.'
+          [/(?:\.@|\$@|##|[@$.#'])[a-zA-Z0-9_]+\$?/, 'variable'],
+          [/[a-zA-Z_][a-zA-Z0-9_]*\$/, 'variable'],
+
+          [/[{}]/, 'delimiter.bracket'],
+          [/[()]/, 'delimiter.parenthesis'],
+          [/[\[\]]/, 'delimiter.square'],
+          [/[;,.]/, 'delimiter'],
+          // Control Flow Keywords
+          [/\b(if|else|switch|case|default|for|while|do|break|continue|return|function|script)\b/, 'keyword'],
+          // Common constants
+          [/\b(true|false|null)\b/, 'keyword'],
+          // Numbers
+          [/\b\d+\b/, 'number'],
+          // Strings
+          [/"([^"\\]|\\.)*"/, 'string'],
+          // Comments
+          [/\/\/.*$/, 'comment'],
+          [/\/\*/, 'comment', '@comment'],
+          // Whitespace
+          { include: '@whitespace' },
+          // Operators
+          [/[<>!%&|+\-*/=]/, 'operator'],
+        ],
+        whitespace: [
+          [/[ \t\r\n]+/, 'white'],
+        ],
+        comment: [
+          [/[^\/*]+/, 'comment'],
+          [/\*\//, 'comment', '@pop'],
+          [/[\/*]/, 'comment']
+        ],
+      },
+    });
+
+    monaco.languages.registerCompletionItemProvider(langId, {
       provideCompletionItems: (model: any, position: any) => {
         const word = model.getWordUntilPosition(position);
-        const range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
-        return { suggestions: autocompleteKeywords.map(kw => ({ label: kw, kind: monaco.languages.CompletionItemKind.Keyword, insertText: kw, range })) };
+        const range = { 
+          startLineNumber: position.lineNumber, 
+          endLineNumber: position.lineNumber, 
+          startColumn: word.startColumn, 
+          endColumn: word.endColumn 
+        };
+
+        // Scan the current document for variables to provide autocomplete
+        const text = model.getValue();
+        // Extract prefixed variables and string variables
+        const varRegex = /(?:\.@|\$@|##|[@$.#'])[a-zA-Z0-9_]+\$?|[a-zA-Z_][a-zA-Z0-9_]*\$/g;
+        const matches = text.match(varRegex) || [];
+        const uniqueVars = Array.from(new Set(matches));
+
+        const suggestions = [
+          // Commands from auto_complete.txt (e.g. mes, getitem)
+          ...autocompleteKeywords.map(kw => ({
+            label: kw,
+            kind: monaco.languages.CompletionItemKind.Function,
+            insertText: kw,
+            range
+          })),
+          // Dynamic variables found in the current script
+          ...uniqueVars.map(v => ({
+            label: v,
+            kind: monaco.languages.CompletionItemKind.Variable,
+            insertText: v,
+            range
+          }))
+        ];
+
+        return { suggestions };
       },
     });
   }
@@ -279,7 +376,7 @@ const handleMount = (editor: any, monaco: any) => {
     } else {
       const skill = appModel.getSkills().find(s => s.aegis_name === text);
       if (skill) {
-        match = `[Skill] ${skill.name}`;
+        match = `[Skill] ${appModel.getSkillDisplayName(skill)}`;
       } else {
         const mob = appModel.getMobs().find(m => m.aegis_name === text);
         if (mob) {
@@ -377,7 +474,7 @@ const openParamSelect = (arg: ScriptArgConf, index: number) => {
   } else if (arg.Type === 'Item') {
     items = appModel.getItems().map(i => ({ value: i.aegis_name, desc: appModel.getDisplayName(i) }));
   } else if (arg.Type === 'Skill') {
-    items = appModel.getSkills().map(i => ({ value: i.aegis_name, desc: i.name }));
+    items = appModel.getSkills().map(i => ({ value: i.aegis_name, desc: appModel.getSkillDisplayName(i) }));
   } else if (arg.Type === 'Mob') {
     items = appModel.getMobs().map(i => ({ value: i.aegis_name, desc: i.name }));
   }
@@ -615,5 +712,73 @@ onMounted(async () => {
 @keyframes tip-fade-in {
   from { opacity: 0; transform: translateY(0px); }
   to { opacity: 1; transform: translateY(5px); }
+}
+
+/* Splitter styles */
+.editor-h-splitter {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #2d2d2d;
+  border-right: 1px solid #444;
+  cursor: col-resize;
+  flex-shrink: 0;
+  position: relative;
+  transition: background 0.2s;
+}
+.editor-h-splitter:hover {
+  background: #333;
+}
+
+.inject-btn-area {
+  z-index: 10;
+  cursor: default;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.inject-btn {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s ease !important;
+}
+.inject-btn:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+.inject-btn:active {
+  transform: scale(0.92);
+}
+
+.editor-v-splitter {
+  height: 8px;
+  background: #2d2d2d;
+  cursor: ns-resize;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background 0.2s;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #444;
+}
+.editor-v-splitter:hover {
+  background: #383838;
+}
+.v-splitter-line {
+  width: 30px;
+  height: 1px;
+  background: #555;
 }
 </style>

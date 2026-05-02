@@ -2907,6 +2907,24 @@
         - Desc: equipment slot
           Type: List
           ListName: Equipment Slot
+    - Name: Get Enchant Grade
+      Desc:
+        - .@g = getenchantgrade();
+        - --------------------
+        - This function will return the enchantgrade of the equipment from which the function is called or the specified equipment slot.
+        - If nothing is equipped there, it returns -1.
+      Script: .@g = getenchantgrade();
+    - Name: Get Enchant Grade (designate slot)
+      Desc:
+        - .@g = getenchantgrade(<equipment slot>,<char_id>);
+        - --------------------
+        - This function will return the enchantgrade of the equipment from which the function is called or the specified equipment slot.
+        - If nothing is equipped there, it returns -1.
+      Script: .@g = getenchantgrade(ARG1);
+      Args:
+        - Desc: equipment slot
+          Type: List
+          ListName: Equipment Slot
     - Name: Get Equip Card Count
       Desc:
         - .@cnt = getequipcardcnt(<equipment slot>);

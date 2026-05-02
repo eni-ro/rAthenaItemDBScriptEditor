@@ -72,7 +72,7 @@
           </v-expand-transition>
           
           <div class="text-caption text-grey mt-1">
-            Applied to Item, ItemCombos, ItemName, Mob, and Skill YAML files. db.yml itself is always UTF-8.
+            Applied to Item, ItemCombos, ItemName, SkillName, Mob, and Skill YAML files. db.yml itself is always UTF-8.
           </div>
         </div>
 
@@ -213,6 +213,7 @@ interface DbConfig {
   Item: string[];
   ItemCombos: string[];
   ItemName: string[];
+  SkillName: string[];
   Mob: string[];
   Skill: string[];
   DivinePrideKey?: string;
@@ -223,7 +224,7 @@ interface DbConfig {
   ShowComboComments?: boolean;
 }
 
-type DbPathKey = 'Item' | 'ItemCombos' | 'ItemName' | 'Mob' | 'Skill';
+type DbPathKey = 'Item' | 'ItemCombos' | 'ItemName' | 'SkillName' | 'Mob' | 'Skill';
 
 const ENCODING_GROUPS = [
   { label: 'UTF-8 (Standard)', ts: 'utf-8', py: 'utf-8', rust: 'utf-8' },
@@ -241,6 +242,7 @@ const sections: { key: DbPathKey; label: string; optional: boolean }[] = [
   { key: 'ItemName', label: 'Item Name DB (Search Name)', optional: true },
   { key: 'Mob', label: 'Mob DB', optional: true },
   { key: 'Skill', label: 'Skill DB', optional: true },
+  { key: 'SkillName', label: 'Skill Name DB (Search Name)', optional: true },
 ];
 
 const dialog = ref(false);
@@ -255,6 +257,7 @@ const localConfig = reactive<DbConfig>({
   Item: [],
   ItemCombos: [],
   ItemName: [],
+  SkillName: [],
   Mob: [],
   Skill: [],
   DivinePrideKey: '',
@@ -278,6 +281,7 @@ function open(currentConfig: Partial<DbConfig>, ymlPath: string) {
     Item: [...(currentConfig.Item || [])],
     ItemCombos: [...(currentConfig.ItemCombos || [])],
     ItemName: [...(currentConfig.ItemName || [])],
+    SkillName: [...(currentConfig.SkillName || [])],
     Mob: [...(currentConfig.Mob || [])],
     Skill: [...(currentConfig.Skill || [])],
     DivinePrideKey: currentConfig.DivinePrideKey || '',

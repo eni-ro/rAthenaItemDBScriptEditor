@@ -1,6 +1,6 @@
 import { ref, shallowRef } from 'vue';
 import { ScriptConfReader, ScriptCategoryConf, ScriptItemConf, ConstListConf } from '../lib/ScriptConfReader';
-import { DbReader, ItemDbEntry, ComboDbEntry } from '../lib/DbReader';
+import { DbReader, ItemDbEntry, ComboDbEntry, SkillDbEntry, DbEntry } from '../lib/DbReader';
 
 const useAppModel = () => {
   const scriptReader = new ScriptConfReader();
@@ -14,6 +14,8 @@ const useAppModel = () => {
   const currentCombo = ref<ComboDbEntry | null>(null);
   const items = shallowRef<ItemDbEntry[]>([]);
   const combos = shallowRef<ComboDbEntry[]>([]);
+  const skills = shallowRef<SkillDbEntry[]>([]);
+  const mobs = shallowRef<DbEntry[]>([]);
   const mainTab = ref<'items' | 'combos'>('items');
   const dbYmlPath = ref<string>('');
 
@@ -25,14 +27,17 @@ const useAppModel = () => {
     await dbReader.load(dbPath);
     items.value = [...dbReader.items];
     combos.value = [...dbReader.combos];
+    skills.value = [...dbReader.skills];
+    mobs.value = [...dbReader.mobs];
     isLoaded.value = true;
   }
 
   function getItems() { return items.value; }
-  function getSkills() { return dbReader.skills; }
-  function getMobs() { return dbReader.mobs; }
+  function getSkills() { return skills.value; }
+  function getMobs() { return mobs.value; }
   function getCombos() { return combos.value; }
   function getItemNames() { return dbReader.itemNames; }
+  function getSkillNames() { return dbReader.skillNames; }
   function getItemFiles() { return dbReader.itemFiles; }
   function getComboFiles() { return dbReader.comboFiles; }
   function getEncoding() { return dbReader.encoding; }
@@ -49,14 +54,18 @@ const useAppModel = () => {
     return dbReader.getDisplayName(item);
   }
 
+  function getSkillDisplayName(skill: SkillDbEntry): string {
+    return dbReader.getSkillDisplayName(skill);
+  }
+
   function getItemSearchName(aegis_name: string): string {
     const item = dbReader.getItem(aegis_name);
     if (!item) return aegis_name;
     return dbReader.getDisplayName(item);
   }
 
-  function loadItem(aegis_name: string) {
-    const item = dbReader.getItem(aegis_name);
+  function loadItem(aegis_name: string, filePath?: string) {
+    const item = dbReader.getItem(aegis_name, filePath);
     if (item) {
       currentItem.value = { ...item };
       mainTab.value = 'items';
@@ -139,8 +148,8 @@ const useAppModel = () => {
     isLoaded, categories, consts,
     currentItem, currentCombo, mainTab, dbYmlPath,
     loadData, getItems, getSkills, getMobs, getCombos,
-    getItemNames, getItemFiles, getComboFiles, getEncoding, getRustEncoding, getPythonEncoding,
-    getSortOnInsert, getSortOnUpdate, getDivinePrideKey, getEnableFuzzyDivinePride, getDivinePrideRangeSource, getShowComboComments, getDisplayName, getItemSearchName,
+    getItemNames, getSkillNames, getItemFiles, getComboFiles, getEncoding, getRustEncoding, getPythonEncoding,
+    getSortOnInsert, getSortOnUpdate, getDivinePrideKey, getEnableFuzzyDivinePride, getDivinePrideRangeSource, getShowComboComments, getDisplayName, getSkillDisplayName, getItemSearchName,
     loadItem, loadCombo, getConstList, makeCode,
     updateItemInMemory, addItemToMemory, deleteItemFromMemory,
     updateComboInMemory, addComboToMemory, deleteComboFromMemory,

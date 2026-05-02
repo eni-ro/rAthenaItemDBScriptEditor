@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import * as jsYaml from 'js-yaml';
+import { parse as parseYaml } from 'yaml';
 
 export interface DbEntry {
   aegis_name: string;
@@ -104,10 +104,19 @@ export interface ComboDbEntry {
   script: string;
 }
 
-// ─── ItemName Entry ──────────────────────────────────────────────────
 export interface ItemNameEntry {
   id: number;
   name: string;
+}
+
+// ─── SkillName Entry ──────────────────────────────────────────────────
+export interface SkillNameEntry {
+  id: number;
+  name: string;
+}
+
+export interface SkillDbEntry extends DbEntry {
+  id: number;
 }
 
 interface YamlDb {
@@ -223,23 +232,38 @@ function removeByteSequence(source: Uint8Array, seq: number[]): Uint8Array {
 
 /** Read YAML file with specified encoding */
 async function readYaml(filePath: string, encoding: string): Promise<string> {
-  const bytesArray = await invoke<number[]>('read_file_bytes', { path: filePath });
-  let bytes = new Uint8Array(bytesArray);
+  let raw: string;
+  try {
+    // Try using the robust Rust-side decoder first
+    raw = await invoke<string>('read_file_encoded', { path: filePath, encoding });
+  } catch (e) {
+    console.warn(`Rust-side decode failed for ${filePath}, falling back to JS decoder:`, e);
+    const bytesArray = await invoke<number[]>('read_file_bytes', { path: filePath });
+    let bytes = new Uint8Array(bytesArray);
+    
+    // Fallback: remove UTF-8 Zero Width Space (E2 80 8B) if it's UTF-8
+    bytes = removeByteSequence(bytes, [0xE2, 0x80, 0x8B]);
+    
+    const decoder = new TextDecoder(encoding);
+    raw = decoder.decode(bytes);
+  }
   
-  // Remove UTF-8 Zero Width Space (E2 80 8B) from byte sequence
-  bytes = removeByteSequence(bytes, [0xE2, 0x80, 0x8B]);
-  
-  // Use raw encoding label directly as requested
-  const decoder = new TextDecoder(encoding);
-  return decoder.decode(bytes);
+  // Comprehensive cleaning of non-printable characters that cause YAML parsers to fail.
+  // We remove:
+  // - Control characters (00-1F except 09, 0A, 0D)
+  // - DEL (7F)
+  // - C1 control characters (80-9F)
+  // - Zero Width characters (U+200B to U+200D, U+FEFF)
+  return raw.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\u200B-\u200D\uFEFF]/g, '');
 }
 
 export class DbReader {
   public items: ItemDbEntry[] = [];
-  public skills: DbEntry[] = [];
+  public skills: SkillDbEntry[] = [];
   public mobs: DbEntry[] = [];
   public combos: ComboDbEntry[] = [];
   public itemNames: Map<number, string> = new Map();
+  public skillNames: Map<number, string> = new Map();
   public itemFiles: string[] = [];
   public comboFiles: string[] = [];
   public encoding: string = 'utf-8';
@@ -259,12 +283,13 @@ export class DbReader {
     this.mobs = [];
     this.combos = [];
     this.itemNames.clear();
+    this.skillNames.clear();
     this.itemFiles = [];
     this.comboFiles = [];
 
     // db.yml is always UTF-8
     const dbRaw: string = await invoke('read_file_raw', { path: dbPath });
-    const dbConf = jsYaml.load(dbRaw, { json: true }) as {
+    const dbConf = parseYaml(dbRaw, { uniqueKeys: false }) as {
       TypeScriptEncoding?: string;
       PythonEncoding?: string;
       RustEncoding?: string;
@@ -272,6 +297,7 @@ export class DbReader {
       ItemCombos?: string[];
       ItemName?: string[];
       Skill?: string[];
+      SkillName?: string[];
       Mob?: string[];
       SortOnInsert?: boolean;
       SortOnUpdate?: boolean;
@@ -302,7 +328,7 @@ export class DbReader {
       for (const filePath of dbConf.Item) {
         try {
           const raw = await readYaml(filePath, this.encoding);
-          const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
+          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const item of parsed.Body) {
               if (item.AegisName && item.Name) {
@@ -325,7 +351,7 @@ export class DbReader {
       for (const filePath of dbConf.ItemCombos) {
         try {
           const raw = await readYaml(filePath, this.encoding);
-          const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
+          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             parsed.Body.forEach((entry: any, index: number) => {
               if (entry.Combos) {
@@ -352,7 +378,7 @@ export class DbReader {
       for (const filePath of dbConf.ItemName) {
         try {
           const raw = await readYaml(filePath, this.encoding);
-          const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
+          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const entry of parsed.Body) {
               if (entry.Id != null && entry.Name) {
@@ -366,24 +392,50 @@ export class DbReader {
       }
     }
 
+
     // ─── Skill ───────────────────────────────────────────────────
     if (dbConf.Skill) {
       for (const filePath of dbConf.Skill) {
         try {
           const raw = await readYaml(filePath, this.encoding);
-          const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
+          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const skill of parsed.Body) {
-              if (skill.Name && skill.Description) {
+              const sid = skill.Id ?? skill.id;
+              const sname = skill.Name ?? skill.name;
+              if (sid != null && sname) {
                 this.skills.push({
-                  aegis_name: skill.Name.toString(),
-                  name: skill.Description.toString(),
+                  id: Number(sid),
+                  aegis_name: sname.toString(),
+                  name: (skill.Description || skill.description || sname).toString(),
                 });
               }
             }
           }
         } catch (e) {
-          console.warn(`Failed to read Skill: ${filePath}`);
+          console.warn(`Failed to read Skill: ${filePath}`, e);
+        }
+      }
+    }
+
+    // ─── SkillName ────────────────────────────────────────────────
+    // SkillName is read with specified encoding (e.g., shift-jis)
+    if (dbConf.SkillName) {
+      for (const filePath of dbConf.SkillName) {
+        try {
+          const raw = await readYaml(filePath, this.encoding);
+          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
+          if (parsed?.Body) {
+            for (const entry of parsed.Body) {
+              const sid = entry.Id ?? entry.id;
+              const sname = entry.Name ?? entry.name;
+              if (sid != null && sname) {
+                this.skillNames.set(Number(sid), sname.toString());
+              }
+            }
+          }
+        } catch (e) {
+          console.warn(`Failed to read SkillName: ${filePath}`, e);
         }
       }
     }
@@ -393,7 +445,7 @@ export class DbReader {
       for (const filePath of dbConf.Mob) {
         try {
           const raw = await readYaml(filePath, this.encoding);
-          const parsed = jsYaml.load(raw, { json: true }) as YamlDb;
+          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const mob of parsed.Body) {
               const name = mob.JapaneseName || mob.Name;
@@ -412,11 +464,17 @@ export class DbReader {
     }
   }
 
-  getItem(aegis_name: string): ItemDbEntry | undefined {
+  getItem(aegis_name: string, filePath?: string): ItemDbEntry | undefined {
+    if (filePath) {
+      return this.items.find(i => i.aegis_name === aegis_name && i.filePath === filePath);
+    }
     return this.items.find(i => i.aegis_name === aegis_name);
   }
 
-  getItemById(id: number): ItemDbEntry | undefined {
+  getItemById(id: number, filePath?: string): ItemDbEntry | undefined {
+    if (filePath) {
+      return this.items.find(i => i.id === id && i.filePath === filePath);
+    }
     return this.items.find(i => i.id === id);
   }
 
@@ -425,6 +483,12 @@ export class DbReader {
     const baseName = jpName || item.name;
     const slotsStr = item.slots != null ? `[${item.slots}]` : '';
     return `${baseName}${slotsStr}(${item.aegis_name})`;
+  }
+
+  getSkillDisplayName(skill: SkillDbEntry): string {
+    const jpName = this.skillNames.get(skill.id);
+    const baseName = jpName || skill.name;
+    return `${baseName}(${skill.aegis_name})`;
   }
 
   getCombosForItem(aegis_name: string): ComboDbEntry[] {

@@ -267,11 +267,11 @@ const openParamSelect = (arg: ScriptArgConf, index: number) => {
   } else if (arg.Type === "Item") {
     items = appModel
       .getItems()
-      .map((i) => ({ value: i.aegis_name, desc: i.name }));
+      .map((i) => ({ value: i.aegis_name, desc: appModel.getDisplayName(i) }));
   } else if (arg.Type === "Skill") {
     items = appModel
       .getSkills()
-      .map((i) => ({ value: i.aegis_name, desc: i.name }));
+      .map((i) => ({ value: i.aegis_name, desc: appModel.getSkillDisplayName(i) }));
   } else if (arg.Type === "Mob") {
     items = appModel
       .getMobs()

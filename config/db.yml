@@ -2,16 +2,22 @@ TypeScriptEncoding: utf-8
 PythonEncoding: utf-8
 RustEncoding: utf-8
 Item:
-  - E:\ROEmu\rAthena\db\import\item_db.yml
-  - E:\ROEmu\rAthena\db\re\item_db_equip.yml
-  - E:\ROEmu\rAthena\db\re\item_db_usable.yml
-  - E:\ROEmu\rAthena\db\re\item_db_etc.yml
+  - C:\rAthena\db\import\item_db.yml
+  - C:\rAthena\db\re\item_db_equip.yml
+  - C:\rAthena\db\re\item_db_usable.yml
+  - C:\rAthena\db\re\item_db_etc.yml
 ItemCombos:
-  - E:\ROEmu\rAthenaRef\db\import\item_combos.yml
-  - E:\ROEmu\rAthenaRef\db\re\item_combos.yml
+  - C:\rAthena\db\import\item_combos.yml
+  - C:\rAthena\db\re\item_combos.yml
 Mob:
-  - E:\ROEmu\rAthena\db\import\mob_db.yml
-  - E:\ROEmu\rAthena\db\re\mob_db.yml
+  - C:\rAthena\db\import\mob_db.yml
+  - C:\rAthena\db\re\mob_db.yml
 Skill:
-  - E:\ROEmu\rAthena\db\import\skill_db.yml
-  - E:\ROEmu\rAthena\db\re\skill_db.yml
+  - C:\rAthena\db\import\skill_db.yml
+  - C:\rAthena\db\re\skill_db.yml
+DivinePrideKey: YourApiToken
+SortOnInsert: true
+SortOnUpdate: false
+EnableFuzzyDivinePride: true
+DivinePrideRangeSource: fuzzy
+ShowComboComments: true

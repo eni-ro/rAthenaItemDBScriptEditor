@@ -65,7 +65,7 @@ const headers = [
   { title: "Name", key: "name", sortable: true },
 ];
 
-let onSelectCallback: ((aegis_name: string) => void) | null = null;
+let onSelectCallback: ((aegis_name: string, filePath: string) => void) | null = null;
 
 // Pre-build search target strings
 const allItems = computed(() => {
@@ -89,7 +89,7 @@ const filteredItems = computed(() => {
   return allItems.value.filter((item) => item._search.includes(q));
 });
 
-const openDialog = (onSelect: (aegis_name: string) => void) => {
+const openDialog = (onSelect: (aegis_name: string, filePath: string) => void) => {
   onSelectCallback = onSelect;
   search.value = "";
   debouncedSearch.value = "";
@@ -98,7 +98,7 @@ const openDialog = (onSelect: (aegis_name: string) => void) => {
 
 const onRowClick = (_event: Event, { item }: any) => {
   if (onSelectCallback && item && item.aegis_name) {
-    onSelectCallback(item.aegis_name);
+    onSelectCallback(item.aegis_name, item.filePath);
   }
   dialog.value = false;
 };

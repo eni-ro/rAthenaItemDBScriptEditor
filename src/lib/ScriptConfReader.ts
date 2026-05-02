@@ -36,8 +36,8 @@ export class ScriptConfReader {
   async load(scriptPath: string, constPath: string) {
     const scriptRaw = await readTextFile(scriptPath);
     const constRaw = await readTextFile(constPath);
-    this.scripts = parse(scriptRaw) as ScriptCategoryConf[];
-    this.consts = parse(constRaw) as ConstListConf[];
+    this.scripts = parse(scriptRaw, { uniqueKeys: false }) as ScriptCategoryConf[];
+    this.consts = parse(constRaw, { uniqueKeys: false }) as ConstListConf[];
     this.generateSearchStrings();
   }
 

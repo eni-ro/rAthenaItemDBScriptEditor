@@ -216,8 +216,8 @@ const openItemSelect = () => {
       text: `Opening dialog, items count: ${count}`,
       color: "info",
     };
-    itemSelectDialog.value.openDialog((aegis_name: string) => {
-      appModel.loadItem(aegis_name);
+    itemSelectDialog.value.openDialog((aegis_name: string, filePath: string) => {
+      appModel.loadItem(aegis_name, filePath);
     });
   }
 };
@@ -240,7 +240,7 @@ const saveItem = async () => {
       // Update our internal memory model
       const dbItem = appModel
         .getItems()
-        .find((i) => i.aegis_name === current.aegis_name);
+        .find((i) => i.aegis_name === current.aegis_name && i.filePath === current.filePath);
       if (dbItem) {
         Object.assign(dbItem, toSave);
       }

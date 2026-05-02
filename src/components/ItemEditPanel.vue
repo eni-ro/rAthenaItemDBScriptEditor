@@ -532,8 +532,16 @@ async function onSearchDivinePride() {
       }, 500);
 
       // Reflect accurate items to UI
-      if (d.aegisName) form.aegis_name = d.aegisName;
-      if (d.name) form.name = d.name;
+      if (d.aegisName) {
+        form.aegis_name = d.aegisName;
+      } else if (!form.aegis_name) {
+        // If aegisName is missing from API and currently empty in UI, set default aegis_(itemID)
+        form.aegis_name = `aegis_${form.id}`;
+      }
+      if (d.name) {
+        // Remove trailing slot count like [0], [1] and trim whitespace
+        form.name = d.name.replace(/\[\d+\]\s*$/, '').trim();
+      }
       
       // 1. Item Type Mapping (DivinePride API IDs)
       const typeMap: Record<number, string> = {
@@ -929,7 +937,7 @@ async function save() {
       });
       if (result.success) {
         appModel.addItemToMemory(toSave);
-        appModel.loadItem(toSave.aegis_name);
+        appModel.loadItem(toSave.aegis_name, toSave.filePath);
         isNew.value = false;
         isDirty.value = false;
         snackbar.value = { show: true, text: 'Created and saved successfully', color: 'success' };

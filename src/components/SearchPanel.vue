@@ -108,6 +108,7 @@ const allItemResults = computed<SearchResult[]>(() => {
   }));
 });
 
+
 const allComboResults = computed<SearchResult[]>(() => {
   const out: SearchResult[] = [];
   const allItems = appModel.getItems();
@@ -159,7 +160,10 @@ const results = computed<SearchResult[]>(() => {
 });
 
 function isActive(r: SearchResult): boolean {
-  if (r.type === 'item') return appModel.currentItem.value?.aegis_name === r.item?.aegis_name;
+  if (r.type === 'item') {
+    return appModel.currentItem.value?.aegis_name === r.item?.aegis_name && 
+           appModel.currentItem.value?.filePath === r.item?.filePath;
+  }
   if (r.type === 'combo') {
     const c = appModel.currentCombo.value;
     return !!(c && c.filePath === r.combo?.filePath && c.index === r.combo?.index);
@@ -168,7 +172,7 @@ function isActive(r: SearchResult): boolean {
 }
 
 function onSelect(r: SearchResult) {
-  if (r.type === 'item' && r.item) appModel.loadItem(r.item.aegis_name);
+  if (r.type === 'item' && r.item) appModel.loadItem(r.item.aegis_name, r.item.filePath);
   else if (r.type === 'combo' && r.combo) appModel.loadCombo(r.combo);
 }
 

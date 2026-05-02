@@ -192,6 +192,7 @@ export async function updateDbYml(
     Item?: string[];
     ItemCombos?: string[];
     ItemName?: string[];
+    SkillName?: string[];
     Mob?: string[];
     Skill?: string[];
   },

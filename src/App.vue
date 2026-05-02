@@ -82,7 +82,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import { invoke as tauriInvoke } from '@tauri-apps/api/core';
-import * as jsYaml from 'js-yaml';
+import { parse as parseYaml } from 'yaml';
 import { useGlobals } from './composables/useAppModel';
 import { settings, type WindowState } from './lib/SettingsStore';
 import SearchPanel from './components/SearchPanel.vue';
@@ -150,8 +150,10 @@ function openSettings() {
   const invoke = async () => {
     try {
       const dbPath = appModel.dbYmlPath.value;
-      const raw: string = await tauriInvoke('read_file_raw', { path: dbPath });
-      const conf = (jsYaml.load(raw) as any) || {};
+      let raw: string = await tauriInvoke('read_file_raw', { path: dbPath });
+      // Apply same cleaning as DbReader.ts
+      raw = raw.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\u200B-\u200D\uFEFF]/g, '');
+      const conf = (parseYaml(raw, { uniqueKeys: false }) as any) || {};
       settingsView.value?.open({
         TypeScriptEncoding: conf.TypeScriptEncoding,
         PythonEncoding: conf.PythonEncoding,
@@ -160,6 +162,7 @@ function openSettings() {
         Item: conf.Item || [],
         ItemCombos: conf.ItemCombos || [],
         ItemName: conf.ItemName || [],
+        SkillName: conf.SkillName || [],
         Mob: conf.Mob || [],
         Skill: conf.Skill || [],
         DivinePrideKey: conf.DivinePrideKey,
@@ -178,6 +181,7 @@ function openSettings() {
         Item: [],
         ItemCombos: [],
         ItemName: [],
+        SkillName: [],
         Mob: [],
         Skill: [],
         DivinePrideKey: '',
