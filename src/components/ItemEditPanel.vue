@@ -571,7 +571,7 @@ async function onSearchDivinePride() {
       if (form.type === 'Weapon') {
         const weaponMap: Record<number, string> = {
           256: 'Dagger', 257: '1hSword', 258: '2hSword', 259: '1hSpear', 260: '2hSpear',
-          261: '1hAxe', 262: '2hAxe', 263: '1hMace', 264: '2hMace', 265: '1hStaff',
+          261: '1hAxe', 262: '2hAxe', 263: 'Mace', 264: '2hMace', 265: 'Staff',
           266: '2hStaff', 267: 'Bow', 268: 'Knuckle', 269: 'Musical', 270: 'Whip',
           271: 'Book', 272: 'Katar', 273: 'Revolver', 274: 'Rifle', 275: 'Gatling',
           276: 'Shotgun', 277: 'Grenade', 278: 'Huuma'
