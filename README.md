@@ -30,6 +30,9 @@ Body:
   - "Fuzzy Parsing" in settings can extract levels from description text.
 
 ## History
+* v0.12.1
+  * Fixed weapon sub-type mapping for DivinePride items (e.g., 1hMace to Mace)
+
 * v0.12
   * Added Search Tips (tooltips on selection), Autocomplete, and improved variable tokenization for rAthena scripts
   * Added DivinePride integration with advanced data mapping, fuzzy parsing for levels, and dedicated reference window
