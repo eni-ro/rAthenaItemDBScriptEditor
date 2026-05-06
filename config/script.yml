@@ -758,7 +758,7 @@
         - bonus2 bSkillUseSP,sk,n;
         - --------------------
         - Decreases SP consumption of skill sk by n
-      Script: bonus2 bSkillUseSP,ARG1,ARG2;
+      Script: bonus2 bSkillUseSP,"ARG1",ARG2;
       Args:
         - Desc: skill id
           Type: Skill
@@ -769,7 +769,7 @@
         - bonus2 bSkillUseSPrate,sk,n;
         - --------------------
         - Decreases SP consumption of skill sk by n%
-      Script: bonus2 bSkillUseSPrate,ARG1,ARG2;
+      Script: bonus2 bSkillUseSPrate,"ARG1",ARG2;
       Args:
         - Desc: skill id
           Type: Skill
@@ -784,7 +784,7 @@
         - bonus2 bSkillAtk,ARG1,ARG2;
         - --------------------
         - Increases damage of skill sk by n%
-      Script: bonus2 bSkillAtk,ARG1,ARG2;
+      Script: bonus2 bSkillAtk,"ARG1",ARG2;
       Args:
         - Desc: skill id
           Type: Skill
@@ -967,7 +967,7 @@
         - bonus2 bSkillHeal,sk,n;
         - --------------------
         - Increases heal amount of skill sk by n%
-      Script: bonus2 bSkillHeal,ARG1,ARG2;
+      Script: bonus2 bSkillHeal,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -978,7 +978,7 @@
         - bonus2 bSkillHeal2,sk,n;
         - --------------------
         - Increases heal amount if you are healed by skill sk by n%
-      Script: bonus2 bSkillHeal2,ARG1,ARG2;
+      Script: bonus2 bSkillHeal2,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -998,7 +998,7 @@
         - bonus2 bAddItemHealRate,iid,n;
         - --------------------
         - Increases HP recovered by n% for item iid
-      Script: bonus2 bAddItemHealRate,ARG1,ARG2;
+      Script: bonus2 bAddItemHealRate,"ARG1",ARG2;
       Args:
         - Desc: iid
           Type: Item
@@ -1029,7 +1029,7 @@
         - bonus2 bAddItemSPHealRate,iid,n;
         - --------------------
         - Increases SP recovered by n% for item iid
-      Script: bonus2 bAddItemSPHealRate,ARG1,ARG2;
+      Script: bonus2 bAddItemSPHealRate,"ARG1",ARG2;
       Args:
         - Desc: iid
           Type: Item
@@ -1065,7 +1065,7 @@
         - bonus2 bCastrate,sk,n;
         - --------------------
         - Adjust casting time of skill sk by n%.(If RENEWAL_CAST is defined, this bonus is equal to bVariableCastrate)
-      Script: bonus2 bCastrate,ARG1,ARG2;
+      Script: bonus2 bCastrate,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1085,7 +1085,7 @@
         - bonus2 bFixedCastrate,sk,n;
         - --------------------
         - Increases fixed cast time of skill sk by n% (has effect in RENEWAL_CAST only)
-      Script: bonus2 bFixedCastrate,ARG1,ARG2;
+      Script: bonus2 bFixedCastrate,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1105,7 +1105,7 @@
         - bonus2 bVariableCastrate,sk,n;
         - --------------------
         - Increases variable cast time of skill sk by n% (If RENEWAL_CAST is NOT defined, this bonus is equal to bCastrate)
-      Script: bonus2 bVariableCastrate,ARG1,ARG2;
+      Script: bonus2 bVariableCastrate,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1125,7 +1125,7 @@
         - bonus2 bSkillFixedCast,sk,t;
         - --------------------
         - Increases fixed cast time of skill sk by t milliseconds (has effect in RENEWAL_CAST only)
-      Script: bonus2 bSkillFixedCast,ARG1,ARG2;
+      Script: bonus2 bSkillFixedCast,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1145,7 +1145,7 @@
         - bonus2 bSkillVariableCast,sk,t;
         - --------------------
         - Increases variable cast time of skill sk by t milliseconds
-      Script: bonus2 bSkillVariableCast,ARG1,ARG2;
+      Script: bonus2 bSkillVariableCast,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1177,7 +1177,7 @@
         - bonus2 bSkillDelay,sk,t;
         - --------------------
         - Increases delay of skill sk by t milliseconds
-      Script: bonus2 bSkillDelay,ARG1,ARG2;
+      Script: bonus2 bSkillDelay,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1188,7 +1188,7 @@
         - bonus2 bSkillCooldown,sk,t;
         - --------------------
         - Increases cooldown of skill sk by t milliseconds
-      Script: bonus2 bSkillCooldown,ARG1,ARG2;
+      Script: bonus2 bSkillCooldown,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1518,7 +1518,7 @@
         - bonus2 bSubSkill,sk,n;
         - --------------------
         - Reduces n% damage received from skill sk
-      Script: bonus2 bSubSkill,ARG1,ARG2;
+      Script: bonus2 bSubSkill,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -1936,7 +1936,7 @@
         - bonus3 bAddEffOnSkill,sk,eff,n;
         - --------------------
         - Adds a n/100% chance to cause status eff on enemy when using skill sk
-      Script: bonus3 bAddEffOnSkill,ARG1,ARG2,ARG3;
+      Script: bonus3 bAddEffOnSkill,"ARG1",ARG2,ARG3;
       Args:
         - Desc: sk
           Type: Skill
@@ -1950,7 +1950,7 @@
         - bonus4 bAddEffOnSkill,sk,eff,n,atf;
         - --------------------
         - Adds a n/100% chance to cause status eff on the target when using skill sk
-      Script: bonus4 bAddEffOnSkill,ARG1,ARG2,ARG3,ARG4;
+      Script: bonus4 bAddEffOnSkill,"ARG1",ARG2,ARG3,ARG4;
       Args:
         - Desc: sk
           Type: Skill
@@ -1970,7 +1970,7 @@
         - atf is the trigger criteria
         - ATF_SELF   = trigger effect on self
         - ATF_TARGET = trigger effect on target
-      Script: bonus5 bAddEffOnSkill,ARG1,ARG2,ARG3,ARG4,ARG5;
+      Script: bonus5 bAddEffOnSkill,"ARG1",ARG2,ARG3,ARG4,ARG5;
       Args:
         - Desc: sk
           Type: Skill
@@ -2058,7 +2058,7 @@
         - bonus3 bAutoSpell,sk,y,n;
         - --------------------
         - Adds a n/10% chance to cast skill sk of level y when attacking
-      Script: bonus3 bAutoSpell,ARG1,ARG2,ARG3;
+      Script: bonus3 bAutoSpell,"ARG1",ARG2,ARG3;
       Args:
         - Desc: sk
           Type: Skill
@@ -2071,7 +2071,7 @@
         - bonus3 bAutoSpellWhenHit,sk,y,n;
         - --------------------
         - Adds a n/10% chance to cast skill sk of level y when being hit by a direct attack
-      Script: bonus3 bAutoSpellWhenHit,ARG1,ARG2,ARG3;
+      Script: bonus3 bAutoSpellWhenHit,"ARG1",ARG2,ARG3;
       Args:
         - Desc: sk
           Type: Skill
@@ -2089,7 +2089,7 @@
         - " &1 = cast on enemy"
         - " &2 = use random skill level in [1..y]"
         - " &3 = 1+2 (random level on enemy)"
-      Script: bonus4 bAutoSpell,ARG1,ARG2,ARG3,ARG4;
+      Script: bonus4 bAutoSpell,"ARG1",ARG2,ARG3,ARG4;
       Args:
         - Desc: sk
           Type: Skill
@@ -2110,7 +2110,7 @@
         - " &1 = cast on enemy"
         - " &2 = use random skill level in [1..y]"
         - " &3 = 1+2 (random level on enemy)"
-      Script: bonus5 bAutoSpell,ARG1,ARG2,ARG3,ARG4,ARG5;
+      Script: bonus5 bAutoSpell,"ARG1",ARG2,ARG3,ARG4,ARG5;
       Args:
         - Desc: sk
           Type: Skill
@@ -2134,7 +2134,7 @@
         - " &1 = cast on enemy"
         - " &2 = use random skill level in [1..y]"
         - " &3 = 1+2 (random level on enemy)"
-      Script: bonus4 bAutoSpellWhenHit,ARG1,ARG2,ARG3,ARG4;
+      Script: bonus4 bAutoSpellWhenHit,"ARG1",ARG2,ARG3,ARG4;
       Args:
         - Desc: sk
           Type: Skill
@@ -2155,7 +2155,7 @@
         - " &1 = cast on enemy"
         - " &2 = use random skill level in [1..y]"
         - " &3 = 1+2 (random level on enemy)"
-      Script: bonus5 bAutoSpellWhenHit,ARG1,ARG2,ARG3,ARG4,ARG5;
+      Script: bonus5 bAutoSpellWhenHit,"ARG1",ARG2,ARG3,ARG4,ARG5;
       Args:
         - Desc: sk
           Type: Skill
@@ -2174,7 +2174,7 @@
         - bonus4 bAutoSpellOnSkill,sk,x,y,n;
         - --------------------
         - Adds a n/10% chance to autospell skill x at level y when using skill sk
-      Script: bonus4 bAutoSpellOnSkill,ARG1,ARG2,ARG3,ARG4;
+      Script: bonus4 bAutoSpellOnSkill,"ARG1","ARG2",ARG3,ARG4;
       Args:
         - Desc: sk
           Type: Skill
@@ -2194,7 +2194,7 @@
         - " &1 = cast on enemy"
         - " &2 = use random skill level in [1..y]"
         - " &3 = 1+2 (random level on enemy)"
-      Script: bonus5 bAutoSpellOnSkill,ARG1,ARG2,ARG3,ARG4,ARG5;
+      Script: bonus5 bAutoSpellOnSkill,"ARG1","ARG2",ARG3,ARG4,ARG5;
       Args:
         - Desc: sk
           Type: Skill
@@ -2636,7 +2636,7 @@
         - bonus3 bAddMonsterIdDropItem,iid,mid,n;
         - --------------------
         - Adds a n/100% chance of dropping item iid when killing monster mid
-      Script: bonus3 bAddMonsterIdDropItem,ARG1,ARG2,ARG3;
+      Script: bonus3 bAddMonsterIdDropItem,"ARG1",ARG2,ARG3;
       Args:
         - Desc: iid
           Type: Item
@@ -2649,7 +2649,7 @@
         - bonus2 bAddMonsterDropItem,iid,n;
         - --------------------
         - Adds a n/100% chance for item iid to be dropped when killing a monster
-      Script: bonus2 bAddMonsterDropItem,ARG1,ARG2;
+      Script: bonus2 bAddMonsterDropItem,"ARG1",ARG2;
       Args:
         - Desc: iid
           Type: Item
@@ -2660,7 +2660,7 @@
         - bonus3 bAddMonsterDropItem,iid,r,n;
         - --------------------
         - Adds a n/100% chance for item iid to be dropped when killing a monster of race r
-      Script: bonus3 bAddMonsterDropItem,ARG1,ARG2,ARG3;
+      Script: bonus3 bAddMonsterDropItem,"ARG1",ARG2,ARG3;
       Args:
         - Desc: iid
           Type: Item
@@ -2674,7 +2674,7 @@
         - bonus3 bAddClassDropItem,iid,c,n;
         - --------------------
         - Adds a n/100% chance for item iid to be dropped when killing a monster of class c
-      Script: bonus3 bAddClassDropItem,ARG1,ARG2,ARG3;
+      Script: bonus3 bAddClassDropItem,"ARG1",ARG2,ARG3;
       Args:
         - Desc: iid
           Type: Item
@@ -2796,7 +2796,7 @@
         - bonus2 bAddSkillBlow,sk,n;
         - --------------------
         - Knock back the target by n cells when using skill sk
-      Script: bonus2 bAddSkillBlow,ARG1,ARG2;
+      Script: bonus2 bAddSkillBlow,"ARG1",ARG2;
       Args:
         - Desc: sk
           Type: Skill
@@ -2872,7 +2872,7 @@
         - if( getequipid(<equipment slot>) == itemid )
         - --------------------
         - This function will return the number of cards inserted into the equipment from which the function is called.
-      Script: if( getequipid(ARG1) == ARG2 )
+      Script: if( getequipid(ARG1) == getiteminfo("ARG2",ITEMINFO_ID) )
       Args:
         - Desc: equipment slot
           Type: List
@@ -2951,7 +2951,7 @@
         - --------------------
         - This function returns the level of the specified skill that the invoking character has.
         - If they don't have the skill, 0 will be returned.
-      Script: .@sklv = getskilllv(ARG1);
+      Script: .@sklv = getskilllv("ARG1");
       Args:
         - Desc: skill id
           Type: Skill
@@ -2976,7 +2976,7 @@
         -
         - Flag 3 is the same as flag 1 in that it saves to the database.
         - However, these skills are ignored when any action is taken that adjusts the skill tree (reset/job change).
-      Script: skill ARG1,ARG2,ARG3;
+      Script: skill "ARG1",ARG2,ARG3;
       Args:
         - Desc: skill id
           Type: Skill
@@ -2996,7 +2996,7 @@
         - If <keep requirement> parameter is set to true, the skill's requirements will be checked.
         - By default, the requirements for item skills are not checked, and therefore the default value is false.
 
-      Script: itemskill ARG1,ARG2;
+      Script: itemskill "ARG1",ARG2;
       Args:
         - Desc: skill id
           Type: Skill
@@ -3014,7 +3014,7 @@
         - This command will give an amount of specified items to the invoking character.
         - If an optional account ID is specified, and the target character is currently online, items will be created in their inventory instead.
         - If they are not online, nothing will happen.
-      Script: getitem ARG1,ARG2;
+      Script: getitem "ARG1",ARG2;
       Args:
         - Desc: ItemID
           Type: Item
@@ -3025,7 +3025,7 @@
         - delitem <item id>,<amount>{,<account ID>};
         - --------------------
         - This command will remove a specified amount of items from the invoking/target character.
-      Script: delitem ARG1,ARG2;
+      Script: delitem "ARG1",ARG2;
       Args:
         - Desc: ItemID
           Type: Item
@@ -3036,7 +3036,7 @@
         - countitem(<item id>);
         - --------------------
         - This function will return the number of items for the specified item ID that the invoking character has in the inventory.
-      Script: .@n = countitem(ARG1);
+      Script: .@n = countitem("ARG1");
       Args:
         - Desc: ItemID
           Type: Item
@@ -3046,7 +3046,7 @@
         - --------------------
         - This function will return the number of items for the specified item ID that the invoking character has in the cart.
         - If no cart is mounted, this function will return -1.
-      Script: .@n = cartcountitem(ARG1);
+      Script: .@n = cartcountitem("ARG1");
       Args:
         - Desc: ItemID
           Type: Item
@@ -3055,7 +3055,7 @@
         - storagecountitem(<item id>);
         - --------------------
         - This function will return the number of items for the specified item ID that the invoking character has in the storage.
-      Script: .@n = storagecountitem(ARG1);
+      Script: .@n = storagecountitem("ARG1");
       Args:
         - Desc: ItemID
           Type: Item
@@ -3064,7 +3064,7 @@
         - guildstoragecountitem(<item id>);
         - --------------------
         - This function will return the number of items for the specified item ID that the invoking character has in the guild storage.
-      Script: .@n = guildstoragecountitem(ARG1);
+      Script: .@n = guildstoragecountitem("ARG1");
       Args:
         - Desc: ItemID
           Type: Item
@@ -3075,7 +3075,7 @@
         - This command will run the item script of the specified item on the invoking character.
         - The character does not need to possess the item, and the item will not be deleted.
         - While this command is intended for usable items, it will run for any item type.
-      Script: consumeitem(ARG1);
+      Script: consumeitem("ARG1");
       Args:
         - Desc: ItemID
           Type: Item
@@ -3256,7 +3256,7 @@
         - --------------------
         - These functions will compute and return 1 if the total weight of the specified number of specific items does not exceed the invoking character's carrying capacity, and 0 otherwise.
         - It is important to see if a player can carry the items you expect to give them, failing to do that may open your script up to abuse or create some very unfair errors.
-      Script: if( checkweight(ARG1,ARG2) == 0 ){}
+      Script: if( checkweight("ARG1",ARG2) == 0 ){}
       ScriptNoReturn: true
       Args:
         - Desc: item id
@@ -3502,7 +3502,7 @@
         And we usually use 'other script' to show visual effects.
         In all cases, when the script triggers, the attached player will be the one who holds the bonus.
         There is currently no way of knowing within this script who was the other character (the attacker in autobonus2, or the target in autobonus and autobonus3).
-      Script: autobonus3 "{}",ARG1,ARG2,ARG3;
+      Script: autobonus3 "{}",ARG1,ARG2,"ARG3";
       Args:
         - Desc: n
           Type: Value
