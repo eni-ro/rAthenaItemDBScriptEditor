@@ -17,7 +17,7 @@
           <v-text-field
             v-model="search"
             append-inner-icon="mdi-magnify"
-            label="Search by AegisName or Name"
+            label="Search by ID, AegisName or Name"
             single-line
             hide-details
             density="compact"
@@ -74,6 +74,8 @@ const allItems = computed(() => {
   return items.map((item) => ({
     ...item,
     _search: (
+      item.id +
+      " " +
       item.aegis_name +
       " " +
       item.name +

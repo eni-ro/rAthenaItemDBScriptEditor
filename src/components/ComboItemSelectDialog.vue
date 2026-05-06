@@ -12,7 +12,7 @@
           <v-text-field
             v-model="search"
             append-inner-icon="mdi-magnify"
-            label="Search by AegisName / Name / SearchName"
+            label="Search by ID / AegisName / Name / SearchName"
             single-line
             hide-details
             density="compact"
@@ -53,12 +53,13 @@ const headers = [
 
 const filteredItems = computed(() => {
   return appModel.getItems().map(item => ({
+    id: item.id,
     aegis_name: item.aegis_name,
     displayName: appModel.getDisplayName(item),
   })).filter(item => {
     if (!search.value) return true;
     const q = search.value.toLowerCase();
-    return item.aegis_name.toLowerCase().includes(q) || item.displayName.toLowerCase().includes(q);
+    return item.id.toString().includes(q) || item.aegis_name.toLowerCase().includes(q) || item.displayName.toLowerCase().includes(q);
   });
 });
 

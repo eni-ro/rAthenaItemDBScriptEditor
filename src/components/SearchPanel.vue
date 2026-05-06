@@ -5,7 +5,7 @@
       <v-text-field
         v-model="rawSearch"
         append-inner-icon="mdi-magnify"
-        label="Search (AegisName / Name / SearchName)"
+        label="Search (ID / AegisName / Name / SearchName)"
         density="compact"
         hide-details
         variant="outlined"
@@ -103,7 +103,7 @@ const allItemResults = computed<SearchResult[]>(() => {
     key: `item-${item.filePath}-${item.aegis_name}`,
     type: 'item' as const,
     label: appModel.getDisplayName(item),
-    _search: (item.aegis_name + item.name + (appModel.getItemNames().get(item.id) || '') + (item.slots != null ? `[${item.slots}]` : '')).toLowerCase(),
+    _search: (item.id + item.aegis_name + item.name + (appModel.getItemNames().get(item.id) || '') + (item.slots != null ? `[${item.slots}]` : '')).toLowerCase(),
     item,
   }));
 });
@@ -132,6 +132,7 @@ const allComboResults = computed<SearchResult[]>(() => {
         searchTerms.push(aegis.toLowerCase());
         const itm = aegisMap.get(aegis);
         if (itm) {
+          searchTerms.push(itm.id.toString());
           searchTerms.push(itm.name.toLowerCase());
           const jpName = itemNames.get(itm.id);
           if (jpName) searchTerms.push(jpName.toLowerCase());
