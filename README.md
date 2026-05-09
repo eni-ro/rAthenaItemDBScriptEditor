@@ -30,6 +30,12 @@ Body:
   - "Fuzzy Parsing" in settings can extract levels from description text.
 
 ## History
+* v0.13.0
+  * Support for `Imports` field in YAML footer and recursive database loading
+  * Implemented Aegis name <-> ID conversion for items, mobs, and skills (Right-click menu in editor)
+  * Included Item ID in search targets
+  * Fixed missing double quotation marks in item and skill specifications
+
 * v0.12.1
   * Fixed weapon sub-type mapping for DivinePride items (e.g., 1hMace to Mace)
 

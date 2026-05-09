@@ -6,3 +6,5 @@ package.json の version を更新。
 bash
 npm run release:tag
 これで GitHub 側で自動的にバイナリ付きのリリースが作成されます。
+
+npm run build:processorでバックエンドビルド＆デバッグ用配置
