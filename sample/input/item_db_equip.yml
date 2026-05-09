@@ -9122,8 +9122,10 @@ Body:
     Attack: 130
     Range: 3
     Jobs:
-      Crusader: true
       Knight: true
+      Crusader: true
+    Classes:
+      All: true
     Locations:
       Right_Hand: true
     WeaponLevel: 4
@@ -10385,8 +10387,11 @@ Body:
     Attack: 220
     Range: 3
     Jobs:
-      Crusader: true
+      Swordman: true
       Knight: true
+      Crusader: true
+    Classes:
+      All: true
     Locations:
       Both_Hand: true
     WeaponLevel: 4
@@ -15816,11 +15821,17 @@ Body:
     MagicAttack: 145
     Range: 1
     Jobs:
-      Acolyte: true
-      Mage: true
       Novice: true
+      Mage: true
+      Wizard: true
+      Sage: true
+      Acolyte: true
+      Priest: true
+      Monk: true
       SuperNovice: true
       SoulLinker: true
+    Classes:
+      All: true
     Locations:
       Right_Hand: true
     WeaponLevel: 4
@@ -17949,8 +17960,10 @@ Body:
     MagicAttack: 100
     Range: 1
     Jobs:
-      Monk: true
       Priest: true
+      Monk: true
+    Classes:
+      All: true
     Locations:
       Right_Hand: true
     WeaponLevel: 4
@@ -19633,6 +19646,8 @@ Body:
     Range: 1
     Jobs:
       BardDancer: true
+    Classes:
+      All: true
     Gender: Male
     Locations:
       Right_Hand: true
@@ -20921,6 +20936,8 @@ Body:
     Range: 2
     Jobs:
       BardDancer: true
+    Classes:
+      All: true
     Gender: Female
     Locations:
       Right_Hand: true
@@ -140614,7 +140631,7 @@ Body:
          bonus2 bSubRace,RC_DemiHuman,5;
       }
   - Id: 26207
-    AegisName:  Local01_Book
+    AegisName: Local01_Book
     Name: Earth Dragon Book
     Type: Weapon
     SubType: Book
@@ -148611,7 +148628,7 @@ Body:
       bonus2 bMagicAddRace,RC_Demon,.@val;
       bonus2 bMagicAddRace,RC_Undead,.@val;
   - Id: 28625
-    AegisName:  Local02_Book
+    AegisName: Local02_Book
     Name: Yinyang Book
     Type: Weapon
     SubType: Book
@@ -169359,8 +169376,6 @@ Body:
     EquipLevelMin: 1
     Refineable: true
     View: 548
-    Trade:
-      NoDrop: true
     Script: |
       if (getrefine()>6) {
          bonus bCritical,10;
@@ -180711,7 +180726,7 @@ Body:
     ArmorLevel: 1
     View: 2487
   - Id: 401248
-    AegisName: C_Apprentice_Witch_Hat 
+    AegisName: C_Apprentice_Witch_Hat
     Name: Costume Apprentice Witch Hat    # !todo check english name
     Type: Armor
     Locations:
@@ -180719,7 +180734,7 @@ Body:
     ArmorLevel: 1
     View: 2814
   - Id: 401294
-    AegisName: aegis_401294 
+    AegisName: aegis_401294
     Name: Costume Tulip Hairpin (Yellow)    # !todo check english name
     Type: Armor
     Locations:
@@ -180727,7 +180742,7 @@ Body:
     ArmorLevel: 1
     View: 499
   - Id: 401295
-    AegisName: C_Nymph_Ear 
+    AegisName: C_Nymph_Ear
     Name: Costume Nymph's Ear
     Type: Armor
     Locations:
@@ -180735,7 +180750,7 @@ Body:
     ArmorLevel: 1
     View: 2818
   - Id: 401300
-    AegisName: C_LG_Feather_Hat 
+    AegisName: C_LG_Feather_Hat
     Name: Costume Light Green Feather Hat    # !todo check english name
     Type: Armor
     Locations:
@@ -180743,7 +180758,7 @@ Body:
     ArmorLevel: 1
     View: 2819
   - Id: 401303
-    AegisName: C_Ruck_Keeper 
+    AegisName: C_Ruck_Keeper
     Name: Costume Ruck Keeper
     Type: Armor
     Locations:
@@ -181489,7 +181504,7 @@ Body:
     ArmorLevel: 1
     View: 2054
   - Id: 410046
-    AegisName:  C_18y_Hat_JP
+    AegisName: C_18y_Hat_JP
     Name: Costume 18th Anniversary Board
     Type: Armor
     Locations:
@@ -220681,7 +220696,7 @@ Body:
       bonus bMatkRate,7;
       bonus bAtkRate,7;
   - Id: 490049
-    AegisName:  Sin_Necklace_T
+    AegisName: Sin_Necklace_T
     Name: Sinful Topaz Necklace
     Type: Armor
     Weight: 100
@@ -228728,7 +228743,7 @@ Body:
       if ((eaclass()&EAJL_THIRD) && (BaseJob == Job_Bard || BaseJob == Job_Dancer))
          bonus2 bSkillCooldown,"WM_SEVERE_RAINSTORM",-4000;
     UnEquipScript: |
-       sc_end SC_UNLIMIT;
+      sc_end SC_UNLIMIT;
   - Id: 490610
     AegisName: Document_Acolyte_TH
     Name: Document Acolyte

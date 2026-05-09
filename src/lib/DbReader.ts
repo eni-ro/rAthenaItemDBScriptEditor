@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { parse as parseYaml } from 'yaml';
 
 export interface DbEntry {
+  id?: number;
   aegis_name: string;
   name: string;
 }
@@ -275,6 +276,7 @@ export class DbReader {
   public enableFuzzyDivinePride: boolean = false;
   public divinePrideRangeSource: 'api' | 'fuzzy' = 'api';
   public showComboComments: boolean = true;
+  public formatOnSave: boolean = true;
 
   async load(dbPath: string) {
     // Clear existing data to avoid duplicates if load is called multiple times
@@ -305,6 +307,7 @@ export class DbReader {
       EnableFuzzyDivinePride?: boolean;
       DivinePrideRangeSource?: 'api' | 'fuzzy';
       ShowComboComments?: boolean;
+      FormatOnSave?: boolean;
     };
 
     // Get sorting settings.
@@ -314,6 +317,7 @@ export class DbReader {
     this.enableFuzzyDivinePride = dbConf.EnableFuzzyDivinePride === true;
     this.divinePrideRangeSource = dbConf.DivinePrideRangeSource || 'api';
     this.showComboComments = dbConf.ShowComboComments !== false;
+    this.formatOnSave = dbConf.FormatOnSave !== false;
 
     // Get encoding settings. 
     this.encoding = dbConf.TypeScriptEncoding || (dbConf as any).Encoding || 'utf-8';
@@ -451,6 +455,7 @@ export class DbReader {
               const name = mob.JapaneseName || mob.Name;
               if (mob.AegisName && name) {
                 this.mobs.push({
+                  id: mob.Id != null ? Number(mob.Id) : undefined,
                   aegis_name: mob.AegisName.toString(),
                   name: name.toString(),
                 });
@@ -489,6 +494,11 @@ export class DbReader {
     const jpName = this.skillNames.get(skill.id);
     const baseName = jpName || skill.name;
     return `${baseName}(${skill.aegis_name})`;
+  }
+
+  getMobDisplayName(mob: DbEntry): string {
+    const idStr = mob.id != null ? `(${mob.id})` : '';
+    return `${mob.name}${idStr}(${mob.aegis_name})`;
   }
 
   getCombosForItem(aegis_name: string): ComboDbEntry[] {

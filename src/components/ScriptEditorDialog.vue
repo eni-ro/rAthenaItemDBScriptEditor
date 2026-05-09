@@ -120,6 +120,14 @@
 
       <!-- ─── Footer ─────────────────────────────────────────────── -->
       <div class="editor-footer">
+        <v-checkbox
+          v-model="autoFormat"
+          label="Auto-format on confirm"
+          density="compact"
+          hide-details
+          class="auto-format-checkbox"
+        />
+        <v-spacer />
         <v-btn color="grey-darken-3" variant="flat" size="small" class="mr-2" @click="onCancel">Cancel</v-btn>
         <v-btn color="success" variant="flat" size="small" @click="onConfirm">Confirm (Ctrl+Enter)</v-btn>
       </div>
@@ -172,6 +180,42 @@ const tipVisible = ref(false);
 const tipContent = ref('');
 const tipX = ref(0);
 const tipY = ref(0);
+const currentMatches = ref<any[]>([]);
+
+// ─── Format Setting ─────────────────────────────────────────────────
+const autoFormat = ref(appModel.getFormatOnSave());
+watch(autoFormat, (val) => {
+  appModel.setFormatOnSave(val);
+});
+
+function formatScript(text: string): string {
+  const lines = text.split('\n');
+  let indent = 0;
+  const result: string[] = [];
+
+  for (let line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      result.push('');
+      continue;
+    }
+
+    // Decrease indent if line starts with }
+    if (trimmed.startsWith('}')) {
+      indent = Math.max(0, indent - 1);
+    }
+
+    result.push('  '.repeat(indent) + trimmed);
+
+    // Calculate indent for next line
+    const cleanLine = trimmed.replace(/\/\/.*$/, '').replace(/\/\*.*?\*\//g, '');
+    const openBraces = (cleanLine.match(/\{/g) || []).length;
+    const closeBraces = (cleanLine.match(/\}/g) || []).length;
+    indent += (openBraces - closeBraces);
+    if (indent < 0) indent = 0;
+  }
+  return result.join('\n');
+}
 
 // ─── Horizontal resize ───────────────────────────────────────────────
 let isHResizing = false;
@@ -291,6 +335,8 @@ const handleMount = (editor: any, monaco: any) => {
           [/\b(if|else|switch|case|default|for|while|do|break|continue|return|function|script)\b/, 'keyword'],
           // Common constants
           [/\b(true|false|null)\b/, 'keyword'],
+          // Identifiers (Commands, functions, etc.)
+          [/[a-zA-Z_][a-zA-Z0-9_]*/, 'type.identifier'],
           // Numbers
           [/\b\d+\b/, 'number'],
           // Strings
@@ -351,47 +397,84 @@ const handleMount = (editor: any, monaco: any) => {
         return { suggestions };
       },
     });
+
+    monaco.languages.registerDocumentFormattingEditProvider(langId, {
+      provideDocumentFormattingEdits: (model: any) => {
+        const text = model.getValue();
+        const formatted = formatScript(text);
+        return [
+          {
+            range: model.getFullModelRange(),
+            text: formatted,
+          },
+        ];
+      },
+    });
   }
+
+  const tipActiveKey = editor.createContextKey('tipActive', false);
 
   editor.onDidChangeCursorSelection((e: any) => {
     const selection = e.selection;
     if (selection.isEmpty()) {
       tipVisible.value = false;
+      tipActiveKey.set(false);
+      currentMatches.value = [];
       return;
     }
 
     const model = editor.getModel();
     if (!model) return;
-    const text = model.getValueInRange(selection).trim();
+    const rawText = model.getValueInRange(selection);
+    const text = rawText.trim();
     if (!text || text.length > 100) {
       tipVisible.value = false;
+      tipActiveKey.set(false);
+      currentMatches.value = [];
       return;
     }
 
     // Search
-    let match: string | null = null;
-    const item = appModel.getItems().find(i => i.aegis_name === text);
-    if (item) {
-      match = `[Item] ${appModel.getDisplayName(item)}`;
+    let matchStr: string | null = null;
+    const cleanText = text.replace(/^"|"$/g, '');
+    const isNumeric = /^\d+$/.test(cleanText);
+    const matches: any[] = [];
+
+    if (isNumeric) {
+      const id = Number(cleanText);
+      
+      const item = appModel.getItems().find(i => i.id === id);
+      if (item) matches.push({ type: 'Item', data: item, label: `[Item] ${appModel.getDisplayName(item)}` });
+      
+      const skill = appModel.getSkills().find(s => s.id === id);
+      if (skill) matches.push({ type: 'Skill', data: skill, label: `[Skill] ${appModel.getSkillDisplayName(skill)}` });
+      
+      const mob = appModel.getMobs().find(m => m.id === id);
+      if (mob) matches.push({ type: 'Mob', data: mob, label: `[Mob] ${appModel.getMobDisplayName(mob)}` });
+      
     } else {
-      const skill = appModel.getSkills().find(s => s.aegis_name === text);
-      if (skill) {
-        match = `[Skill] ${appModel.getSkillDisplayName(skill)}`;
-      } else {
-        const mob = appModel.getMobs().find(m => m.aegis_name === text);
-        if (mob) {
-          match = `[Mob] ${mob.name}`;
-        }
-      }
+      const cleanText = text.replace(/^"|"$/g, '');
+      
+      const item = appModel.getItems().find(i => i.aegis_name === cleanText);
+      if (item) matches.push({ type: 'Item', data: item, label: `[Item] ${appModel.getDisplayName(item)}` });
+      
+      const skill = appModel.getSkills().find(s => s.aegis_name === cleanText);
+      if (skill) matches.push({ type: 'Skill', data: skill, label: `[Skill] ${appModel.getSkillDisplayName(skill)}` });
+      
+      const mob = appModel.getMobs().find(m => m.aegis_name === cleanText);
+      if (mob) matches.push({ type: 'Mob', data: mob, label: `[Mob] ${appModel.getMobDisplayName(mob)}` });
     }
 
-    if (match) {
-      tipContent.value = match;
+    currentMatches.value = matches;
+
+    if (matches.length > 0) {
+      matchStr = matches.map(m => m.label).join('\n');
+      tipContent.value = matchStr;
       tipVisible.value = true;
+      tipActiveKey.set(true);
       
       // Calculate position
       const pos = selection.getEndPosition();
-      // Use internal but widely available method to get pixel position
       const pixelPos = editor.getScrolledVisiblePosition(pos);
       if (pixelPos) {
         const editorRect = editor.getDomNode().getBoundingClientRect();
@@ -400,10 +483,31 @@ const handleMount = (editor: any, monaco: any) => {
       }
     } else {
       tipVisible.value = false;
+      tipActiveKey.set(false);
+    }
+  });
+
+  editor.addAction({
+    id: 'convert-id-aegis',
+    label: 'Convert ID <-> AegisName',
+    contextMenuGroupId: 'navigation',
+    contextMenuOrder: 1,
+    precondition: 'tipActive',
+    run: () => {
+      if (currentMatches.value.length === 0) return;
+      if (currentMatches.value.length === 1) {
+        applyConversion(currentMatches.value[0]);
+      } else {
+        openConversionSelect();
+      }
     }
   });
 
   editor.onDidScrollChange(() => {
+    tipVisible.value = false;
+  });
+
+  editor.onContextMenu(() => {
     tipVisible.value = false;
   });
 };
@@ -481,6 +585,82 @@ const openParamSelect = (arg: ScriptArgConf, index: number) => {
   paramDialog.value?.openDialog({ items, onSelect: (val: string) => { argValues.value[index] = val; } });
 };
 
+const applyConversion = (match: any) => {
+  if (!editorInstance || !monacoInstance) return;
+  const selection = editorInstance.getSelection();
+  if (!selection) return;
+
+  const model = editorInstance.getModel();
+  const rawText = model.getValueInRange(selection);
+  const text = rawText.trim();
+  const cleanText = text.replace(/^"|"$/g, '');
+  const isNumeric = /^\d+$/.test(cleanText);
+
+  // Determine range to replace (handle surrounding quotes)
+  let startCol = selection.startColumn;
+  let endCol = selection.endColumn;
+
+  if (!rawText.startsWith('"') && startCol > 1) {
+    const before = model.getValueInRange({
+      startLineNumber: selection.startLineNumber, startColumn: startCol - 1,
+      endLineNumber: selection.startLineNumber, endColumn: startCol
+    });
+    if (before === '"') startCol--;
+  }
+  if (!rawText.endsWith('"')) {
+    const lineLen = model.getLineLength(selection.endLineNumber);
+    if (endCol <= lineLen) {
+      const after = model.getValueInRange({
+        startLineNumber: selection.endLineNumber, startColumn: endCol,
+        endLineNumber: selection.endLineNumber, endColumn: endCol + 1
+      });
+      if (after === '"') endCol++;
+    }
+  }
+  const range = new monacoInstance.Range(selection.startLineNumber, startCol, selection.endLineNumber, endCol);
+
+  let replacement = '';
+  if (isNumeric) {
+    replacement = `"${match.data.aegis_name}"`;
+  } else {
+    replacement = String(match.data.id);
+  }
+
+  editorInstance.executeEdits('convert', [{
+    range: range,
+    text: replacement,
+    forceMoveMarkers: true,
+  }]);
+  editorInstance.focus();
+};
+
+const openConversionSelect = () => {
+  const model = editorInstance.getModel();
+  const selection = editorInstance.getSelection();
+  const text = model.getValueInRange(selection).trim();
+  const cleanText = text.replace(/^"|"$/g, '');
+  const isNumeric = /^\d+$/.test(cleanText);
+
+  const items = currentMatches.value.map(m => {
+    const replacement = isNumeric ? `"${m.data.aegis_name}"` : String(m.data.id);
+    return {
+      value: replacement,
+      desc: m.label,
+      _originalMatch: m
+    };
+  });
+
+  paramDialog.value?.openDialog({
+    items,
+    onSelect: (val: string) => {
+      const selectedItem = items.find(i => i.value === val);
+      if (selectedItem) {
+        applyConversion(selectedItem._originalMatch);
+      }
+    }
+  });
+};
+
 // ─── Public API ─────────────────────────────────────────────────────
 function open(initialScript: string): Promise<string | null> {
   editingScript.value = initialScript;
@@ -493,8 +673,13 @@ const onConfirm = () => {
   resolveCallback = null;
   dialog.value = false;
   
+  let finalScript = editingScript.value;
+  if (autoFormat.value) {
+    finalScript = formatScript(finalScript);
+  }
+
   // Remove leading and trailing empty lines (including those with only whitespace)
-  const trimmed = editingScript.value
+  const trimmed = finalScript
     .replace(/^(\s*[\r\n])+/g, '')
     .replace(/([\r\n]\s*)+$/g, '');
     
@@ -567,6 +752,11 @@ onMounted(async () => {
   padding: 10px 16px;
   flex-shrink: 0;
   border-top: 1px solid #555;
+  gap: 16px;
+}
+.auto-format-checkbox :deep(.v-label) {
+  font-size: 10pt !important;
+  color: #ccc !important;
 }
 
 .editor-search-box {
@@ -689,7 +879,7 @@ onMounted(async () => {
 
 .selection-tip {
   position: fixed;
-  z-index: 10000;
+  z-index: 100;
   background: rgba(30, 30, 30, 0.9);
   color: #fff;
   padding: 8px 14px;
@@ -699,7 +889,7 @@ onMounted(async () => {
   border: 1px solid rgba(255, 255, 255, 0.2);
   pointer-events: none;
   backdrop-filter: blur(8px);
-  white-space: nowrap;
+  white-space: pre-wrap;
   animation: tip-fade-in 0.2s ease-out;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }

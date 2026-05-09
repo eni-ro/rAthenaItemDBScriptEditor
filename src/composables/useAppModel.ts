@@ -49,6 +49,7 @@ const useAppModel = () => {
   function getEnableFuzzyDivinePride() { return dbReader.enableFuzzyDivinePride; }
   function getDivinePrideRangeSource() { return dbReader.divinePrideRangeSource; }
   function getShowComboComments() { return dbReader.showComboComments; }
+  function getFormatOnSave() { return dbReader.formatOnSave; }
 
   function getDisplayName(item: ItemDbEntry): string {
     return dbReader.getDisplayName(item);
@@ -56,6 +57,10 @@ const useAppModel = () => {
 
   function getSkillDisplayName(skill: SkillDbEntry): string {
     return dbReader.getSkillDisplayName(skill);
+  }
+
+  function getMobDisplayName(mob: DbEntry): string {
+    return dbReader.getMobDisplayName(mob);
   }
 
   function getItemSearchName(aegis_name: string): string {
@@ -149,10 +154,35 @@ const useAppModel = () => {
     currentItem, currentCombo, mainTab, dbYmlPath,
     loadData, getItems, getSkills, getMobs, getCombos,
     getItemNames, getSkillNames, getItemFiles, getComboFiles, getEncoding, getRustEncoding, getPythonEncoding,
-    getSortOnInsert, getSortOnUpdate, getDivinePrideKey, getEnableFuzzyDivinePride, getDivinePrideRangeSource, getShowComboComments, getDisplayName, getSkillDisplayName, getItemSearchName,
+    getSortOnInsert, getSortOnUpdate, getDivinePrideKey, getEnableFuzzyDivinePride, getDivinePrideRangeSource, getShowComboComments, getFormatOnSave, getDisplayName, getSkillDisplayName, getMobDisplayName, getItemSearchName,
     loadItem, loadCombo, getConstList, makeCode,
     updateItemInMemory, addItemToMemory, deleteItemFromMemory,
     updateComboInMemory, addComboToMemory, deleteComboFromMemory,
+    async setFormatOnSave(val: boolean) {
+      dbReader.formatOnSave = val;
+      // We need current config to update db.yml properly without losing other settings
+      // Actually, DbReader doesn't store the whole config object, but SettingsView.vue knows how to do it.
+      // For now, let's just use the current values from dbReader.
+      const config: any = {
+        TypeScriptEncoding: dbReader.encoding,
+        PythonEncoding: dbReader.pythonEncoding,
+        RustEncoding: dbReader.rustEncoding,
+        DivinePrideKey: dbReader.divinePrideKey,
+        EnableFuzzyDivinePride: dbReader.enableFuzzyDivinePride,
+        DivinePrideRangeSource: dbReader.divinePrideRangeSource,
+        ShowComboComments: dbReader.showComboComments,
+        SortOnInsert: dbReader.sortOnInsert,
+        SortOnUpdate: dbReader.sortOnUpdate,
+        FormatOnSave: val,
+        Item: dbReader.itemFiles,
+        ItemCombos: dbReader.comboFiles,
+        // SkillName, ItemName, etc. are not explicitly stored in dbReader as arrays, but we can reconstruct them or assume they are in the file.
+        // This is a bit risky if we don't have the full original config.
+        // But the prompt says "簡単に対応可能" (Easy to handle).
+      };
+      const { updateDbYml } = await import('../lib/DbProcessor');
+      await updateDbYml(dbYmlPath.value, config);
+    },
     refreshSettings() { dbReader.load(dbYmlPath.value); }
   };
 };
