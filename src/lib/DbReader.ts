@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
+import { exists } from '@tauri-apps/plugin-fs';
 import { parse as parseYaml } from 'yaml';
 
 export interface DbEntry {
@@ -123,6 +124,12 @@ export interface SkillDbEntry extends DbEntry {
 interface YamlDb {
   Header?: any;
   Body?: any[];
+  Footer?: {
+    Imports?: {
+      Path: string;
+      Mode?: string;
+    }[];
+  };
 }
 
 function extractBoolMap(map: any): string[] {
@@ -267,16 +274,48 @@ export class DbReader {
   public skillNames: Map<number, string> = new Map();
   public itemFiles: string[] = [];
   public comboFiles: string[] = [];
+  public configItemFiles: string[] = ['db/item_db.yml'];
+  public configComboFiles: string[] = ['db/item_combos.yml'];
+  public configItemNameFiles: string[] = [];
+  public configSkillFiles: string[] = ['db/skill_db.yml'];
+  public configSkillNameFiles: string[] = [];
+  public configMobFiles: string[] = ['db/mob_db.yml'];
   public encoding: string = 'utf-8';
   public rustEncoding: string = 'utf-8';
   public pythonEncoding: string = 'utf-8';
   public sortOnInsert: boolean = true;
   public sortOnUpdate: boolean = false;
-  public divinePrideKey: string = '';
+  public divinePrideKey: string = 'YourApiToken';
+  public rAthenaRoot: string = 'C:/rAthena';
+  public mode: 'Renewal' | 'Prerenewal' = 'Renewal';
   public enableFuzzyDivinePride: boolean = false;
   public divinePrideRangeSource: 'api' | 'fuzzy' = 'api';
   public showComboComments: boolean = true;
   public formatOnSave: boolean = true;
+  public errors: string[] = [];
+
+  private async resolvePath(path: string): Promise<string> {
+    if (!path) return '';
+    // Normalize to forward slashes
+    let p = path.replace(/\\/g, '/');
+    // Check if absolute (starts with / or has C:)
+    if (p.startsWith('/') || p.includes(':')) return p;
+
+    if (this.rAthenaRoot) {
+      const rPath = this.join(this.rAthenaRoot, p);
+      if (await exists(rPath)) return rPath.replace(/\\/g, '/');
+    }
+
+    const exeDir = await invoke<string>('get_exe_dir');
+    return this.join(exeDir, p).replace(/\\/g, '/');
+  }
+
+  private join(dir: string, file: string): string {
+    const sep = '/';
+    const cleanDir = dir.endsWith('\\') || dir.endsWith('/') ? dir.slice(0, -1) : dir;
+    const cleanFile = file.startsWith('\\') || file.startsWith('/') ? file.slice(1) : file;
+    return (cleanDir + sep + cleanFile).replace(/\\/g, '/');
+  }
 
   async load(dbPath: string) {
     // Clear existing data to avoid duplicates if load is called multiple times
@@ -288,100 +327,140 @@ export class DbReader {
     this.skillNames.clear();
     this.itemFiles = [];
     this.comboFiles = [];
+    this.errors = [];
 
     // db.yml is always UTF-8
-    const dbRaw: string = await invoke('read_file_raw', { path: dbPath });
-    const dbConf = parseYaml(dbRaw, { uniqueKeys: false }) as {
-      TypeScriptEncoding?: string;
-      PythonEncoding?: string;
-      RustEncoding?: string;
-      Item?: string[];
-      ItemCombos?: string[];
-      ItemName?: string[];
-      Skill?: string[];
-      SkillName?: string[];
-      Mob?: string[];
-      SortOnInsert?: boolean;
-      SortOnUpdate?: boolean;
-      DivinePrideKey?: string;
-      EnableFuzzyDivinePride?: boolean;
-      DivinePrideRangeSource?: 'api' | 'fuzzy';
-      ShowComboComments?: boolean;
-      FormatOnSave?: boolean;
-    };
+    let dbConf: any = {};
+    try {
+      const dbRaw: string = await invoke('read_file_raw', { path: dbPath });
+      dbConf = parseYaml(dbRaw, { uniqueKeys: false }) || {};
+    } catch (e) {
+      console.warn(`db.yml not found or invalid at ${dbPath}. Using defaults.`);
+    }
 
     // Get sorting settings.
-    this.sortOnInsert = dbConf.SortOnInsert !== false;
-    this.sortOnUpdate = dbConf.SortOnUpdate === true;
-    this.divinePrideKey = dbConf.DivinePrideKey || '';
-    this.enableFuzzyDivinePride = dbConf.EnableFuzzyDivinePride === true;
-    this.divinePrideRangeSource = dbConf.DivinePrideRangeSource || 'api';
-    this.showComboComments = dbConf.ShowComboComments !== false;
-    this.formatOnSave = dbConf.FormatOnSave !== false;
+    this.sortOnInsert = dbConf.SortOnInsert ?? this.sortOnInsert;
+    this.sortOnUpdate = dbConf.SortOnUpdate ?? this.sortOnUpdate;
+    this.divinePrideKey = dbConf.DivinePrideKey ?? this.divinePrideKey;
+    this.rAthenaRoot = dbConf.rAthenaRoot ?? this.rAthenaRoot;
+    this.mode = dbConf.Mode ?? this.mode;
+    this.enableFuzzyDivinePride = dbConf.EnableFuzzyDivinePride ?? this.enableFuzzyDivinePride;
+    this.divinePrideRangeSource = dbConf.DivinePrideRangeSource ?? this.divinePrideRangeSource;
+    this.showComboComments = dbConf.ShowComboComments ?? this.showComboComments;
+    this.formatOnSave = dbConf.FormatOnSave ?? this.formatOnSave;
 
     // Get encoding settings. 
-    this.encoding = dbConf.TypeScriptEncoding || (dbConf as any).Encoding || 'utf-8';
-    this.rustEncoding = dbConf.RustEncoding || (dbConf as any).Encoding || 'utf-8';
-    this.pythonEncoding = dbConf.PythonEncoding || (dbConf as any).Encoding || 'utf-8';
+    this.encoding = dbConf.TypeScriptEncoding || (dbConf as any).Encoding || this.encoding;
+    this.rustEncoding = dbConf.RustEncoding || (dbConf as any).Encoding || this.rustEncoding;
+    this.pythonEncoding = dbConf.PythonEncoding || (dbConf as any).Encoding || this.pythonEncoding;
 
-    this.itemFiles = dbConf.Item || [];
-    this.comboFiles = dbConf.ItemCombos || [];
+    this.configItemFiles = dbConf.Item || this.configItemFiles;
+    this.configComboFiles = dbConf.ItemCombos || this.configComboFiles;
+    this.configItemNameFiles = dbConf.ItemName || this.configItemNameFiles;
+    this.configSkillFiles = dbConf.Skill || this.configSkillFiles;
+    this.configSkillNameFiles = dbConf.SkillName || this.configSkillNameFiles;
+    this.configMobFiles = dbConf.Mob || this.configMobFiles;
+    this.itemFiles = [];
+    this.comboFiles = [];
 
-    // ─── Item ────────────────────────────────────────────────────
-    if (dbConf.Item) {
-      for (const filePath of dbConf.Item) {
-        try {
-          const raw = await readYaml(filePath, this.encoding);
-          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
-          if (parsed?.Body) {
-            for (const item of parsed.Body) {
-              if (item.AegisName && item.Name) {
-                this.items.push(parseItemEntry(item, filePath));
-              }
+    // ─── Recursive Loaders ──────────────────────────────────────
+    const loadedFiles = new Set<string>();
+
+    const loadItemsRecursive = async (filePath: string) => {
+      const resolved = await this.resolvePath(filePath);
+      if (loadedFiles.has(resolved)) return;
+      loadedFiles.add(resolved);
+
+      try {
+        const raw = await readYaml(resolved, this.encoding);
+        const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
+        
+        // Add to itemFiles list for candidates
+        if (!this.itemFiles.includes(resolved)) {
+          this.itemFiles.push(resolved);
+        }
+
+        if (parsed?.Body) {
+          for (const item of parsed.Body) {
+            if (item.AegisName && item.Name) {
+              this.items.push(parseItemEntry(item, resolved));
             }
           }
-        } catch (e: any) {
-          this.items.push({
-            id: 0, aegis_name: 'ERROR',
-            name: `Read Error: ${filePath} - ${e?.message ?? e}`,
-            filePath
+        }
+
+        // Process Footer Imports
+        if (parsed?.Footer?.Imports) {
+          for (const imp of parsed.Footer.Imports) {
+            if (imp.Mode && imp.Mode.toLowerCase() !== this.mode.toLowerCase()) continue;
+            // resolvePath inside loadItemsRecursive will handle rAthenaRoot -> exeDir fallback
+            await loadItemsRecursive(imp.Path);
+          }
+        }
+      } catch (e: any) {
+        this.errors.push(`Failed to read Item DB: ${resolved} - ${e?.message ?? e}`);
+      }
+    };
+
+    const loadCombosRecursive = async (filePath: string) => {
+      const resolved = await this.resolvePath(filePath);
+      if (loadedFiles.has(resolved)) return;
+      loadedFiles.add(resolved);
+
+      try {
+        const raw = await readYaml(resolved, this.encoding);
+        const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
+
+        if (!this.comboFiles.includes(resolved)) {
+          this.comboFiles.push(resolved);
+        }
+
+        if (parsed?.Body) {
+          parsed.Body.forEach((entry: any, index: number) => {
+            if (entry.Combos) {
+              this.combos.push({
+                index,
+                filePath: resolved,
+                combos: entry.Combos.map((c: any) => ({
+                  items: Array.isArray(c.Combo) ? c.Combo.map((x: any) => x.toString()) : [],
+                })),
+                script: trimScript(entry.Script) || '',
+              });
+            }
           });
         }
+
+        if (parsed?.Footer?.Imports) {
+          for (const imp of parsed.Footer.Imports) {
+            if (imp.Mode && imp.Mode.toLowerCase() !== this.mode.toLowerCase()) continue;
+            await loadCombosRecursive(imp.Path);
+          }
+        }
+      } catch (e: any) {
+        this.errors.push(`Failed to read ItemCombos: ${resolved} - ${e?.message ?? e}`);
+      }
+    };
+
+    // ─── Item ────────────────────────────────────────────────────
+    if (this.configItemFiles) {
+      for (const filePath of this.configItemFiles) {
+        await loadItemsRecursive(filePath);
       }
     }
 
     // ─── ItemCombos ──────────────────────────────────────────────
-    if (dbConf.ItemCombos) {
-      for (const filePath of dbConf.ItemCombos) {
-        try {
-          const raw = await readYaml(filePath, this.encoding);
-          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
-          if (parsed?.Body) {
-            parsed.Body.forEach((entry: any, index: number) => {
-              if (entry.Combos) {
-                this.combos.push({
-                  index,
-                  filePath,
-                  combos: entry.Combos.map((c: any) => ({
-                    items: Array.isArray(c.Combo) ? c.Combo.map((x: any) => x.toString()) : [],
-                  })),
-                  script: trimScript(entry.Script) || '',
-                });
-              }
-            });
-          }
-        } catch (e) {
-          console.warn(`Failed to read ItemCombos: ${filePath}`, e);
-        }
+    loadedFiles.clear();
+    if (this.configComboFiles) {
+      for (const filePath of this.configComboFiles) {
+        await loadCombosRecursive(filePath);
       }
     }
 
     // ─── ItemName ────────────────────────────────────────────────
-    // ItemName is read with specified encoding (e.g., shift-jis)
     if (dbConf.ItemName) {
       for (const filePath of dbConf.ItemName) {
         try {
-          const raw = await readYaml(filePath, this.encoding);
+          const resolved = await this.resolvePath(filePath);
+          const raw = await readYaml(resolved, this.encoding);
           const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const entry of parsed.Body) {
@@ -390,18 +469,18 @@ export class DbReader {
               }
             }
           }
-        } catch (e) {
-          console.warn(`Failed to read ItemName: ${filePath}`, e);
+        } catch (e: any) {
+          this.errors.push(`Failed to read ItemName: ${filePath} - ${e?.message ?? e}`);
         }
       }
     }
-
 
     // ─── Skill ───────────────────────────────────────────────────
     if (dbConf.Skill) {
       for (const filePath of dbConf.Skill) {
         try {
-          const raw = await readYaml(filePath, this.encoding);
+          const resolved = await this.resolvePath(filePath);
+          const raw = await readYaml(resolved, this.encoding);
           const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const skill of parsed.Body) {
@@ -416,18 +495,18 @@ export class DbReader {
               }
             }
           }
-        } catch (e) {
-          console.warn(`Failed to read Skill: ${filePath}`, e);
+        } catch (e: any) {
+          this.errors.push(`Failed to read Skill: ${filePath} - ${e?.message ?? e}`);
         }
       }
     }
 
     // ─── SkillName ────────────────────────────────────────────────
-    // SkillName is read with specified encoding (e.g., shift-jis)
     if (dbConf.SkillName) {
       for (const filePath of dbConf.SkillName) {
         try {
-          const raw = await readYaml(filePath, this.encoding);
+          const resolved = await this.resolvePath(filePath);
+          const raw = await readYaml(resolved, this.encoding);
           const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const entry of parsed.Body) {
@@ -438,8 +517,8 @@ export class DbReader {
               }
             }
           }
-        } catch (e) {
-          console.warn(`Failed to read SkillName: ${filePath}`, e);
+        } catch (e: any) {
+          this.errors.push(`Failed to read SkillName: ${filePath} - ${e?.message ?? e}`);
         }
       }
     }
@@ -448,7 +527,8 @@ export class DbReader {
     if (dbConf.Mob) {
       for (const filePath of dbConf.Mob) {
         try {
-          const raw = await readYaml(filePath, this.encoding);
+          const resolved = await this.resolvePath(filePath);
+          const raw = await readYaml(resolved, this.encoding);
           const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
           if (parsed?.Body) {
             for (const mob of parsed.Body) {
@@ -462,8 +542,8 @@ export class DbReader {
               }
             }
           }
-        } catch (e) {
-          console.warn(`Failed to read Mob: ${filePath}`, e);
+        } catch (e: any) {
+          this.errors.push(`Failed to read Mob: ${filePath} - ${e?.message ?? e}`);
         }
       }
     }

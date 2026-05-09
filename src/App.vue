@@ -8,14 +8,7 @@
         <span class="text-subtitle-1 font-weight-bold">rAthena Item DB Script Editor</span>
       </v-app-bar-title>
 
-      <v-menu>
-        <template #activator="{ props }">
-          <v-btn v-bind="props" variant="text" class="mr-1">Settings</v-btn>
-        </template>
-        <v-list density="compact">
-          <v-list-item prepend-icon="mdi-database-cog" title="DB Paths" @click="openSettings" />
-        </v-list>
-      </v-menu>
+      <v-btn variant="text" class="mr-1" @click="openSettings">Settings</v-btn>
     </v-app-bar>
 
     <v-main>
@@ -74,6 +67,15 @@
     </v-main>
 
     <SettingsView ref="settingsView" />
+    <v-snackbar v-model="snackbar.show" color="error" timeout="10000" vertical>
+      <div class="text-subtitle-2 mb-2">Some files failed to load:</div>
+      <ul class="pl-4">
+        <li v-for="(err, i) in snackbar.errors" :key="i" class="text-caption">{{ err }}</li>
+      </ul>
+      <template #actions>
+        <v-btn variant="text" @click="snackbar.show = false">Close</v-btn>
+      </template>
+    </v-snackbar>
     </template>
   </v-app>
 </template>
@@ -98,6 +100,7 @@ const mainTab = appModel.mainTab;  // ref to use in template
 const containerRef = ref<HTMLElement | null>(null);
 const appWindow = getCurrentWindow();
 const settingsView = ref<any>(null);
+const snackbar = ref({ show: false, errors: [] as string[] });
 
 const isResultsWindow = ref(new URLSearchParams(window.location.search).get('window') === 'dp-results');
 
@@ -166,6 +169,8 @@ function openSettings() {
         Mob: conf.Mob || [],
         Skill: conf.Skill || [],
         DivinePrideKey: conf.DivinePrideKey,
+        rAthenaRoot: conf.rAthenaRoot,
+        Mode: conf.Mode,
         SortOnInsert: conf.SortOnInsert,
         SortOnUpdate: conf.SortOnUpdate,
         EnableFuzzyDivinePride: conf.EnableFuzzyDivinePride,
@@ -174,22 +179,24 @@ function openSettings() {
       }, dbPath);
     } catch (e) {
       settingsView.value?.open({
-        TypeScriptEncoding: 'utf-8',
-        PythonEncoding: 'utf-8',
-        RustEncoding: 'utf-8',
-        Encoding: 'utf-8',
-        Item: [],
-        ItemCombos: [],
-        ItemName: [],
-        SkillName: [],
-        Mob: [],
-        Skill: [],
-        DivinePrideKey: '',
-        SortOnInsert: true,
-        SortOnUpdate: false,
-        EnableFuzzyDivinePride: false,
-        DivinePrideRangeSource: 'api',
-        ShowComboComments: true,
+        TypeScriptEncoding: appModel.getEncoding(),
+        PythonEncoding: appModel.getPythonEncoding(),
+        RustEncoding: appModel.getRustEncoding(),
+        Encoding: appModel.getEncoding(),
+        Item: appModel.getConfigItemFiles(),
+        ItemCombos: appModel.getConfigComboFiles(),
+        ItemName: appModel.getConfigItemNameFiles(),
+        SkillName: appModel.getConfigSkillNameFiles(),
+        Mob: appModel.getConfigMobFiles(),
+        Skill: appModel.getConfigSkillFiles(),
+        DivinePrideKey: appModel.getDivinePrideKey(),
+        rAthenaRoot: appModel.getRAthenaRoot(),
+        Mode: appModel.getMode(),
+        SortOnInsert: appModel.getSortOnInsert(),
+        SortOnUpdate: appModel.getSortOnUpdate(),
+        EnableFuzzyDivinePride: appModel.getEnableFuzzyDivinePride(),
+        DivinePrideRangeSource: appModel.getDivinePrideRangeSource(),
+        ShowComboComments: appModel.getShowComboComments(),
       }, appModel.dbYmlPath.value);
     }
   };
@@ -220,6 +227,12 @@ const doLoad = async () => {
       prefix + 'const.yml',
       prefix + 'db.yml'
     );
+    
+    const errors = appModel.getErrors();
+    if (errors.length > 0) {
+      snackbar.value = { show: true, errors: [...errors] };
+    }
+
     localStorage.setItem('app:basePath', prefix);
   } catch (e: any) {
     loadError.value = String(e?.message || e || 'Unknown Error');

@@ -76,6 +76,34 @@
           </div>
         </div>
 
+        <!-- rAthena Settings -->
+        <div class="mb-5">
+          <div class="text-subtitle-2 font-weight-bold mb-1">rAthena Environment Settings</div>
+          <v-divider class="mb-2" />
+          
+          <div class="text-caption font-weight-bold mb-1">rAthena Mode</div>
+          <v-radio-group v-model="localConfig.Mode" density="compact" hide-details direction="horizontal" class="mb-3">
+            <v-radio label="Renewal" value="Renewal" />
+            <v-radio label="Prerenewal" value="Prerenewal" />
+          </v-radio-group>
+
+          <div class="text-caption font-weight-bold mb-1">rAthena Root Directory</div>
+          <div class="d-flex align-center">
+            <v-text-field
+              v-model="localConfig.rAthenaRoot"
+              density="compact"
+              variant="outlined"
+              hide-details
+              placeholder="e.g. C:\rAthena"
+              class="flex-grow-1 text-caption"
+            />
+            <v-btn icon="mdi-folder-open" size="small" variant="text" class="ml-1" @click="browseFolder('rAthenaRoot')" />
+          </div>
+          <div class="text-caption text-grey mt-1">
+            Used as a base path for relative DB paths and Footer Imports.
+          </div>
+        </div>
+
         <!-- Path Sections -->
         <div v-for="section in sections" :key="section.key" class="mb-5">
           <div class="d-flex align-center mb-1">
@@ -201,9 +229,6 @@
 import { ref, reactive } from 'vue';
 import { open as openFileDialog } from '@tauri-apps/plugin-dialog';
 import { updateDbYml } from '../lib/DbProcessor';
-import { useGlobals } from '../composables/useAppModel';
-
-const appModel = useGlobals();
 
 interface DbConfig {
   TypeScriptEncoding: string;
@@ -222,6 +247,8 @@ interface DbConfig {
   EnableFuzzyDivinePride?: boolean;
   DivinePrideRangeSource?: 'api' | 'fuzzy';
   ShowComboComments?: boolean;
+  rAthenaRoot: string;
+  Mode: 'Renewal' | 'Prerenewal';
 }
 
 type DbPathKey = 'Item' | 'ItemCombos' | 'ItemName' | 'SkillName' | 'Mob' | 'Skill';
@@ -261,6 +288,8 @@ const localConfig = reactive<DbConfig>({
   Mob: [],
   Skill: [],
   DivinePrideKey: '',
+  rAthenaRoot: '',
+  Mode: 'Renewal' as 'Renewal' | 'Prerenewal',
   SortOnInsert: true,
   SortOnUpdate: false,
   EnableFuzzyDivinePride: false,
@@ -270,7 +299,7 @@ const localConfig = reactive<DbConfig>({
 
 let dbYmlPath = '';
 
-function open(currentConfig: Partial<DbConfig>, ymlPath: string) {
+function open(currentConfig: any, ymlPath: string) {
   dbYmlPath = ymlPath;
   const baseEnc = currentConfig.TypeScriptEncoding || currentConfig.PythonEncoding || currentConfig.RustEncoding || currentConfig.Encoding || 'utf-8';
   
@@ -285,6 +314,8 @@ function open(currentConfig: Partial<DbConfig>, ymlPath: string) {
     Mob: [...(currentConfig.Mob || [])],
     Skill: [...(currentConfig.Skill || [])],
     DivinePrideKey: currentConfig.DivinePrideKey || '',
+    rAthenaRoot: currentConfig.rAthenaRoot || '',
+    Mode: currentConfig.Mode || 'Renewal',
     SortOnInsert: currentConfig.SortOnInsert !== false,
     SortOnUpdate: currentConfig.SortOnUpdate === true,
     EnableFuzzyDivinePride: currentConfig.EnableFuzzyDivinePride === true,
@@ -320,6 +351,20 @@ function removePath(key: DbPathKey, idx: number) {
   localConfig[key].splice(idx, 1);
 }
 
+async function browseFolder(field: 'rAthenaRoot') {
+  try {
+    const result = await openFileDialog({
+      directory: true,
+      multiple: false,
+    });
+    if (result) {
+      localConfig[field] = typeof result === 'string' ? result : (result as any).path || '';
+    }
+  } catch (e) {
+    console.warn('Failed to open folder dialog', e);
+  }
+}
+
 async function browsePath(key: DbPathKey, idx: number) {
   try {
     const result = await openFileDialog({
@@ -327,7 +372,21 @@ async function browsePath(key: DbPathKey, idx: number) {
       multiple: false,
     });
     if (result) {
-      localConfig[key][idx] = typeof result === 'string' ? result : (result as any).path || '';
+      let path = (typeof result === 'string' ? result : (result as any).path || '').replace(/\\/g, '/');
+      
+      // Convert to relative if it's under rAthenaRoot
+      if (localConfig.rAthenaRoot) {
+        const root = localConfig.rAthenaRoot.replace(/\\/g, '/');
+        const normPath = path.toLowerCase();
+        let normRoot = root.toLowerCase();
+        if (!normRoot.endsWith('/')) normRoot += '/';
+        
+        if (normPath.startsWith(normRoot)) {
+          path = path.substring(normRoot.length);
+        }
+      }
+      
+      localConfig[key][idx] = path;
     }
   } catch (e) {
     console.warn('Failed to open file dialog', e);
@@ -346,6 +405,8 @@ async function save() {
       PythonEncoding: localConfig.PythonEncoding,
       RustEncoding: localConfig.RustEncoding,
       DivinePrideKey: localConfig.DivinePrideKey,
+      rAthenaRoot: localConfig.rAthenaRoot,
+      Mode: localConfig.Mode,
       SortOnInsert: localConfig.SortOnInsert,
       SortOnUpdate: localConfig.SortOnUpdate,
       EnableFuzzyDivinePride: localConfig.EnableFuzzyDivinePride,
@@ -357,9 +418,11 @@ async function save() {
     }
     const result = await updateDbYml(dbYmlPath, config);
     if (result.success) {
-      appModel.refreshSettings();
-      snackbar.value = { show: true, text: 'Settings saved and applied.', color: 'success' };
-      dialog.value = false;
+      snackbar.value = { show: true, text: 'Settings saved. Reloading...', color: 'success' };
+      // Small delay to show the snackbar before reloading
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } else {
       snackbar.value = { show: true, text: `Failed to save: ${result.error}`, color: 'error' };
     }

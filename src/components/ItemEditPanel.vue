@@ -777,7 +777,22 @@ async function browseFile() {
       filters: [{ name: 'YAML files', extensions: ['yml', 'yaml'] }],
       multiple: false,
     });
-    if (result) targetFile.value = typeof result === 'string' ? result : (result as any).path || '';
+    if (result) {
+      let path = (typeof result === 'string' ? result : (result as any).path || '').replace(/\\/g, '/');
+      
+      const root = appModel.getRAthenaRoot().replace(/\\/g, '/');
+      if (root) {
+        const normPath = path.toLowerCase();
+        let normRoot = root.toLowerCase();
+        if (!normRoot.endsWith('/')) normRoot += '/';
+        
+        if (normPath.startsWith(normRoot)) {
+          path = path.substring(normRoot.length);
+        }
+      }
+      
+      targetFile.value = path;
+    }
   } catch (e) {}
 }
 

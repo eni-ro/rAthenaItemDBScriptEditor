@@ -40,6 +40,12 @@ const useAppModel = () => {
   function getSkillNames() { return dbReader.skillNames; }
   function getItemFiles() { return dbReader.itemFiles; }
   function getComboFiles() { return dbReader.comboFiles; }
+  function getConfigItemFiles() { return dbReader.configItemFiles; }
+  function getConfigComboFiles() { return dbReader.configComboFiles; }
+  function getConfigItemNameFiles() { return dbReader.configItemNameFiles; }
+  function getConfigSkillFiles() { return dbReader.configSkillFiles; }
+  function getConfigSkillNameFiles() { return dbReader.configSkillNameFiles; }
+  function getConfigMobFiles() { return dbReader.configMobFiles; }
   function getEncoding() { return dbReader.encoding; }
   function getRustEncoding() { return dbReader.rustEncoding; }
   function getPythonEncoding() { return dbReader.pythonEncoding; }
@@ -50,6 +56,9 @@ const useAppModel = () => {
   function getDivinePrideRangeSource() { return dbReader.divinePrideRangeSource; }
   function getShowComboComments() { return dbReader.showComboComments; }
   function getFormatOnSave() { return dbReader.formatOnSave; }
+  function getRAthenaRoot() { return dbReader.rAthenaRoot; }
+  function getMode() { return dbReader.mode; }
+  function getErrors() { return dbReader.errors; }
 
   function getDisplayName(item: ItemDbEntry): string {
     return dbReader.getDisplayName(item);
@@ -153,32 +162,34 @@ const useAppModel = () => {
     isLoaded, categories, consts,
     currentItem, currentCombo, mainTab, dbYmlPath,
     loadData, getItems, getSkills, getMobs, getCombos,
-    getItemNames, getSkillNames, getItemFiles, getComboFiles, getEncoding, getRustEncoding, getPythonEncoding,
-    getSortOnInsert, getSortOnUpdate, getDivinePrideKey, getEnableFuzzyDivinePride, getDivinePrideRangeSource, getShowComboComments, getFormatOnSave, getDisplayName, getSkillDisplayName, getMobDisplayName, getItemSearchName,
+    getItemNames, getSkillNames, getItemFiles, getComboFiles,
+    getConfigItemFiles, getConfigComboFiles, getConfigItemNameFiles, getConfigSkillFiles, getConfigSkillNameFiles, getConfigMobFiles,
+    getEncoding, getRustEncoding, getPythonEncoding,
+    getSortOnInsert, getSortOnUpdate, getDivinePrideKey, getEnableFuzzyDivinePride, getDivinePrideRangeSource, getShowComboComments, getFormatOnSave, getRAthenaRoot, getMode, getErrors, getDisplayName, getSkillDisplayName, getMobDisplayName, getItemSearchName,
     loadItem, loadCombo, getConstList, makeCode,
     updateItemInMemory, addItemToMemory, deleteItemFromMemory,
     updateComboInMemory, addComboToMemory, deleteComboFromMemory,
     async setFormatOnSave(val: boolean) {
       dbReader.formatOnSave = val;
-      // We need current config to update db.yml properly without losing other settings
-      // Actually, DbReader doesn't store the whole config object, but SettingsView.vue knows how to do it.
-      // For now, let's just use the current values from dbReader.
       const config: any = {
         TypeScriptEncoding: dbReader.encoding,
         PythonEncoding: dbReader.pythonEncoding,
         RustEncoding: dbReader.rustEncoding,
         DivinePrideKey: dbReader.divinePrideKey,
+        rAthenaRoot: dbReader.rAthenaRoot,
+        Mode: dbReader.mode,
         EnableFuzzyDivinePride: dbReader.enableFuzzyDivinePride,
         DivinePrideRangeSource: dbReader.divinePrideRangeSource,
         ShowComboComments: dbReader.showComboComments,
         SortOnInsert: dbReader.sortOnInsert,
         SortOnUpdate: dbReader.sortOnUpdate,
         FormatOnSave: val,
-        Item: dbReader.itemFiles,
-        ItemCombos: dbReader.comboFiles,
-        // SkillName, ItemName, etc. are not explicitly stored in dbReader as arrays, but we can reconstruct them or assume they are in the file.
-        // This is a bit risky if we don't have the full original config.
-        // But the prompt says "簡単に対応可能" (Easy to handle).
+        Item: dbReader.configItemFiles,
+        ItemCombos: dbReader.configComboFiles,
+        ItemName: dbReader.configItemNameFiles,
+        Skill: dbReader.configSkillFiles,
+        SkillName: dbReader.configSkillNameFiles,
+        Mob: dbReader.configMobFiles,
       };
       const { updateDbYml } = await import('../lib/DbProcessor');
       await updateDbYml(dbYmlPath.value, config);
