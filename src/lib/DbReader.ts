@@ -440,6 +440,73 @@ export class DbReader {
       }
     };
 
+    const loadSkillsRecursive = async (filePath: string) => {
+      const resolved = await this.resolvePath(filePath);
+      if (loadedFiles.has(resolved)) return;
+      loadedFiles.add(resolved);
+
+      try {
+        const raw = await readYaml(resolved, this.encoding);
+        const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
+
+        if (parsed?.Body) {
+          for (const skill of parsed.Body) {
+            const sid = skill.Id ?? skill.id;
+            const sname = skill.Name ?? skill.name;
+            if (sid != null && sname) {
+              this.skills.push({
+                id: Number(sid),
+                aegis_name: sname.toString(),
+                name: (skill.Description || skill.description || sname).toString(),
+              });
+            }
+          }
+        }
+
+        if (parsed?.Footer?.Imports) {
+          for (const imp of parsed.Footer.Imports) {
+            if (imp.Mode && imp.Mode.toLowerCase() !== this.mode.toLowerCase()) continue;
+            await loadSkillsRecursive(imp.Path);
+          }
+        }
+      } catch (e: any) {
+        this.errors.push(`Failed to read Skill: ${resolved} - ${e?.message ?? e}`);
+      }
+    };
+
+    const loadMobsRecursive = async (filePath: string) => {
+      const resolved = await this.resolvePath(filePath);
+      if (loadedFiles.has(resolved)) return;
+      loadedFiles.add(resolved);
+
+      try {
+        const raw = await readYaml(resolved, this.encoding);
+        const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
+
+        if (parsed?.Body) {
+          for (const mob of parsed.Body) {
+            const name = mob.JapaneseName || mob.Name;
+            if (mob.AegisName && name) {
+              this.mobs.push({
+                id: mob.Id != null ? Number(mob.Id) : undefined,
+                aegis_name: mob.AegisName.toString(),
+                name: name.toString(),
+              });
+            }
+          }
+        }
+
+        if (parsed?.Footer?.Imports) {
+          for (const imp of parsed.Footer.Imports) {
+            if (imp.Mode && imp.Mode.toLowerCase() !== this.mode.toLowerCase()) continue;
+            await loadMobsRecursive(imp.Path);
+          }
+        }
+      } catch (e: any) {
+        this.errors.push(`Failed to read Mob: ${resolved} - ${e?.message ?? e}`);
+      }
+    };
+
     // ─── Item ────────────────────────────────────────────────────
     if (this.configItemFiles) {
       for (const filePath of this.configItemFiles) {
@@ -476,28 +543,10 @@ export class DbReader {
     }
 
     // ─── Skill ───────────────────────────────────────────────────
-    if (dbConf.Skill) {
-      for (const filePath of dbConf.Skill) {
-        try {
-          const resolved = await this.resolvePath(filePath);
-          const raw = await readYaml(resolved, this.encoding);
-          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
-          if (parsed?.Body) {
-            for (const skill of parsed.Body) {
-              const sid = skill.Id ?? skill.id;
-              const sname = skill.Name ?? skill.name;
-              if (sid != null && sname) {
-                this.skills.push({
-                  id: Number(sid),
-                  aegis_name: sname.toString(),
-                  name: (skill.Description || skill.description || sname).toString(),
-                });
-              }
-            }
-          }
-        } catch (e: any) {
-          this.errors.push(`Failed to read Skill: ${filePath} - ${e?.message ?? e}`);
-        }
+    loadedFiles.clear();
+    if (this.configSkillFiles) {
+      for (const filePath of this.configSkillFiles) {
+        await loadSkillsRecursive(filePath);
       }
     }
 
@@ -524,27 +573,10 @@ export class DbReader {
     }
 
     // ─── Mob ─────────────────────────────────────────────────────
-    if (dbConf.Mob) {
-      for (const filePath of dbConf.Mob) {
-        try {
-          const resolved = await this.resolvePath(filePath);
-          const raw = await readYaml(resolved, this.encoding);
-          const parsed = parseYaml(raw, { uniqueKeys: false }) as YamlDb;
-          if (parsed?.Body) {
-            for (const mob of parsed.Body) {
-              const name = mob.JapaneseName || mob.Name;
-              if (mob.AegisName && name) {
-                this.mobs.push({
-                  id: mob.Id != null ? Number(mob.Id) : undefined,
-                  aegis_name: mob.AegisName.toString(),
-                  name: name.toString(),
-                });
-              }
-            }
-          }
-        } catch (e: any) {
-          this.errors.push(`Failed to read Mob: ${filePath} - ${e?.message ?? e}`);
-        }
+    loadedFiles.clear();
+    if (this.configMobFiles) {
+      for (const filePath of this.configMobFiles) {
+        await loadMobsRecursive(filePath);
       }
     }
   }
