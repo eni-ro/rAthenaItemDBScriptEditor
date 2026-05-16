@@ -30,6 +30,10 @@ Body:
   - "Fuzzy Parsing" in settings can extract levels from description text.
 
 ## History
+* v0.13.1
+  * Fixed mobDB and skillDB YAML footer `Imports` field not supported
+  * Fixed for an issue where the window size becomes abnormal on the next launch when the app is closed while minimized
+
 * v0.13.0
   * Support for `Imports` field in YAML footer and recursive database loading
   * Implemented Aegis name <-> ID conversion for items, mobs, and skills (Right-click menu in editor)
