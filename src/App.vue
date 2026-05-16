@@ -136,10 +136,18 @@ let saveTimeout: number | null = null;
 const debouncedSaveWindowState = async () => {
   if (saveTimeout) clearTimeout(saveTimeout);
   saveTimeout = window.setTimeout(async () => {
+    // 最小化されている場合は保存しない (サイズが異常に小さくなるのを防ぐ)
+    if (await appWindow.isMinimized()) return;
+
     const isMaximized = await appWindow.isMaximized();
     const size = await appWindow.innerSize();
+    
+    // サイズが0の場合は異常な状態なので保存しない
+    if (size.width === 0 || size.height === 0) return;
+
     const state: WindowState = {
       isMaximized,
+      // 最大化時は、非最大化時のサイズを維持したいため、既存の設定値があればそれを使う
       width: isMaximized && settings.data.windowState ? settings.data.windowState.width : size.width,
       height: isMaximized && settings.data.windowState ? settings.data.windowState.height : size.height,
     };
