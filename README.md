@@ -30,6 +30,9 @@ Body:
   - "Fuzzy Parsing" in settings can extract levels from description text.
 
 ## History
+* v0.13.2
+  * Fixed a bug that caused indentation to break when saving.
+
 * v0.13.1
   * Fixed mobDB and skillDB YAML footer `Imports` field not supported
   * Fixed for an issue where the window size becomes abnormal on the next launch when the app is closed while minimized
