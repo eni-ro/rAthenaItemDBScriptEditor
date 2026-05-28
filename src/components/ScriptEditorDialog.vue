@@ -200,14 +200,15 @@ function formatScript(text: string): string {
       continue;
     }
 
-    // Decrease indent if line starts with }
+    let lineIndent = indent;
+    // Decrease indent for the current line if it starts with }
     if (trimmed.startsWith('}')) {
-      indent = Math.max(0, indent - 1);
+      lineIndent = Math.max(0, indent - 1);
     }
 
-    result.push('  '.repeat(indent) + trimmed);
+    result.push('  '.repeat(lineIndent) + trimmed);
 
-    // Calculate indent for next line
+    // Calculate indent for next line based on braces
     const cleanLine = trimmed.replace(/\/\/.*$/, '').replace(/\/\*.*?\*\//g, '');
     const openBraces = (cleanLine.match(/\{/g) || []).length;
     const closeBraces = (cleanLine.match(/\}/g) || []).length;
